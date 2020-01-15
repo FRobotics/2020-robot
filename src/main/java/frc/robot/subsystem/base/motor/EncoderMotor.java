@@ -1,4 +1,4 @@
-package frc.robot.subsystem.base;
+package frc.robot.subsystem.base.motor;
 
 public interface EncoderMotor extends Motor {
     public double getSpeed();

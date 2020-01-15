@@ -6,7 +6,7 @@ public enum Button {
 
     private int ID;
 
-    private Button(int ID) {
+    Button(int ID) {
         this.ID = ID;
     }
 

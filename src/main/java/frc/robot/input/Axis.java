@@ -6,7 +6,7 @@ public enum Axis {
 
     private int ID;
 
-    private Axis(int ID) {
+    Axis(int ID) {
         this.ID = ID;
     }
 

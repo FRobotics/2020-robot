@@ -5,7 +5,7 @@ public class Constants {
         /**
          * in inches
          */
-        public static final double WHEEL_RADIUS = 3;
+        public static final double WHEEL_RADIUS = 3; // TODO: set this for 2020
         public static final double COUNTS_PER_REVOLUTION = 360 * 4;
 
         /**

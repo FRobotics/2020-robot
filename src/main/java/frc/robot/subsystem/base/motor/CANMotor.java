@@ -1,4 +1,4 @@
-package frc.robot.subsystem.base;
+package frc.robot.subsystem.base.motor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -14,7 +14,7 @@ public class CANMotor implements Motor {
     }
 
     @Override
-    public void setSpeed(double speed) {
+    public void setVelocity(double speed) {
         motor.set(ControlMode.Velocity, speed);
     }
 

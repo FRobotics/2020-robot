@@ -1,4 +1,4 @@
-package frc.robot.subsystem.base;
+package frc.robot.subsystem.base.motor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -36,7 +36,7 @@ public class CANDriveMotorPair implements EncoderMotor {
     }
 
     @Override
-    public void setSpeed(double speed) {
+    public void setVelocity(double speed) {
         trevor.set(ControlMode.Velocity, speed * Constants.Drive.OUTPUT_MULTIPLIER);
     }
 

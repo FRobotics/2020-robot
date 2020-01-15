@@ -28,8 +28,7 @@ public class Controller {
     }
 
     /**
-     * Returns true as soon as the specified button is pressed and then goes back to
-     * false until it's pressed again
+     * Returns true during the first loop the specified button is pressed
      * 
      * @param button - the button you want to specify
      * @return whether the specified button was just pressed
@@ -49,8 +48,8 @@ public class Controller {
     }
 
     /**
-     * A method that should be run after the main periodic code; makes
-     * buttonPressed(Button button) work
+     * A method that should be run after the main periodic code;
+     * makes buttonPressed(Button button) work
      */
     public void postPeriodic() {
         for (Button button : Button.values()) {
