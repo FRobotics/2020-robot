@@ -6,10 +6,10 @@ import java.util.List;
 
 public abstract class Subsystem {
 
-    List<Integer> stateQueue;
-    int state;
-    long stateStartTime;
-    HashMap<Integer, Long> stateTimeMap;
+    private List<Integer> stateQueue;
+    private int state;
+    private long stateStartTime;
+    private HashMap<Integer, Long> stateTimeMap;
 
     /**
      * Creates a new subsystem
