@@ -1,5 +1,7 @@
 package frc.robot.subsystem.base;
 
+import frc.robot.Robot;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +40,13 @@ public abstract class Subsystem {
      * should not be called outside of this (Subsystem) class
      * @param state - the current state
      */
-    public abstract void handleState(int state);
+    public abstract void handleState(Robot robot, int state);
 
     /**
      * Handles the states and calls handleState for the current one;
      * call this method in the robot's periodic methods
-     */
-    public void periodic() {
+p     */
+    public void periodic(Robot robot) {
         if(
                 !stateQueue.isEmpty() && stateTimeMap.get(state) != null
                 && System.currentTimeMillis() - stateStartTime > stateTimeMap.get(state)
@@ -52,7 +54,7 @@ public abstract class Subsystem {
             this.state = stateQueue.remove(0);
             this.stateStartTime = System.currentTimeMillis();
         }
-        this.handleState(state);
+        this.handleState(robot, state);
     }
 
     /**

@@ -1,11 +1,24 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.input.Controller;
+import frc.robot.subsystem.DriveTrain;
 
 public class Robot extends TimedRobot {
+
+  private Controller movementController;
+  private DriveTrain driveTrain;
+
   @Override
   public void robotInit() {
-    System.out.println("works v2");
+    movementController = new Controller(new Joystick(0));
+    driveTrain = new DriveTrain();
+  }
+
+  @Override
+  public void robotPeriodic() {
+    driveTrain.periodic(this);
   }
 
   @Override
@@ -32,4 +45,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
+  public Controller getMovementController() {
+    return movementController;
+  }
 }
