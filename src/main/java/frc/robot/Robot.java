@@ -60,6 +60,11 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
+  @Override
+  public void disabledInit() {
+    subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.DISABLED));
+  }
+
   public Controller getMovementController() {
     return movementController;
   }
