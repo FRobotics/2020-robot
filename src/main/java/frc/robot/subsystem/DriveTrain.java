@@ -16,6 +16,7 @@ check https://github.com/FRobotics/robot-2019 for the drive logic
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot;
+import frc.robot.RobotMode;
 import frc.robot.input.Axis;
 import frc.robot.subsystem.base.Subsystem;
 import frc.robot.subsystem.base.motor.CANDriveMotorPair;
@@ -23,15 +24,19 @@ import frc.robot.subsystem.base.motor.EncoderMotor;
 
 import java.util.HashMap;
 
-public class DriveTrain extends Subsystem {
+public class DriveTrain extends Subsystem<DriveTrain.State> {
+
+    public enum State {
+        CONTROLLED
+    }
 
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13)).invert();
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12));
 
     public DriveTrain() {
         super(new HashMap<>() {{
-            //put(1, 3000L);
-        }}, 0);
+            //put(state, time)
+        }}, State.CONTROLLED, new State[]{});
     }
 
     public void setLeftMotorVelocity(double velocity) {
@@ -43,9 +48,13 @@ public class DriveTrain extends Subsystem {
     }
 
     @Override
-    public void handleState(Robot robot, int state) {
+    public void onInit(RobotMode mode) {
+    }
+
+    @Override
+    public void handleState(Robot robot, State state) {
         switch(state) {
-            case 0:
+            case CONTROLLED:
                 double leftY = robot.getMovementController().getAxis(Axis.LEFT_Y);
                 double rightY = robot.getMovementController().getAxis(Axis.RIGHT_Y);
 

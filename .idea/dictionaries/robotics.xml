@@ -1,3 +1,7 @@
 <component name="ProjectDictionaryState">
-  <dictionary name="robotics" />
+  <dictionary name="robotics">
+    <words>
+      <w>teleop</w>
+    </words>
+  </dictionary>
 </component>
