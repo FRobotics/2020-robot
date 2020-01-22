@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.input.Controller;
 import frc.robot.subsystem.Climber;
 import frc.robot.subsystem.DriveTrain;
+import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.base.Subsystem;
 
 import java.util.ArrayList;
@@ -16,12 +17,14 @@ public class Robot extends TimedRobot {
   private Controller movementController;
   private DriveTrain driveTrain;
   private Climber climber;
+  private Shooter shooter;
 
   @Override
   public void robotInit() {
     movementController = new Controller(new Joystick(0));
     driveTrain = register(new DriveTrain());
     climber = register(new Climber());
+    shooter = register(new Shooter());
   }
 
   @Override
