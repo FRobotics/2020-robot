@@ -34,9 +34,7 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12));
 
     public DriveTrain() {
-        super(new HashMap<>() {{
-            //put(state, time)
-        }}, State.CONTROLLED, new State[]{});
+        super(State.CONTROLLED);
     }
 
     public void setLeftMotorVelocity(double velocity) {
@@ -45,10 +43,6 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
 
     public void setRightMotorVelocity(double velocity) {
         this.rightMotor.setVelocity(velocity);
-    }
-
-    @Override
-    public void onInit(RobotMode mode) {
     }
 
     @Override

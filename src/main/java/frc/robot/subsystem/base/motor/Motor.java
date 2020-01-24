@@ -4,19 +4,19 @@ public interface Motor {
 
     /**
      * Sets the velocity of the motor
-     * @param speed - the speed in feet per second
+     * @param speed the speed in feet per second
      */
     void setVelocity(double speed);
 
     /**
      * Sets the percent output of the motor
-     * @param percent - the percent output (-1 to 1)
+     * @param percent the percent output (-1 to 1)
      */
     void setPercentOutput(double percent);
 
     /**
      * Inverts the output of the motor
-     * @param inverted - whether the motor should be inverted or not
+     * @param inverted whether the motor should be inverted or not
      * @return the motor for convenience
      */
     Motor setInverted(boolean inverted);

@@ -20,7 +20,7 @@ public class Controller {
     }
 
     /**
-     * @param button - the button you want to specify
+     * @param button the button you want to specify
      * @return whether the specified button is current being pressed
      */
     public boolean buttonDown(Button button) {
@@ -30,7 +30,7 @@ public class Controller {
     /**
      * Returns true during the first loop the specified button is pressed
      * 
-     * @param button - the button you want to specify
+     * @param button the button you want to specify
      * @return whether the specified button was just pressed
      */
     public boolean buttonPressed(Button button) {
@@ -40,7 +40,7 @@ public class Controller {
     /**
      * Returns the value of an axis on the controller
      * 
-     * @param axis - the axis you want to measure
+     * @param axis the axis you want to measure
      * @return the values of the axis
      */
     public double getAxis(Axis axis) {

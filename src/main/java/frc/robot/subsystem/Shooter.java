@@ -16,13 +16,11 @@ public class Shooter extends Subsystem<Shooter.State> {
         CONTROLLED
     }
 
-    private Motor leftMotor = new CANMotor(new TalonSRX(0));
-    private Motor rightMotor = new CANMotor(new TalonSRX(0));
+    private Motor leftMotor = new CANMotor(new TalonSRX(0)); // TODO: device number
+    private Motor rightMotor = new CANMotor(new TalonSRX(0)); // TODO: device number
 
     public Shooter() {
-        super(new HashMap<>() {{
-
-        }}, State.CONTROLLED, new State[]{});
+        super(State.CONTROLLED);
     }
 
     @Override
@@ -34,9 +32,9 @@ public class Shooter extends Subsystem<Shooter.State> {
     public void handleState(Robot robot, State state) {
         switch (state) {
             case CONTROLLED:
-                if (robot.getMovementController().buttonDown(Button.X)) {
-                    leftMotor.setPercentOutput(1);
-                    rightMotor.setPercentOutput(1);
+                if (robot.getActionsController().buttonDown(Button.X)) {
+                    leftMotor.setPercentOutput(.5);
+                    rightMotor.setPercentOutput(.5);
                 } else {
                     leftMotor.setPercentOutput(0);
                     rightMotor.setPercentOutput(0);
@@ -44,5 +42,4 @@ public class Shooter extends Subsystem<Shooter.State> {
                 break;
         }
     }
-
 }

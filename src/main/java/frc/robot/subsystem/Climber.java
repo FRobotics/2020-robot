@@ -14,28 +14,23 @@ public class Climber extends Subsystem<Climber.State> {
         CONTROLLED, RAISE_BOTTOM, RAISE_TOP, LOWER_TOP, LOWER_BOTTOM
     }
 
-    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(0, 0);
-    private DoubleSolenoid topSolenoid = new DoubleSolenoid(0, 0);
+    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(0, 0); // TODO: device number
+    private DoubleSolenoid topSolenoid = new DoubleSolenoid(0, 0); // TODO: device number
 
     public Climber() {
-        super(new HashMap<>() {{
+        super(State.CONTROLLED, new HashMap<>() {{
             put(State.RAISE_BOTTOM, 500L);
             put(State.RAISE_TOP, 500L);
             put(State.LOWER_BOTTOM, 500L);
             put(State.LOWER_TOP, 500L);
-        }}, State.CONTROLLED, new State[]{});
-    }
-
-    @Override
-    public void onInit(RobotMode mode) {
-
+        }});
     }
 
     @Override
     public void handleState(Robot robot, State state) {
         switch (state) {
             case CONTROLLED:
-                if (robot.getMovementController().buttonPressed(Button.A)){
+                if (robot.getActionsController().buttonPressed(Button.A)) {
                     if (bottomSolenoid.get() == DoubleSolenoid.Value.kForward) {
                         topSolenoid.set(
                                 topSolenoid.get() == DoubleSolenoid.Value.kForward
@@ -46,7 +41,7 @@ public class Climber extends Subsystem<Climber.State> {
                         setStateQueue(new State[]{State.RAISE_TOP, State.CONTROLLED});
                     }
                 }
-                if (robot.getMovementController().buttonPressed(Button.B)){
+                if (robot.getActionsController().buttonPressed(Button.B)) {
                     setState(State.LOWER_TOP);
                     setStateQueue(new State[]{State.LOWER_BOTTOM, State.CONTROLLED});
                 }

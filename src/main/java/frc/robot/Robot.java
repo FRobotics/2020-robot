@@ -6,6 +6,7 @@ import frc.robot.input.Controller;
 import frc.robot.subsystem.Climber;
 import frc.robot.subsystem.DriveTrain;
 import frc.robot.subsystem.Shooter;
+import frc.robot.subsystem.Spinner;
 import frc.robot.subsystem.base.Subsystem;
 
 import java.util.ArrayList;
@@ -15,22 +16,27 @@ public class Robot extends TimedRobot {
   private ArrayList<Subsystem<?>> subsystems = new ArrayList<>();
 
   private Controller movementController;
+  private Controller actionsController;
   private DriveTrain driveTrain;
   private Climber climber;
   private Shooter shooter;
+  private Spinner spinner;
 
   @Override
   public void robotInit() {
     movementController = new Controller(new Joystick(0));
+    actionsController = new Controller(new Joystick(1));
     driveTrain = register(new DriveTrain());
     climber = register(new Climber());
     shooter = register(new Shooter());
+    spinner = register(new Spinner());
   }
 
   @Override
   public void robotPeriodic() {
     subsystems.forEach(subsystem -> subsystem.periodic(this));
     movementController.postPeriodic();
+    actionsController.postPeriodic();
   }
 
   @Override
@@ -69,7 +75,11 @@ public class Robot extends TimedRobot {
     return movementController;
   }
 
-  private <S extends Subsystem> S register(S subsystem) {
+  public Controller getActionsController() {
+    return actionsController;
+  }
+
+  private <S extends Subsystem<?>> S register(S subsystem) {
     this.subsystems.add(subsystem);
     return subsystem;
   }
