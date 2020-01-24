@@ -24,11 +24,6 @@ public class Shooter extends Subsystem<Shooter.State> {
     }
 
     @Override
-    public void onInit(RobotMode mode) {
-
-    }
-
-    @Override
     public void handleState(Robot robot, State state) {
         switch (state) {
             case CONTROLLED:
