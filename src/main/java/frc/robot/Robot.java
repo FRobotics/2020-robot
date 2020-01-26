@@ -17,19 +17,15 @@ public class Robot extends TimedRobot {
 
   private Controller movementController;
   private Controller actionsController;
-  private DriveTrain driveTrain;
-  private Climber climber;
-  private Shooter shooter;
-  private Spinner spinner;
 
   @Override
   public void robotInit() {
     movementController = new Controller(new Joystick(0));
     actionsController = new Controller(new Joystick(1));
-    driveTrain = register(new DriveTrain());
-    climber = register(new Climber());
-    shooter = register(new Shooter());
-    spinner = register(new Spinner());
+    register(new DriveTrain());
+    // register(new Climber());
+    // register(new Shooter());
+    // register(new Spinner());
   }
 
   @Override

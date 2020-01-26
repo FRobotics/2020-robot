@@ -18,17 +18,29 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot;
 import frc.robot.RobotMode;
 import frc.robot.input.Axis;
+import frc.robot.input.Button;
+import frc.robot.input.Controller;
+import frc.robot.subsystem.base.StateInstance;
 import frc.robot.subsystem.base.Subsystem;
 import frc.robot.subsystem.base.motor.CANDriveMotorPair;
 import frc.robot.subsystem.base.motor.EncoderMotor;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 
 public class DriveTrain extends Subsystem<DriveTrain.State> {
 
     public enum State {
-        CONTROLLED
+        DISABLED,
+        CONTROLLED,
+        TEST1,
+        TEST2
     }
+
+    public List<StateInstance<State>> TEST = Arrays.asList(
+            new StateInstance<>(State.TEST1, 1000),
+            new StateInstance<>(State.TEST2, 1000)
+    );
 
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13)).invert();
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12));
@@ -37,24 +49,58 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
         super(State.CONTROLLED);
     }
 
-    public void setLeftMotorVelocity(double velocity) {
+    public void setLeftVelocity(double velocity) {
         this.leftMotor.setVelocity(velocity);
     }
 
-    public void setRightMotorVelocity(double velocity) {
+    public void setRightVelocity(double velocity) {
         this.rightMotor.setVelocity(velocity);
+    }
+
+    public void setVelocity(double velocity) {
+        setLeftVelocity(velocity);
+        setRightVelocity(velocity);
+    }
+
+    @Override
+    public void onInit(RobotMode mode) {
+        this.clearStateQueue();
+        switch(mode) {
+            default:
+            case DISABLED:
+                this.setState(State.DISABLED);
+                break;
+            case TELEOP:
+                this.setState(State.CONTROLLED);
+                break;
+        }
     }
 
     @Override
     public void handleState(Robot robot, State state) {
         switch(state) {
+            case DISABLED:
+                setVelocity(0);
+                break;
             case CONTROLLED:
-                double leftY = robot.getMovementController().getAxis(Axis.LEFT_Y);
-                double rightY = robot.getMovementController().getAxis(Axis.RIGHT_Y);
+                Controller controller = robot.getMovementController();
 
-                setLeftMotorVelocity(leftY*5);
-                setRightMotorVelocity(rightY*5);
+                double leftY = controller.getAxis(Axis.LEFT_Y);
+                double rightY = controller.getAxis(Axis.RIGHT_Y);
 
+                setLeftVelocity(leftY*5);
+                setRightVelocity(rightY*5);
+
+                if(controller.buttonDown(Button.A)) {
+                    setStateQueue(TEST);
+                }
+
+                break;
+            case TEST1:
+                setVelocity(-1);
+                break;
+            case TEST2:
+                setVelocity(1);
                 break;
         }
     }

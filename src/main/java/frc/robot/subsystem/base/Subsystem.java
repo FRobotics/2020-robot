@@ -4,37 +4,28 @@ import frc.robot.Robot;
 import frc.robot.RobotMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 
 public abstract class Subsystem<S extends Enum<?>> {
 
-    private ArrayList<S> stateQueue;
     private S state;
+    private int stateLength;
+
+    private int queuePos;
+    private List<StateInstance<S>> stateQueue;
+
     private long stateStartTime;
-    private HashMap<S, Long> stateTimeMap;
 
     /**
      * Creates a new subsystem
      *
-     * @param initState the state to start in
-     */
-    public Subsystem(S initState) {
-        this(initState, new HashMap<>() {{
-        }});
-    }
-
-    /**
-     * Creates a new subsystem
-     *
-     * @param stateTimeMap a map of states to the time in milliseconds each of them should run for
      * @param initState    the state to start in
      */
-    public Subsystem(S initState, HashMap<S, Long> stateTimeMap) {
-        this.stateQueue = new ArrayList<S>();
+    public Subsystem(S initState) {
+        this.stateQueue = new ArrayList<>();
         this.state = initState;
         this.stateStartTime = 0;
-        this.stateTimeMap = stateTimeMap;
+        this.stateLength = -1;
     }
 
     /**
@@ -61,10 +52,14 @@ public abstract class Subsystem<S extends Enum<?>> {
      */
     public void periodic(Robot robot) {
         if (
-                !stateQueue.isEmpty() && stateTimeMap.get(state) != null
-                        && System.currentTimeMillis() - stateStartTime > stateTimeMap.get(state)
+                stateQueue != null && System.currentTimeMillis() - stateStartTime > stateLength
         ) {
-            this.setState(stateQueue.remove(0));
+            StateInstance<S> instance = stateQueue.get(queuePos++);
+            this.setState(instance.state, instance.length);
+            if(stateQueue.size() == queuePos) {
+                stateQueue = null;
+                queuePos = 0;
+            }
         }
         this.handleState(robot, state);
     }
@@ -74,8 +69,12 @@ public abstract class Subsystem<S extends Enum<?>> {
      *
      * @param stateQueue a list of states to execute from first to last
      */
-    public void setStateQueue(S[] stateQueue) {
-        this.stateQueue = new ArrayList<>(Arrays.asList(stateQueue));
+    public void setStateQueue(List<StateInstance<S>> stateQueue) {
+        this.stateQueue = stateQueue;
+    }
+
+    public void clearStateQueue() {
+        this.stateQueue = null;
     }
 
     /**
@@ -84,7 +83,18 @@ public abstract class Subsystem<S extends Enum<?>> {
      * @param state the state you want to switch to
      */
     public void setState(S state) {
+        this.setState(state, -1);
+    }
+
+    /**
+     * Sets the current state
+     *
+     * @param state the state you want to switch to
+     * @param length how long the state should run
+     */
+    public void setState(S state, int length) {
         this.state = state;
         this.stateStartTime = System.currentTimeMillis();
+        this.stateLength = length;
     }
 }
