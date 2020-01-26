@@ -32,6 +32,8 @@ public class Climber extends Subsystem<Climber.State> {
         super(State.CONTROLLED);
     }
 
+    // TODO: disabled + default states
+
     @Override
     public void handleState(Robot robot, State state) {
         switch (state) {

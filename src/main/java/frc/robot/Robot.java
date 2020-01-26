@@ -3,10 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.input.Controller;
-import frc.robot.subsystem.Climber;
 import frc.robot.subsystem.DriveTrain;
-import frc.robot.subsystem.Shooter;
-import frc.robot.subsystem.Spinner;
 import frc.robot.subsystem.base.Subsystem;
 
 import java.util.ArrayList;
@@ -23,6 +20,7 @@ public class Robot extends TimedRobot {
     movementController = new Controller(new Joystick(0));
     actionsController = new Controller(new Joystick(1));
     register(new DriveTrain());
+    // TODO: register these for the real robot
     // register(new Climber());
     // register(new Shooter());
     // register(new Spinner());

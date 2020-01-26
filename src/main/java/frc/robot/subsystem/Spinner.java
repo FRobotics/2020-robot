@@ -20,6 +20,8 @@ public class Spinner extends Subsystem<Spinner.State> {
         super(State.CONTROLLED);
     }
 
+    // TODO: disabled + default states
+
     @Override
     public void handleState(Robot robot, State state) {
         switch (state) {

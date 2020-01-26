@@ -10,11 +10,12 @@ public abstract class Subsystem<S extends Enum<?>> {
 
     private S state;
     private int stateLength;
+    private long stateStartTime;
+
+    private S defaultState;
 
     private int queuePos;
     private List<StateInstance<S>> stateQueue;
-
-    private long stateStartTime;
 
     /**
      * Creates a new subsystem
@@ -26,6 +27,7 @@ public abstract class Subsystem<S extends Enum<?>> {
         this.state = initState;
         this.stateStartTime = 0;
         this.stateLength = -1;
+        this.defaultState = initState;
     }
 
     /**
@@ -54,11 +56,15 @@ public abstract class Subsystem<S extends Enum<?>> {
         if (
                 stateQueue != null && System.currentTimeMillis() - stateStartTime > stateLength
         ) {
-            StateInstance<S> instance = stateQueue.get(queuePos++);
-            this.setState(instance.state, instance.length);
             if(stateQueue.size() == queuePos) {
+                // if there's no more states in the queue
                 stateQueue = null;
                 queuePos = 0;
+                this.setState(defaultState);
+            } else {
+                // if there's another state in the queue
+                StateInstance<S> instance = stateQueue.get(queuePos++);
+                this.setState(instance.state, instance.length);
             }
         }
         this.handleState(robot, state);
@@ -84,6 +90,15 @@ public abstract class Subsystem<S extends Enum<?>> {
      */
     public void setState(S state) {
         this.setState(state, -1);
+    }
+
+    public void setDefaultState(S defaultState) {
+        this.defaultState = defaultState;
+    }
+
+    public void setStateAndDefault(S state) {
+        this.setState(state);
+        this.setDefaultState(state);
     }
 
     /**

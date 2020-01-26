@@ -23,6 +23,8 @@ public class Shooter extends Subsystem<Shooter.State> {
         super(State.CONTROLLED);
     }
 
+    // TODO: disabled + default states
+
     @Override
     public void handleState(Robot robot, State state) {
         switch (state) {

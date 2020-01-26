@@ -15,7 +15,7 @@ public interface Motor {
     void setPercentOutput(double percent);
 
     /**
-     * Inverts the output of the motor
+     * Sets whether the output of the motor should be inverted or not
      * @param inverted whether the motor should be inverted or not
      * @return the motor for convenience
      */

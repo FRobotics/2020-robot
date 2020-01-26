@@ -42,11 +42,12 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
             new StateInstance<>(State.TEST2, 1000)
     );
 
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13)).invert();
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12));
+    // TODO: real motor ids
+    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13));
+    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12)).invert();
 
     public DriveTrain() {
-        super(State.CONTROLLED);
+        super(State.DISABLED);
     }
 
     public void setLeftVelocity(double velocity) {
@@ -68,10 +69,10 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
         switch(mode) {
             default:
             case DISABLED:
-                this.setState(State.DISABLED);
+                this.setStateAndDefault(State.DISABLED);
                 break;
             case TELEOP:
-                this.setState(State.CONTROLLED);
+                this.setStateAndDefault(State.CONTROLLED);
                 break;
         }
     }
@@ -85,8 +86,8 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
             case CONTROLLED:
                 Controller controller = robot.getMovementController();
 
-                double leftY = controller.getAxis(Axis.LEFT_Y);
-                double rightY = controller.getAxis(Axis.RIGHT_Y);
+                double leftY = -controller.getAxis(Axis.LEFT_Y);
+                double rightY = -controller.getAxis(Axis.RIGHT_Y);
 
                 setLeftVelocity(leftY*5);
                 setRightVelocity(rightY*5);
@@ -103,13 +104,5 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
                 setVelocity(1);
                 break;
         }
-    }
-
-    public double getLeftMotorDistance() {
-        return this.leftMotor.getDistance();
-    }
-
-    public double getRightMotorDistance() {
-        return this.rightMotor.getDistance();
     }
 }
