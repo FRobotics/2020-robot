@@ -8,12 +8,10 @@ import frc.robot.subsystem.base.Subsystem;
 import frc.robot.subsystem.base.motor.CANMotor;
 import frc.robot.subsystem.base.motor.Motor;
 
-import java.util.HashMap;
-
 public class Shooter extends Subsystem<Shooter.State> {
     // 2 motors that spin the wheels to shoot the ball out
     public enum State {
-        CONTROLLED
+        DISABLED, CONTROLLED
     }
 
     private Motor leftMotor = new CANMotor(new TalonSRX(0)); // TODO: device number
@@ -23,11 +21,26 @@ public class Shooter extends Subsystem<Shooter.State> {
         super(State.CONTROLLED);
     }
 
-    // TODO: disabled + default states
+    @Override
+    public void onInit(RobotMode mode) {
+        this.clearStateQueue();
+        switch (mode) {
+            case DISABLED:
+                this.setStateAndDefault(State.DISABLED);
+                break;
+            case TELEOP:
+                this.setStateAndDefault(State.CONTROLLED);
+                break;
+        }
+    }
 
     @Override
     public void handleState(Robot robot, State state) {
         switch (state) {
+            case DISABLED:
+                leftMotor.setPercentOutput(0);
+                rightMotor.setPercentOutput(0);
+                break;
             case CONTROLLED:
                 if (robot.getActionsController().buttonDown(Button.X)) {
                     leftMotor.setPercentOutput(.5);

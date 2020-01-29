@@ -38,8 +38,8 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
     }
 
     public List<StateInstance<State>> TEST = Arrays.asList(
-            new StateInstance<>(State.TEST1, 1000),
-            new StateInstance<>(State.TEST2, 1000)
+            new StateInstance<>(State.TEST1, 250),
+            new StateInstance<>(State.TEST2, 250)
     );
 
     // TODO: real motor ids
@@ -86,22 +86,24 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
             case CONTROLLED:
                 Controller controller = robot.getMovementController();
 
+                // person.arm.moveUp(3);
+
                 double leftY = -controller.getAxis(Axis.LEFT_Y);
                 double rightY = -controller.getAxis(Axis.RIGHT_Y);
 
                 setLeftVelocity(leftY*5);
                 setRightVelocity(rightY*5);
 
-                if(controller.buttonDown(Button.A)) {
+                if(controller.buttonPressed(Button.A)) {
                     setStateQueue(TEST);
                 }
 
                 break;
             case TEST1:
-                setVelocity(-1);
+                setVelocity(-3);
                 break;
             case TEST2:
-                setVelocity(1);
+                setVelocity(3);
                 break;
         }
     }

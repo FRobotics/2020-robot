@@ -11,20 +11,33 @@ import frc.robot.subsystem.base.motor.Motor;
 public class Spinner extends Subsystem<Spinner.State> {
 
     public enum State {
-        CONTROLLED
+        DISABLED, CONTROLLED
     }
 
     private Motor motor = new CANMotor(new TalonSRX(0)); // TODO: device number
 
     public Spinner() {
-        super(State.CONTROLLED);
+        super(State.DISABLED);
     }
 
-    // TODO: disabled + default states
+    @Override
+    public void onInit(RobotMode mode) {
+        switch (mode) {
+            case DISABLED:
+                this.setStateAndDefault(State.DISABLED);
+                break;
+            case TELEOP:
+                this.setStateAndDefault(State.CONTROLLED);
+                break;
+        }
+    }
 
     @Override
     public void handleState(Robot robot, State state) {
         switch (state) {
+            case DISABLED:
+                motor.setPercentOutput(0);
+                break;
             case CONTROLLED:
                 if (robot.getActionsController().buttonDown(Button.Y)) {
                     motor.setPercentOutput(.5);
