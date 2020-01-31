@@ -18,7 +18,7 @@ public class Shooter extends Subsystem<Shooter.State> {
     private Motor rightMotor = new CANMotor(new TalonSRX(0)); // TODO: device number
 
     public Shooter() {
-        super(State.CONTROLLED);
+        super("shooter", State.CONTROLLED);
     }
 
     @Override

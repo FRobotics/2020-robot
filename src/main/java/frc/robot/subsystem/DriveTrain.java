@@ -15,6 +15,7 @@ check https://github.com/FRobotics/robot-2019 for the drive logic
  */
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMode;
 import frc.robot.input.Axis;
@@ -47,7 +48,7 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12)).invert();
 
     public DriveTrain() {
-        super(State.DISABLED);
+        super("driveTrain", State.DISABLED);
     }
 
     public void setLeftVelocity(double velocity) {
@@ -106,5 +107,10 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
                 setVelocity(3);
                 break;
         }
+    }
+
+    @Override
+    public void updateDashboard() {
+        SmartDashboard.putNumber(dashKey("leftVelocity"), this.leftMotor.getVelocity());
     }
 }

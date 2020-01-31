@@ -30,7 +30,7 @@ public class Climber extends Subsystem<Climber.State> {
     private DoubleSolenoid topSolenoid = new DoubleSolenoid(0, 0); // TODO: device number
 
     public Climber() {
-        super(State.DISABLE);
+        super("climber", State.DISABLE);
     }
 
     @Override

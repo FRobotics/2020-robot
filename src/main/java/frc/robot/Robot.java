@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.input.Controller;
@@ -10,6 +12,9 @@ import java.util.ArrayList;
 
 public class Robot extends TimedRobot {
 
+  private NetworkTable robotTable;
+  private NetworkTable visionTable;
+
   private ArrayList<Subsystem<?>> subsystems = new ArrayList<>();
 
   private Controller movementController;
@@ -17,6 +22,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    robotTable = NetworkTableInstance.getDefault().getTable("robot");
+    visionTable = NetworkTableInstance.getDefault().getTable("vision");
+
     movementController = new Controller(new Joystick(0));
     actionsController = new Controller(new Joystick(1));
     register(new DriveTrain());

@@ -8,6 +8,8 @@ import java.util.List;
 
 public abstract class Subsystem<S extends Enum<?>> {
 
+    private final String name;
+
     private S state;
     private int stateLength;
     private long stateStartTime;
@@ -22,7 +24,8 @@ public abstract class Subsystem<S extends Enum<?>> {
      *
      * @param initState    the state to start in
      */
-    public Subsystem(S initState) {
+    public Subsystem(String name, S initState) {
+        this.name = name;
         this.stateQueue = new ArrayList<>();
         this.state = initState;
         this.stateStartTime = 0;
@@ -48,6 +51,16 @@ public abstract class Subsystem<S extends Enum<?>> {
     public abstract void handleState(Robot robot, S state);
 
     /**
+     * called to update the variables for this subsystem on the dashboard
+     */
+    public void updateDashboard() {
+    }
+
+    public String dashKey(String name) {
+        return "robot/" + this.name + "/" + name;
+    }
+
+    /**
      * Handles the states and calls handleState for the current one;
      * call this method in the robot's periodic methods
      * @param robot the robot
@@ -68,6 +81,7 @@ public abstract class Subsystem<S extends Enum<?>> {
             }
         }
         this.handleState(robot, state);
+        this.updateDashboard();
     }
 
     /**

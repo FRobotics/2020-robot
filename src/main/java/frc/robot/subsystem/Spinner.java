@@ -17,7 +17,7 @@ public class Spinner extends Subsystem<Spinner.State> {
     private Motor motor = new CANMotor(new TalonSRX(0)); // TODO: device number
 
     public Spinner() {
-        super(State.DISABLED);
+        super("spinner", State.DISABLED);
     }
 
     @Override

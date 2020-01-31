@@ -46,7 +46,7 @@ public class CANDriveMotorPair implements EncoderMotor {
     }
 
     @Override
-    public double getSpeed() {
+    public double getVelocity() {
         return trevor.getSelectedSensorVelocity() * Constants.Drive.INPUT_MULTIPLIER;
     }
 
