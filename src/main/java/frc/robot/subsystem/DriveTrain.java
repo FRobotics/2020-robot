@@ -27,7 +27,9 @@ import frc.robot.subsystem.base.motor.CANDriveMotorPair;
 import frc.robot.subsystem.base.motor.EncoderMotor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class DriveTrain extends Subsystem<DriveTrain.State> {
 
@@ -51,11 +53,15 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
         super("driveTrain", State.DISABLED);
     }
 
+    private double leftTargetVel = 0;
     public void setLeftVelocity(double velocity) {
+        this.leftTargetVel = velocity;
         this.leftMotor.setVelocity(velocity);
     }
 
+    private double rightTargetVel = 0;
     public void setRightVelocity(double velocity) {
+        this.rightTargetVel = velocity;
         this.rightMotor.setVelocity(velocity);
     }
 
@@ -87,8 +93,6 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
             case CONTROLLED:
                 Controller controller = robot.getMovementController();
 
-                // person.arm.moveUp(3);
-
                 double leftY = -controller.getAxis(Axis.LEFT_Y);
                 double rightY = -controller.getAxis(Axis.RIGHT_Y);
 
@@ -110,7 +114,14 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
     }
 
     @Override
-    public void updateDashboard() {
-        SmartDashboard.putNumber(dashKey("leftVelocity"), this.leftMotor.getVelocity());
+    public HashMap<String, Supplier<Object>> createNTMap() {
+        return new HashMap<>(){{
+            put("leftVelocity", leftMotor::getVelocity);
+            put("rightVelocity", rightMotor::getVelocity);
+            put("leftDistance", leftMotor::getDistance);
+            put("rightDistance", rightMotor::getDistance);
+            put("leftTarget", () -> leftTargetVel);
+            put("rightTarget", () -> rightTargetVel);
+        }};
     }
 }

@@ -4,11 +4,13 @@ import frc.robot.Robot;
 import frc.robot.RobotMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class Subsystem<S extends Enum<?>> {
 
-    private final String name;
+    public final String name;
 
     private S state;
     private int stateLength;
@@ -51,13 +53,11 @@ public abstract class Subsystem<S extends Enum<?>> {
     public abstract void handleState(Robot robot, S state);
 
     /**
-     * called to update the variables for this subsystem on the dashboard
+     * Use this method to specify what values you want to put on the dashboard;
+     * The keys are the names of the entries and the suppliers are functions that return the values to set the entries to
      */
-    public void updateDashboard() {
-    }
-
-    public String dashKey(String name) {
-        return "robot/" + this.name + "/" + name;
+    public HashMap<String, Supplier<Object>> createNTMap() {
+        return new HashMap<>();
     }
 
     /**
@@ -81,7 +81,6 @@ public abstract class Subsystem<S extends Enum<?>> {
             }
         }
         this.handleState(robot, state);
-        this.updateDashboard();
     }
 
     /**
