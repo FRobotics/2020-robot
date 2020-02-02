@@ -1,14 +1,11 @@
-package frc.robot.subsystem.base;
-
-import frc.robot.Robot;
-import frc.robot.RobotMode;
+package frc.robot.base;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class Subsystem<S extends Enum<?>> {
+public abstract class Subsystem<S extends Enum<?>, R extends Robot4150<R>> {
 
     public final String name;
 
@@ -50,7 +47,7 @@ public abstract class Subsystem<S extends Enum<?>> {
      * @param robot the robot
      * @param state the current state
      */
-    public abstract void handleState(Robot robot, S state);
+    public abstract void handleState(R robot, S state);
 
     /**
      * Use this method to specify what values you want to put on the dashboard;
@@ -65,7 +62,7 @@ public abstract class Subsystem<S extends Enum<?>> {
      * call this method in the robot's periodic methods
      * @param robot the robot
      */
-    public void periodic(Robot robot) {
+    public void periodic(R robot) {
         if (
                 stateQueue != null && System.currentTimeMillis() - stateStartTime > stateLength
         ) {

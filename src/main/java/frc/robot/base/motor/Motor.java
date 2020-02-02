@@ -1,4 +1,4 @@
-package frc.robot.subsystem.base.motor;
+package frc.robot.base.motor;
 
 public interface Motor {
 
@@ -13,6 +13,7 @@ public interface Motor {
      * @param percent the percent output (-1 to 1)
      */
     void setPercentOutput(double percent);
+    double getOutputPercent();
 
     /**
      * Sets whether the output of the motor should be inverted or not

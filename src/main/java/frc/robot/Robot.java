@@ -1,86 +1,18 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.input.Controller;
+import frc.robot.base.Robot4150;
+import frc.robot.base.input.Controller;
 import frc.robot.subsystem.DriveTrain;
-import frc.robot.subsystem.base.Subsystem;
 
-import java.util.ArrayList;
+public class Robot extends Robot4150<Robot> {
 
-public class Robot extends TimedRobot {
+  public final Controller movementController = registerController(0);
+  public final Controller actionsController = registerController(1);
 
-  private ArrayList<Subsystem<?>> subsystems = new ArrayList<>();
+  public final DriveTrain driveTrain = register(new DriveTrain());
+  // TODO: uncomment for real robot
+  //public final Climber climber = register(new Climber());
+  //public final Shooter shooter = register(new Shooter());
+  //public final Spinner spinner = register(new Spinner());
 
-  private Controller movementController;
-  private Controller actionsController;
-
-  public void initSubsystems() {
-    movementController = new Controller(new Joystick(0));
-    actionsController = new Controller(new Joystick(1));
-    register(new DriveTrain());
-    // TODO: register these for the real robot
-    // register(new Climber());
-    // register(new Shooter());
-    // register(new Spinner());
-  }
-
-  @Override
-  public void robotInit() {
-    this.initSubsystems();
-    NTHandler.init(this.subsystems);
-  }
-
-  @Override
-  public void robotPeriodic() {
-    subsystems.forEach(subsystem -> subsystem.periodic(this));
-    movementController.postPeriodic();
-    actionsController.postPeriodic();
-    NTHandler.update();
-  }
-
-  @Override
-  public void autonomousInit() {
-    subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.AUTONOMOUS));
-  }
-
-  @Override
-  public void autonomousPeriodic() {
-  }
-
-  @Override
-  public void teleopInit() {
-    subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.TELEOP));
-  }
-
-  @Override
-  public void teleopPeriodic() {
-  }
-
-  @Override
-  public void testInit() {
-    subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.TEST));
-  }
-
-  @Override
-  public void testPeriodic() {
-  }
-
-  @Override
-  public void disabledInit() {
-    subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.DISABLED));
-  }
-
-  public Controller getMovementController() {
-    return movementController;
-  }
-
-  public Controller getActionsController() {
-    return actionsController;
-  }
-
-  private <S extends Subsystem<?>> S register(S subsystem) {
-    this.subsystems.add(subsystem);
-    return subsystem;
-  }
 }

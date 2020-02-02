@@ -2,13 +2,14 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot;
-import frc.robot.RobotMode;
-import frc.robot.input.Button;
-import frc.robot.subsystem.base.Subsystem;
-import frc.robot.subsystem.base.motor.CANMotor;
-import frc.robot.subsystem.base.motor.Motor;
+import frc.robot.base.RobotMode;
+import frc.robot.base.input.Button;
+import frc.robot.base.Subsystem;
+import frc.robot.base.motor.CANMotor;
+import frc.robot.base.motor.Motor;
+import frc.robot.base.input.Controller;
 
-public class Shooter extends Subsystem<Shooter.State> {
+public class Shooter extends Subsystem<Shooter.State, Robot> {
     // 2 motors that spin the wheels to shoot the ball out
     public enum State {
         DISABLED, CONTROLLED
@@ -42,7 +43,8 @@ public class Shooter extends Subsystem<Shooter.State> {
                 rightMotor.setPercentOutput(0);
                 break;
             case CONTROLLED:
-                if (robot.getActionsController().buttonDown(Button.X)) {
+                Controller controller = robot.actionsController;
+                if (controller.buttonDown(Button.X)) {
                     leftMotor.setPercentOutput(.5);
                     rightMotor.setPercentOutput(.5);
                 } else {

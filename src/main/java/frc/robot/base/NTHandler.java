@@ -1,9 +1,8 @@
-package frc.robot;
+package frc.robot.base;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.subsystem.base.Subsystem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +15,14 @@ public class NTHandler {
 
     private static HashMap<NetworkTableEntry, Supplier<Object>> updateMap;
 
-    public static void init(List<Subsystem<?>> subsystems) {
+    public static <R extends Robot4150<R>> void init (List<Subsystem<?, R>> subsystems) {
         robotTable = NetworkTableInstance.getDefault().getTable("robot");
         visionTable = NetworkTableInstance.getDefault().getTable("vision");
         updateMap = new HashMap<>();
         subsystems.forEach(NTHandler::addSubsystem);
     }
 
-    private static void addSubsystem(Subsystem<?> subsystem) {
+    private static void addSubsystem(Subsystem<?, ?> subsystem) {
         subsystem.createNTMap().forEach(
                 (name, valueSupplier) -> updateMap.put(robotTable.getEntry(subsystem.name + "/" + name), valueSupplier)
         );

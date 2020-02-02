@@ -2,15 +2,16 @@ package frc.robot.subsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Robot;
-import frc.robot.RobotMode;
-import frc.robot.input.Button;
-import frc.robot.subsystem.base.StateInstance;
-import frc.robot.subsystem.base.Subsystem;
+import frc.robot.base.RobotMode;
+import frc.robot.base.input.Button;
+import frc.robot.base.StateInstance;
+import frc.robot.base.Subsystem;
+import frc.robot.base.input.Controller;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Climber extends Subsystem<Climber.State> {
+public class Climber extends Subsystem<Climber.State, Robot> {
 
     public enum State {
         DISABLE, CONTROLLED, RAISE_BOTTOM, RAISE_TOP, LOWER_TOP, LOWER_BOTTOM
@@ -51,7 +52,8 @@ public class Climber extends Subsystem<Climber.State> {
     public void handleState(Robot robot, State state) {
         switch (state) {
             case CONTROLLED:
-                if (robot.getActionsController().buttonPressed(Button.A)) {
+                Controller controller = robot.actionsController;
+                if (controller.buttonPressed(Button.A)) {
                     if (bottomSolenoid.get() == DoubleSolenoid.Value.kForward) {
                         // switches whether it's up or down
                         topSolenoid.set(
@@ -62,7 +64,7 @@ public class Climber extends Subsystem<Climber.State> {
                         setStateQueue(UNFOLD);
                     }
                 }
-                if (robot.getActionsController().buttonPressed(Button.B)) {
+                if (controller.buttonPressed(Button.B)) {
                     setStateQueue(FOLD);
                 }
                 break;

@@ -1,4 +1,4 @@
-package frc.robot.subsystem.base;
+package frc.robot.base;
 
 public class StateInstance<S extends Enum<?>> {
 

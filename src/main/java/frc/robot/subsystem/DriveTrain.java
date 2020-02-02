@@ -15,23 +15,23 @@ check https://github.com/FRobotics/robot-2019 for the drive logic
  */
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Config;
 import frc.robot.Robot;
-import frc.robot.RobotMode;
-import frc.robot.input.Axis;
-import frc.robot.input.Button;
-import frc.robot.input.Controller;
-import frc.robot.subsystem.base.StateInstance;
-import frc.robot.subsystem.base.Subsystem;
-import frc.robot.subsystem.base.motor.CANDriveMotorPair;
-import frc.robot.subsystem.base.motor.EncoderMotor;
+import frc.robot.base.RobotMode;
+import frc.robot.base.input.Axis;
+import frc.robot.base.input.Button;
+import frc.robot.base.input.Controller;
+import frc.robot.base.StateInstance;
+import frc.robot.base.Subsystem;
+import frc.robot.base.motor.CANDriveMotorPair;
+import frc.robot.base.motor.EncoderMotor;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DriveTrain extends Subsystem<DriveTrain.State> {
+public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
 
     public enum State {
         DISABLED,
@@ -46,8 +46,8 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
     );
 
     // TODO: real motor ids
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13));
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12)).invert();
+    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), Config.driveConfig);
+    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), Config.driveConfig).invert();
 
     public DriveTrain() {
         super("driveTrain", State.DISABLED);
@@ -91,7 +91,7 @@ public class DriveTrain extends Subsystem<DriveTrain.State> {
                 setVelocity(0);
                 break;
             case CONTROLLED:
-                Controller controller = robot.getMovementController();
+                Controller controller = robot.movementController;
 
                 double leftY = -controller.getAxis(Axis.LEFT_Y);
                 double rightY = -controller.getAxis(Axis.RIGHT_Y);
