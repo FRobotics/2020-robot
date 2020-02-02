@@ -15,7 +15,6 @@ check https://github.com/FRobotics/robot-2019 for the drive logic
  */
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.Config;
 import frc.robot.Robot;
 import frc.robot.base.RobotMode;
 import frc.robot.base.input.Axis;
@@ -46,8 +45,8 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
     );
 
     // TODO: real motor ids
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), Config.driveConfig);
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), Config.driveConfig).invert();
+    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), Robot.driveConfig);
+    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), Robot.driveConfig).invert();
 
     public DriveTrain() {
         super("driveTrain", State.DISABLED);
