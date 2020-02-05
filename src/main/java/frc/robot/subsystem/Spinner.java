@@ -40,7 +40,7 @@ public class Spinner extends Subsystem<Spinner.State, Robot> {
                 motor.setPercentOutput(0);
                 break;
             case CONTROLLED:
-                Controller controller = robot.actionsController;
+                Controller controller = robot.auxiliaryController;
                 if (controller.buttonDown(Button.Y)) {
                     motor.setPercentOutput(.5);
                 } else {

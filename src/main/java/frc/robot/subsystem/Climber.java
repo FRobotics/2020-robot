@@ -4,31 +4,21 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Robot;
 import frc.robot.base.RobotMode;
 import frc.robot.base.input.Button;
-import frc.robot.base.StateInstance;
 import frc.robot.base.Subsystem;
 import frc.robot.base.input.Controller;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.function.Supplier;
 
 public class Climber extends Subsystem<Climber.State, Robot> {
 
     public enum State {
-        DISABLE, CONTROLLED, RAISE_BOTTOM, RAISE_TOP, LOWER_TOP, LOWER_BOTTOM
+        DISABLE, CONTROLLED
     }
 
-    public List<StateInstance<State>> UNFOLD = Arrays.asList(
-            new StateInstance<>(State.RAISE_BOTTOM, 500),
-            new StateInstance<>(State.RAISE_TOP, 500)
-    );
-
-    public List<StateInstance<State>> FOLD = Arrays.asList(
-            new StateInstance<>(State.LOWER_TOP, 500),
-            new StateInstance<>(State.LOWER_BOTTOM, 500)
-    );
-
-    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(0, 0); // TODO: device number
-    private DoubleSolenoid topSolenoid = new DoubleSolenoid(0, 0); // TODO: device number
+    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(0, 1); // TODO: device number
+    private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(2, 3); // TODO: device number
+    private DoubleSolenoid rightTopSolenoid = new DoubleSolenoid(6, 8); // TODO: device number
 
     public Climber() {
         super("climber", State.DISABLE);
@@ -52,34 +42,40 @@ public class Climber extends Subsystem<Climber.State, Robot> {
     public void handleState(Robot robot, State state) {
         switch (state) {
             case CONTROLLED:
-                Controller controller = robot.actionsController;
-                if (controller.buttonPressed(Button.A)) {
-                    if (bottomSolenoid.get() == DoubleSolenoid.Value.kForward) {
-                        // switches whether it's up or down
-                        topSolenoid.set(
-                                topSolenoid.get() == DoubleSolenoid.Value.kForward
-                                        ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward
-                        );
-                    } else {
-                        setStateQueue(UNFOLD);
+                Controller controller = robot.auxiliaryController;
+                if(leftTopSolenoid.get() == DoubleSolenoid.Value.kReverse) {
+                    if (controller.buttonPressed(Button.BACK)) {
+                        bottomSolenoid.set(DoubleSolenoid.Value.kReverse);
+                    }
+
+                    if (controller.buttonPressed(Button.START)) {
+                        bottomSolenoid.set(DoubleSolenoid.Value.kForward);
                     }
                 }
-                if (controller.buttonPressed(Button.B)) {
-                    setStateQueue(FOLD);
+
+                if(bottomSolenoid.get() == DoubleSolenoid.Value.kForward) {
+                    if (controller.buttonPressed(Button.LEFT_BUMPER)) {
+                        leftTopSolenoid.set(DoubleSolenoid.Value.kForward);
+                    }
+
+                    if (controller.buttonPressed(Button.RIGHT_BUMPER)) {
+                        rightTopSolenoid.set(DoubleSolenoid.Value.kForward);
+                    }
                 }
-                break;
-            case RAISE_BOTTOM:
-                bottomSolenoid.set(DoubleSolenoid.Value.kForward);
-                break;
-            case RAISE_TOP:
-                topSolenoid.set(DoubleSolenoid.Value.kForward);
-                break;
-            case LOWER_BOTTOM:
-                bottomSolenoid.set(DoubleSolenoid.Value.kReverse);
-                break;
-            case LOWER_TOP:
-                topSolenoid.set(DoubleSolenoid.Value.kReverse);
+
                 break;
         }
+    }
+
+    private Supplier<Object> solenoidValue(DoubleSolenoid solenoid) {
+        return () -> solenoid.get() == DoubleSolenoid.Value.kForward ? "forward" : "backward";
+    }
+
+    @Override
+    public HashMap<String, Supplier<Object>> createNTMap() {
+        return new HashMap<>() {{
+            put("topSolenoid", solenoidValue(leftTopSolenoid));
+            put("bottomSolenoid", solenoidValue(bottomSolenoid));
+        }};
     }
 }

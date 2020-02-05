@@ -3,7 +3,7 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot;
 import frc.robot.base.RobotMode;
-import frc.robot.base.input.Button;
+import frc.robot.base.input.Axis;
 import frc.robot.base.Subsystem;
 import frc.robot.base.motor.CANMotor;
 import frc.robot.base.motor.Motor;
@@ -43,8 +43,8 @@ public class Shooter extends Subsystem<Shooter.State, Robot> {
                 rightMotor.setPercentOutput(0);
                 break;
             case CONTROLLED:
-                Controller controller = robot.actionsController;
-                if (controller.buttonDown(Button.X)) {
+                Controller controller = robot.auxiliaryController;
+                if (controller.getAxis(Axis.RIGHT_TRIGGER) > .5) {
                     leftMotor.setPercentOutput(.5);
                     rightMotor.setPercentOutput(.5);
                 } else {

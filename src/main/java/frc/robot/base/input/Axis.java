@@ -2,7 +2,7 @@ package frc.robot.base.input;
 
 // enum
 public enum Axis {
-    LEFT_X(0), LEFT_Y(1), TRIGGER_LEFT(2), TRIGGER_RIGHT(3), RIGHT_X(4), RIGHT_Y(5)/*, D_PAD_X(6), D_PAD_Y(7)*/;
+    LEFT_X(0), LEFT_Y(1), LEFT_TRIGGER(2), RIGHT_TRIGGER(3), RIGHT_X(4), RIGHT_Y(5);
 
     private int ID;
 

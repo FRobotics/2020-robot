@@ -24,6 +24,7 @@ import frc.robot.base.StateInstance;
 import frc.robot.base.Subsystem;
 import frc.robot.base.motor.CANDriveMotorPair;
 import frc.robot.base.motor.EncoderMotor;
+import frc.robot.base.motor.EncoderMotorConfig;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +32,17 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
+
+    // TODO: update for 2020
+
+    public static final EncoderMotorConfig driveConfig = new EncoderMotorConfig(
+            3,
+            0.92,
+            0.8,
+            0.0012,
+            0.01,
+            150
+    );
 
     public enum State {
         DISABLED,
@@ -45,8 +57,8 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
     );
 
     // TODO: real motor ids
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), Robot.driveConfig);
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), Robot.driveConfig).invert();
+    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), driveConfig);
+    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), driveConfig).invert();
 
     public DriveTrain() {
         super("driveTrain", State.DISABLED);
@@ -90,7 +102,7 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
                 setVelocity(0);
                 break;
             case CONTROLLED:
-                Controller controller = robot.movementController;
+                Controller controller = robot.driveController;
 
                 double leftY = -controller.getAxis(Axis.LEFT_Y);
                 double rightY = -controller.getAxis(Axis.RIGHT_Y);
