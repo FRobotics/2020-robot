@@ -1,20 +1,8 @@
 package frc.robot.subsystem;
 
-/*
-This should have 2 (private) EncoderMotors to set and measure the speed
-The constructor should simply initialize them without taking any input to keep the motor ids in this class
-The ids will be available later, I'll let whoever's working on this know them, just set them both to 0 for now
-Also fyi the motors should both be CANDriveMotorPairs with TalonSRXs
-It should also have a controlled state where the controllers are used to control it
-For auto and manual usage, it would also be useful to make public methods to set the speed of each motor individually
-These methods should be used to set the speed from then on, as rate limiting will eventually be added
-Also, they will be useful to easily switch between closed loop and percent output in case something goes wrong
-We'll probably get a gyro on the robot later, so that will have to be added eventually (so look at the 2019 code to prepare)
-There should be getVelocity methods to measure the velocity which will be sent to the dashboard by other code
-check https://github.com/FRobotics/robot-2019 for the drive logic
- */
-
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Robot;
 import frc.robot.base.RobotMode;
 import frc.robot.base.input.Axis;
@@ -59,6 +47,8 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
     // TODO: real motor ids
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), driveConfig);
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), driveConfig).invert();
+    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(6,1);
+    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(6,1);
 
     public DriveTrain() {
         super("driveTrain", State.DISABLED);
@@ -104,14 +94,29 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
             case CONTROLLED:
                 Controller controller = robot.driveController;
 
-                double leftY = -controller.getAxis(Axis.LEFT_Y);
-                double rightY = -controller.getAxis(Axis.RIGHT_Y);
+                double MAX_SPEED = 5;
 
-                setLeftVelocity(leftY*5);
-                setRightVelocity(rightY*5);
+                double fb = -ununun(controller.getAxis(Axis.LEFT_Y));
+                double lr = ununun(controller.getAxis(Axis.RIGHT_X));
+
+                double left = fb + (1 - Math.abs(fb)) * lr;
+                double right = fb + (1 - Math.abs(fb)) * -lr;
+
+                setLeftVelocity(left * MAX_SPEED);
+                setRightVelocity(right * MAX_SPEED);
 
                 if(controller.buttonPressed(Button.A)) {
                     setStateQueue(TEST);
+                }
+
+                if(controller.buttonPressed(Button.LEFT_BUMPER)){
+                    leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
+                    rightEvoShifter.set(DoubleSolenoid.Value.kReverse);
+                }
+
+                if(controller.buttonPressed(Button.RIGHT_BUMPER)){
+                    leftEvoShifter.set(DoubleSolenoid.Value.kForward);
+                    rightEvoShifter.set(DoubleSolenoid.Value.kForward);
                 }
 
                 break;
@@ -122,6 +127,14 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
                 setVelocity(3);
                 break;
         }
+    }
+
+    private double ununun(double input) {
+        double absInput = Math.abs(input);
+        double DEADBAND = 0.2;
+        double deadbanded = absInput < DEADBAND ? 0 : (absInput - DEADBAND) * (1 / (1 - DEADBAND));
+        double smoothed = Math.pow(deadbanded, 2);
+        return input > 0 ? smoothed : -smoothed;
     }
 
     @Override

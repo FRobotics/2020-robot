@@ -19,13 +19,14 @@ public class Shooter extends Subsystem<Shooter.State, Robot> {
     private Motor rightMotor = new CANMotor(new TalonSRX(0)); // TODO: device number
 
     public Shooter() {
-        super("shooter", State.CONTROLLED);
+        super("shooter", State.DISABLED);
     }
 
     @Override
     public void onInit(RobotMode mode) {
         this.clearStateQueue();
         switch (mode) {
+            default:
             case DISABLED:
                 this.setStateAndDefault(State.DISABLED);
                 break;
