@@ -3,13 +3,22 @@ package frc.robot.base;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.base.input.Controller;
+import frc.robot.base.subsystem.Subsystem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Robot4150<This extends Robot4150<This>> extends TimedRobot {
 
-    private ArrayList<Subsystem<?, This>> subsystems = new ArrayList<>();
+    private ArrayList<Subsystem<This>> subsystems = new ArrayList<>();
     private ArrayList<Controller> controllers = new ArrayList<>();
+
+    private long autoActionStartTime;
+    private int autoAction;
+    private int autoActionLength;
+    private List<ActionInstance> autoActions;
+
+    public abstract List<ActionInstance> getAutoActions();
 
     @Override
     public void robotInit() {
@@ -27,10 +36,16 @@ public abstract class Robot4150<This extends Robot4150<This>> extends TimedRobot
     @Override
     public void autonomousInit() {
         subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.AUTONOMOUS));
+        autoAction = 0;
     }
 
     @Override
     public void autonomousPeriodic() {
+        if(autoAction == autoActions.size()) {
+
+        } else {
+
+        }
     }
 
     @Override
@@ -56,7 +71,7 @@ public abstract class Robot4150<This extends Robot4150<This>> extends TimedRobot
         subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.DISABLED));
     }
 
-    public <S extends Subsystem<?, This>> S register(S subsystem) {
+    public <S extends Subsystem<This>> S register(S subsystem) {
         this.subsystems.add(subsystem);
         return subsystem;
     }

@@ -1,4 +1,4 @@
-package frc.robot.base.motor;
+package frc.robot.base.subsystem.motor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;

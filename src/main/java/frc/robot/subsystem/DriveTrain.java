@@ -2,26 +2,28 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Robot;
-import frc.robot.base.RobotMode;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
-import frc.robot.base.StateInstance;
-import frc.robot.base.Subsystem;
-import frc.robot.base.motor.CANDriveMotorPair;
-import frc.robot.base.motor.EncoderMotor;
-import frc.robot.base.motor.EncoderMotorConfig;
+import frc.robot.base.subsystem.motor.CANDriveMotorPair;
+import frc.robot.base.subsystem.motor.EncoderMotor;
+import frc.robot.base.subsystem.motor.EncoderMotorConfig;
+import frc.robot.base.subsystem.SSActionInstance;
+import frc.robot.base.subsystem.Subsystem;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
+public class DriveTrain extends Subsystem<Robot> {
 
-    // TODO: update for 2020
+    // TODO: real motor ids
+    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), driveConfig);
+    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), driveConfig).invert();
+    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(6,1);
+    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(6,1);
 
     public static final EncoderMotorConfig driveConfig = new EncoderMotorConfig(
             3,
@@ -32,26 +34,13 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
             150
     );
 
-    public enum State {
-        DISABLED,
-        CONTROLLED,
-        TEST1,
-        TEST2
-    }
-
-    public List<StateInstance<State>> TEST = Arrays.asList(
-            new StateInstance<>(State.TEST1, 250),
-            new StateInstance<>(State.TEST2, 250)
+    public List<SSActionInstance<Robot>> TEST = Arrays.asList(
+            new SSActionInstance<>(() -> setVelocity(-3), 250),
+            new SSActionInstance<>(() -> setVelocity(3), 250)
     );
 
-    // TODO: real motor ids
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), driveConfig);
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), driveConfig).invert();
-    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(6,1);
-    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(6,1);
-
     public DriveTrain() {
-        super("driveTrain", State.DISABLED);
+        super("driveTrain");
     }
 
     private double leftTargetVel = 0;
@@ -72,64 +61,41 @@ public class DriveTrain extends Subsystem<DriveTrain.State, Robot> {
     }
 
     @Override
-    public void onInit(RobotMode mode) {
-        this.clearStateQueue();
-        switch(mode) {
-            default:
-            case DISABLED:
-                this.setStateAndDefault(State.DISABLED);
-                break;
-            case TELEOP:
-                this.setStateAndDefault(State.CONTROLLED);
-                break;
+    public void control(Robot robot) {
+        Controller controller = robot.driveController;
+
+        double MAX_SPEED = 5;
+
+        double fb = -adjustInput(controller.getAxis(Axis.LEFT_Y));
+        double lr = adjustInput(controller.getAxis(Axis.RIGHT_X));
+
+        double left = fb + (1 - Math.abs(fb)) * lr;
+        double right = fb + (1 - Math.abs(fb)) * -lr;
+
+        setLeftVelocity(left * MAX_SPEED);
+        setRightVelocity(right * MAX_SPEED);
+
+        if(controller.buttonPressed(Button.A)) {
+            setActionQueue(TEST);
+        }
+
+        if(controller.buttonPressed(Button.LEFT_BUMPER)){
+            leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
+            rightEvoShifter.set(DoubleSolenoid.Value.kReverse);
+        }
+
+        if(controller.buttonPressed(Button.RIGHT_BUMPER)){
+            leftEvoShifter.set(DoubleSolenoid.Value.kForward);
+            rightEvoShifter.set(DoubleSolenoid.Value.kForward);
         }
     }
 
     @Override
-    public void handleState(Robot robot, State state) {
-        switch(state) {
-            case DISABLED:
-                setVelocity(0);
-                break;
-            case CONTROLLED:
-                Controller controller = robot.driveController;
-
-                double MAX_SPEED = 5;
-
-                double fb = -ununun(controller.getAxis(Axis.LEFT_Y));
-                double lr = ununun(controller.getAxis(Axis.RIGHT_X));
-
-                double left = fb + (1 - Math.abs(fb)) * lr;
-                double right = fb + (1 - Math.abs(fb)) * -lr;
-
-                setLeftVelocity(left * MAX_SPEED);
-                setRightVelocity(right * MAX_SPEED);
-
-                if(controller.buttonPressed(Button.A)) {
-                    setStateQueue(TEST);
-                }
-
-                if(controller.buttonPressed(Button.LEFT_BUMPER)){
-                    leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
-                    rightEvoShifter.set(DoubleSolenoid.Value.kReverse);
-                }
-
-                if(controller.buttonPressed(Button.RIGHT_BUMPER)){
-                    leftEvoShifter.set(DoubleSolenoid.Value.kForward);
-                    rightEvoShifter.set(DoubleSolenoid.Value.kForward);
-                }
-
-                break;
-            case TEST1:
-                setVelocity(-3);
-                break;
-            case TEST2:
-                setVelocity(3);
-                break;
-        }
+    public void stop(Robot robot) {
+        setVelocity(0);
     }
 
-    private double ununun(double input) {
+    private double adjustInput(double input) {
         double absInput = Math.abs(input);
         double DEADBAND = 0.2;
         double deadbanded = absInput < DEADBAND ? 0 : (absInput - DEADBAND) * (1 / (1 - DEADBAND));
