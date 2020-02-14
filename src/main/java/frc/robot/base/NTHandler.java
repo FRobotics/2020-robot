@@ -16,7 +16,7 @@ public class NTHandler {
 
     private static HashMap<NetworkTableEntry, Supplier<Object>> updateMap;
 
-    public static <R extends Robot4150<R>> void init (List<Subsystem<R>> subsystems) {
+    public static <R extends Robot<R>> void init (List<Subsystem<R>> subsystems) {
         robotTable = NetworkTableInstance.getDefault().getTable("robot");
         visionTable = NetworkTableInstance.getDefault().getTable("vision");
         updateMap = new HashMap<>();

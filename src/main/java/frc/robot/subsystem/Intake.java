@@ -2,7 +2,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Robot;
+import frc.robot.Robot2020;
 import frc.robot.Util;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Button;
@@ -13,7 +13,7 @@ import frc.robot.base.subsystem.motor.Motor;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class Intake extends Subsystem<Robot> {
+public class Intake extends Subsystem<Robot2020> {
 
     private DoubleSolenoid solenoid = new DoubleSolenoid(0, 0);
     private Motor spinner = new CANMotor(new TalonSRX(0));
@@ -23,12 +23,12 @@ public class Intake extends Subsystem<Robot> {
     }
 
     @Override
-    public void stop(Robot robot) {
+    public void stop(Robot2020 robot) {
         spinner.setPercentOutput(0);
     }
 
     @Override
-    public void control(Robot robot) {
+    public void control(Robot2020 robot) {
         Controller controller = robot.auxiliaryController;
 
         if (controller.buttonPressed(Button.A)) {

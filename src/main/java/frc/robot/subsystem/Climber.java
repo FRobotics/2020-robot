@@ -1,7 +1,7 @@
 package frc.robot.subsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Robot;
+import frc.robot.Robot2020;
 import frc.robot.Util;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Button;
@@ -10,7 +10,7 @@ import frc.robot.base.input.Controller;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class Climber extends Subsystem<Robot> {
+public class Climber extends Subsystem<Robot2020> {
 
     private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(0, 1); // TODO: device number
     private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(2, 3); // TODO: device number
@@ -21,12 +21,12 @@ public class Climber extends Subsystem<Robot> {
     }
 
     @Override
-    public void stop(Robot robot) {
+    public void stop(Robot2020 robot) {
         // :)
     }
 
     @Override
-    public void control(Robot robot) {
+    public void control(Robot2020 robot) {
         Controller controller = robot.auxiliaryController;
         if (leftTopSolenoid.get() == DoubleSolenoid.Value.kReverse) {
             if (controller.buttonPressed(Button.BACK)) {

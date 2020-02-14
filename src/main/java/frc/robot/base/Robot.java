@@ -2,26 +2,26 @@ package frc.robot.base;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.base.auto.AutoAction;
+import frc.robot.base.auto.AutoActionHandler;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Robot4150<This extends Robot4150<This>> extends TimedRobot {
+public abstract class Robot<This extends Robot<This>> extends TimedRobot {
 
     private ArrayList<Subsystem<This>> subsystems = new ArrayList<>();
     private ArrayList<Controller> controllers = new ArrayList<>();
+    private AutoActionHandler autoActionHandler = new AutoActionHandler();
 
-    private long autoActionStartTime;
-    private int autoAction;
-    private int autoActionLength;
-    private List<ActionInstance> autoActions;
-
-    public abstract List<ActionInstance> getAutoActions();
+    private List<? extends AutoAction> autoActions;
+    public abstract List<? extends AutoAction> getAutoActions();
 
     @Override
     public void robotInit() {
+        autoActions = getAutoActions();
         NTHandler.init(this.subsystems);
     }
 
@@ -36,16 +36,12 @@ public abstract class Robot4150<This extends Robot4150<This>> extends TimedRobot
     @Override
     public void autonomousInit() {
         subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.AUTONOMOUS));
-        autoAction = 0;
+        this.autoActionHandler.startActionQueue(autoActions);
     }
 
     @Override
     public void autonomousPeriodic() {
-        if(autoAction == autoActions.size()) {
-
-        } else {
-
-        }
+       this.autoActionHandler.periodic();
     }
 
     @Override

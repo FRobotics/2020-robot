@@ -1,38 +1,27 @@
 package frc.robot.base.subsystem;
 
-import frc.robot.base.Robot4150;
+import frc.robot.base.Robot;
 import frc.robot.base.RobotMode;
+import frc.robot.base.action.ActionHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class Subsystem<R extends Robot4150<R>> {
+public abstract class Subsystem<R extends Robot<R>> extends ActionHandler<SubsystemAction<R>, Consumer<R>> {
+
+    private final SubsystemAction<R> STOP = new SubsystemAction<>(this::stop);
+    private final SubsystemAction<R> CONTROL = new SubsystemAction<>(this::control);
 
     public final String name;
 
-    private Consumer<R> currentAction;
-    private int actionLength;
-    private long actionStartTime;
-
-    private Consumer<R> defaultAction;
-
-    private int queuePos;
-    private List<SSActionInstance<R>> actionQueue;
-
     /**
      * Creates a new subsystem
-     *
+     * @param name the name of the subsystem
      */
     public Subsystem(String name) {
         this.name = name;
-        this.actionQueue = new ArrayList<>();
-        this.currentAction = this::stop;
-        this.actionStartTime = 0;
-        this.actionLength = -1;
-        this.defaultAction = this::stop;
+        this.startActionAndSetDefault(STOP);
     }
 
     public abstract void stop(R robot);
@@ -52,15 +41,15 @@ public abstract class Subsystem<R extends Robot4150<R>> {
      * @param mode the mode the robot is in
      */
     public void onInit(RobotMode mode) {
-        actionQueue = null;
+        this.clearActionQueue();
         switch (mode) {
             case AUTONOMOUS:
             case DISABLED:
-                setActionAndDefault(this::stop);
+                startActionAndSetDefault(STOP);
                 break;
             case TEST:
             case TELEOP:
-                setActionAndDefault(this::control);
+                startActionAndSetDefault(CONTROL);
                 break;
         }
     }
@@ -71,59 +60,7 @@ public abstract class Subsystem<R extends Robot4150<R>> {
      * @param robot the robot
      */
     public void periodic(R robot) {
-        if (
-                actionQueue != null && System.currentTimeMillis() - actionStartTime > actionLength
-        ) {
-            if(actionQueue.size() == queuePos) {
-                // if there's no more states in the queue
-                actionQueue = null;
-                queuePos = 0;
-                this.setCurrentAction(defaultAction);
-            } else {
-                // if there's another state in the queue
-                SSActionInstance<R> instance = actionQueue.get(queuePos++);
-                this.setAction(instance.action, instance.length);
-            }
-        }
-        this.currentAction.accept(robot);
-    }
-
-    /**
-     * Sets the state queue
-     *
-     * @param actionQueue a list of states to execute from first to last
-     */
-    public void setActionQueue(List<SSActionInstance<R>> actionQueue) {
-        this.actionQueue = actionQueue;
-    }
-
-    /**
-     * Sets the current state
-     *
-     * @param currentAction the state you want to switch to
-     */
-    public void setCurrentAction(Consumer<R> currentAction) {
-        this.setAction(currentAction, -1);
-    }
-
-    public void setDefaultAction(Consumer<R> defaultAction) {
-        this.defaultAction = defaultAction;
-    }
-
-    public void setActionAndDefault(Consumer<R> state) {
-        this.setCurrentAction(state);
-        this.setDefaultAction(state);
-    }
-
-    /**
-     * Sets the current state
-     *
-     * @param state the state you want to switch to
-     * @param length how long the state should run
-     */
-    public void setAction(Consumer<R> state, int length) {
-        this.currentAction = state;
-        this.actionStartTime = System.currentTimeMillis();
-        this.actionLength = length;
+        getAction().func.accept(robot);
+        this.updateAction();
     }
 }

@@ -2,28 +2,28 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Robot;
+import frc.robot.Robot2020;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
+import frc.robot.base.subsystem.Subsystem;
+import frc.robot.base.subsystem.SubsystemTimedAction;
 import frc.robot.base.subsystem.motor.CANDriveMotorPair;
 import frc.robot.base.subsystem.motor.EncoderMotor;
 import frc.robot.base.subsystem.motor.EncoderMotorConfig;
-import frc.robot.base.subsystem.SSActionInstance;
-import frc.robot.base.subsystem.Subsystem;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DriveTrain extends Subsystem<Robot> {
+public class DriveTrain extends Subsystem<Robot2020> {
 
     // TODO: real motor ids
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), driveConfig);
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), driveConfig).invert();
-    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(6,1);
-    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(6,1);
+    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(0,1);
+    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(2,3);
 
     public static final EncoderMotorConfig driveConfig = new EncoderMotorConfig(
             3,
@@ -34,9 +34,9 @@ public class DriveTrain extends Subsystem<Robot> {
             150
     );
 
-    public List<SSActionInstance<Robot>> TEST = Arrays.asList(
-            new SSActionInstance<>(() -> setVelocity(-3), 250),
-            new SSActionInstance<>(() -> setVelocity(3), 250)
+    public List<SubsystemTimedAction<Robot2020>> TEST = Arrays.asList(
+            new SubsystemTimedAction<>(() -> setVelocity(-3), 250),
+            new SubsystemTimedAction<>(() -> setVelocity(3), 250)
     );
 
     public DriveTrain() {
@@ -61,7 +61,7 @@ public class DriveTrain extends Subsystem<Robot> {
     }
 
     @Override
-    public void control(Robot robot) {
+    public void control(Robot2020 robot) {
         Controller controller = robot.driveController;
 
         double MAX_SPEED = 5;
@@ -76,7 +76,7 @@ public class DriveTrain extends Subsystem<Robot> {
         setRightVelocity(right * MAX_SPEED);
 
         if(controller.buttonPressed(Button.A)) {
-            setActionQueue(TEST);
+            startActionQueue(TEST);
         }
 
         if(controller.buttonPressed(Button.LEFT_BUMPER)){
@@ -91,7 +91,7 @@ public class DriveTrain extends Subsystem<Robot> {
     }
 
     @Override
-    public void stop(Robot robot) {
+    public void stop(Robot2020 robot) {
         setVelocity(0);
     }
 

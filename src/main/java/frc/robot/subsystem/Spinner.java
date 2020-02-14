@@ -1,7 +1,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.Robot;
+import frc.robot.Robot2020;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -11,7 +11,7 @@ import frc.robot.base.subsystem.motor.Motor;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class Spinner extends Subsystem<Robot> {
+public class Spinner extends Subsystem<Robot2020> {
 
     private Motor motor = new CANMotor(new TalonSRX(0)); // TODO: device number
 
@@ -20,12 +20,12 @@ public class Spinner extends Subsystem<Robot> {
     }
 
     @Override
-    public void stop(Robot robot) {
+    public void stop(Robot2020 robot) {
         motor.setPercentOutput(0);
     }
 
     @Override
-    public void control(Robot robot) {
+    public void control(Robot2020 robot) {
         Controller controller = robot.auxiliaryController;
         if (controller.buttonDown(Button.Y)) {
             motor.setPercentOutput(.5);
