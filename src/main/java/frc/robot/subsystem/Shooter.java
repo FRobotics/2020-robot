@@ -2,6 +2,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot2020;
+import frc.robot.Variables;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
@@ -15,11 +16,11 @@ import java.util.function.Supplier;
 
 public class Shooter extends Subsystem<Robot2020> {
 
-    private Motor leftMotor = new CANMotor(new TalonSRX(0)); // TODO: device number u
-    private Motor rightMotor = new CANMotor(new TalonSRX(0)); // TODO: device number n
-    private Motor yawMotor = new CANMotor(new TalonSRX(0)); // TODO: device number u
-    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(0)); // TODO: device number n
-    private EncoderMotor carousel = new CANMotor(new TalonSRX(0)); // TODO: device number u
+    private Motor leftMotor = new CANMotor(new TalonSRX(Variables.Shooter.LEFT_MOTOR_ID)).invert(); // TODO: device number u
+    private Motor rightMotor = new CANMotor(new TalonSRX(Variables.Shooter.RIGHT_MOTOR_ID)); // TODO: device number n
+    private Motor yawMotor = new CANMotor(new TalonSRX(Variables.Shooter.YAW_MOTOR_ID)); // TODO: device number u
+    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(Variables.Shooter.PITCH_MOTOR_ID)); // TODO: device number n
+    private EncoderMotor carousel = new CANMotor(new TalonSRX(Variables.Shooter.CAROUSEL_MOTOR_ID)).invert(); // TODO: device number u
 
     public Shooter() {
         super("shooter");
@@ -31,18 +32,23 @@ public class Shooter extends Subsystem<Robot2020> {
         rightMotor.setPercentOutput(0);
     }
 
+    private long shooterStartTime = 0;
+
     @Override
     public void control(Robot2020 robot) {
         Controller controller = robot.driveController;
         if (controller.getAxis(Axis.RIGHT_TRIGGER) > .5) {
-            leftMotor.setPercentOutput(.5);
-            rightMotor.setPercentOutput(.5);
-            carousel.setPercentOutput(.5);
+            if(System.currentTimeMillis() - shooterStartTime > 500) {
+                carousel.setPercentOutput(Variables.Shooter.CAROUSEL_WHILE_SHOOTING);
+            }
+            leftMotor.setPercentOutput(Variables.Shooter.LEFT_MOTOR_SPEED);
+            rightMotor.setPercentOutput(Variables.Shooter.RIGHT_MOTOR_SPEED);
         } else {
+            shooterStartTime = System.currentTimeMillis();
             leftMotor.setPercentOutput(0);
             rightMotor.setPercentOutput(0);
-            if (controller.buttonPressed(Button.X)) {
-                carousel.setPercentOutput(0.25); // TODO: pos control -> spin 1/5
+            if (robot.auxiliaryController.buttonDown(Button.X)) {
+                carousel.setPercentOutput(Variables.Shooter.CAROUSEL_ALONE); // TODO: pos control -> spin 1/5
             } else {
                 carousel.setPercentOutput(0);
             }

@@ -7,7 +7,9 @@ import frc.robot.base.auto.AutoTimedAction;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.SubsystemTimedAction;
 import frc.robot.subsystem.DriveTrain;
+import frc.robot.subsystem.Intake;
 import frc.robot.subsystem.ServoTest;
+import frc.robot.subsystem.Shooter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +22,11 @@ public class Robot2020 extends Robot<Robot2020> {
     // TODO: uncomment for real robot
     public final DriveTrain driveTrain = register(new DriveTrain());
     // public final Climber climber = register(new Climber());
-    // public final Shooter shooter = register(new Shooter());
+    public final Shooter shooter = register(new Shooter());
     // public final Spinner spinner = register(new Spinner());
+    public final Intake intake = register(new Intake());
 
-    ServoTest test = register(new ServoTest());
+    //ServoTest test = register(new ServoTest());
 
     @Override
     public List<? extends AutoAction> getAutoActions() {

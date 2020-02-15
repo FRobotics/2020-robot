@@ -1,8 +1,10 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Robot2020;
+import frc.robot.Variables;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -10,7 +12,6 @@ import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.subsystem.SubsystemTimedAction;
 import frc.robot.base.subsystem.motor.CANDriveMotorPair;
 import frc.robot.base.subsystem.motor.EncoderMotor;
-import frc.robot.base.subsystem.motor.EncoderMotorConfig;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,19 +21,10 @@ import java.util.function.Supplier;
 public class DriveTrain extends Subsystem<Robot2020> {
 
     // TODO: real motor ids
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(14), new TalonSRX(13), driveConfig);
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(10), new TalonSRX(12), driveConfig).invert();
-    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(0,1);
-    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(2,3);
-
-    public static final EncoderMotorConfig driveConfig = new EncoderMotorConfig(
-            3,
-            0.92,
-            0.8,
-            0.0012,
-            0.01,
-            150
-    );
+    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG);
+    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG).invert();
+    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(2,3);
+    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(4,5);
 
     public List<SubsystemTimedAction<Robot2020>> TEST = Arrays.asList(
             new SubsystemTimedAction<>(() -> setVelocity(-3), 250),
@@ -64,20 +56,20 @@ public class DriveTrain extends Subsystem<Robot2020> {
     public void control(Robot2020 robot) {
         Controller controller = robot.driveController;
 
-        double MAX_SPEED = 5;
+        double MAX_SPEED = 20;
 
         double fb = -adjustInput(controller.getAxis(Axis.LEFT_Y));
         double lr = adjustInput(controller.getAxis(Axis.RIGHT_X));
 
-        double left = fb + (1 - Math.abs(fb)) * lr;
-        double right = fb + (1 - Math.abs(fb)) * -lr;
+        double left = fb + (1 - Math.abs(fb)) * -lr;
+        double right = fb + (1 - Math.abs(fb)) * lr;
 
         setLeftVelocity(left * MAX_SPEED);
         setRightVelocity(right * MAX_SPEED);
 
-        if(controller.buttonPressed(Button.A)) {
+        /*if(controller.buttonPressed(Button.A)) {
             startActionQueue(TEST);
-        }
+        }*/
 
         if(controller.buttonPressed(Button.LEFT_BUMPER)){
             leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
