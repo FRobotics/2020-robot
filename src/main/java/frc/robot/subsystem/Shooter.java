@@ -1,6 +1,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Relay;
 import frc.robot.Robot2020;
 import frc.robot.Variables;
 import frc.robot.base.subsystem.Subsystem;
@@ -22,6 +23,8 @@ public class Shooter extends Subsystem<Robot2020> {
     private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(Variables.Shooter.PITCH_MOTOR_ID)); // TODO: device number n
     private EncoderMotor carousel = new CANMotor(new TalonSRX(Variables.Shooter.CAROUSEL_MOTOR_ID)).invert(); // TODO: device number u
 
+    private Relay spike = new Relay(0);
+
     public Shooter() {
         super("shooter");
     }
@@ -37,18 +40,25 @@ public class Shooter extends Subsystem<Robot2020> {
     @Override
     public void control(Robot2020 robot) {
         Controller controller = robot.driveController;
+        Controller carouselController = robot.auxiliaryController;
+
         if (controller.getAxis(Axis.RIGHT_TRIGGER) > .5) {
             if(System.currentTimeMillis() - shooterStartTime > 500) {
                 carousel.setPercentOutput(Variables.Shooter.CAROUSEL_WHILE_SHOOTING);
             }
+
             leftMotor.setPercentOutput(Variables.Shooter.LEFT_MOTOR_SPEED);
             rightMotor.setPercentOutput(Variables.Shooter.RIGHT_MOTOR_SPEED);
         } else {
             shooterStartTime = System.currentTimeMillis();
+
             leftMotor.setPercentOutput(0);
             rightMotor.setPercentOutput(0);
-            if (robot.auxiliaryController.buttonDown(Button.X)) {
+
+            if (carouselController.getAxis(Axis.LEFT_X) > 0.5) {
                 carousel.setPercentOutput(Variables.Shooter.CAROUSEL_ALONE); // TODO: pos control -> spin 1/5
+            } else if(carouselController.getAxis(Axis.LEFT_X) < -0.5) {
+                carousel.setPercentOutput(-Variables.Shooter.CAROUSEL_ALONE);
             } else {
                 carousel.setPercentOutput(0);
             }
@@ -71,6 +81,10 @@ public class Shooter extends Subsystem<Robot2020> {
         } else {
             yawMotor.setPercentOutput(0);
         }
+
+        //if(controller.buttonPressed(Button.LEFT_BUMPER)) {
+        //    spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
+        //}
     }
 
     @Override

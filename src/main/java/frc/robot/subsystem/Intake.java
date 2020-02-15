@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Robot2020;
 import frc.robot.Util;
+import frc.robot.Variables;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
@@ -15,8 +16,8 @@ import java.util.function.Supplier;
 
 public class Intake extends Subsystem<Robot2020> {
 
-    private DoubleSolenoid solenoid = new DoubleSolenoid(0, 1);
-    private Motor spinner = new CANMotor(new VictorSPX(12));
+    private DoubleSolenoid solenoid = new DoubleSolenoid(Variables.Intake.ARM_FORWARD_ID, Variables.Intake.ARM_REVERSE_ID);
+    private Motor spinner = new CANMotor(new VictorSPX(Variables.Intake.MOTOR_ID));
 
     public Intake() {
         super("intake");

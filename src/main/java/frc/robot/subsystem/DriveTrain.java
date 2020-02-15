@@ -23,8 +23,8 @@ public class DriveTrain extends Subsystem<Robot2020> {
     // TODO: real motor ids
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG);
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG).invert();
-    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(2,3);
-    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(4,5);
+    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(Variables.DriveTrain.LEFT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.LEFT_EVO_SHIFTER_REVERSE_ID);
+    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(Variables.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE_ID);
 
     public List<SubsystemTimedAction<Robot2020>> TEST = Arrays.asList(
             new SubsystemTimedAction<>(() -> setVelocity(-3), 250),
@@ -56,25 +56,25 @@ public class DriveTrain extends Subsystem<Robot2020> {
     public void control(Robot2020 robot) {
         Controller controller = robot.driveController;
 
-        double MAX_SPEED = 20;
+        double MAX_SPEED = 1;
 
         double fb = -adjustInput(controller.getAxis(Axis.LEFT_Y));
         double lr = adjustInput(controller.getAxis(Axis.RIGHT_X));
 
-        double left = fb + (1 - Math.abs(fb)) * -lr;
-        double right = fb + (1 - Math.abs(fb)) * lr;
+        double left = fb - lr;
+        double right = fb + lr;
 
-        setLeftVelocity(left * MAX_SPEED);
-        setRightVelocity(right * MAX_SPEED);
+        leftMotor.setPercentOutput(left * MAX_SPEED);
+        rightMotor.setPercentOutput(right * MAX_SPEED);
 
         /*if(controller.buttonPressed(Button.A)) {
             startActionQueue(TEST);
         }*/
 
-        if(controller.buttonPressed(Button.LEFT_BUMPER)){
+        /*if(controller.buttonPressed(Button.LEFT_BUMPER)){
             leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
             rightEvoShifter.set(DoubleSolenoid.Value.kReverse);
-        }
+        }*/
 
         if(controller.buttonPressed(Button.RIGHT_BUMPER)){
             leftEvoShifter.set(DoubleSolenoid.Value.kForward);

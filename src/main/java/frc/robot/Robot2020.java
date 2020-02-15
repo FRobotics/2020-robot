@@ -32,13 +32,13 @@ public class Robot2020 extends Robot<Robot2020> {
     public List<? extends AutoAction> getAutoActions() {
         return Arrays.asList(
                 new AutoSetupAction(() -> {
-                    driveTrain.startAction(new SubsystemTimedAction<>(() -> driveTrain.setVelocity(1), 3000));
-                }),
-                new AutoAction(driveTrain::isFinished),
+                    driveTrain.startAction(new SubsystemTimedAction<>(() -> driveTrain.setVelocity(-40), 2000));
+                })
+                /*new AutoAction(driveTrain::isFinished),
                 new AutoTimedAction(2000),
                 new AutoSetupAction(() -> driveTrain.startActionQueue(driveTrain.TEST)),
                 new AutoAction(driveTrain::isFinished),
-                new AutoSetupAction(()-> driveTrain.startActionQueue(driveTrain.TEST))
+                new AutoSetupAction(()-> driveTrain.startActionQueue(driveTrain.TEST))*/
         );
     }
 }
