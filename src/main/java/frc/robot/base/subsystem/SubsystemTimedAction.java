@@ -6,15 +6,10 @@ import frc.robot.base.action.Timed;
 
 import java.util.function.Consumer;
 
-public class SubsystemTimedAction<R extends Robot<R>> extends SubsystemAction<R> implements Timed {
+public class SubsystemTimedAction extends SubsystemAction implements Timed {
 
     private long startTime;
     private int length;
-
-    public SubsystemTimedAction(Consumer<R> action, int length) {
-        super(action);
-        this.length = length;
-    }
 
     public SubsystemTimedAction(Action action, int length) {
         super(action);

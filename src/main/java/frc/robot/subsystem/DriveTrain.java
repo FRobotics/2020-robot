@@ -3,7 +3,6 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Robot2020;
 import frc.robot.Variables;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
@@ -18,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DriveTrain extends Subsystem<Robot2020> {
+public class DriveTrain extends Subsystem {
+
+    private Controller controller;
 
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG);
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG).invert();
@@ -26,13 +27,14 @@ public class DriveTrain extends Subsystem<Robot2020> {
     private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(Variables.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE_ID);
 
     @SuppressWarnings({"unused", "SpellCheckingInspection"})
-    public List<SubsystemTimedAction<Robot2020>> ununun = Arrays.asList(
-            new SubsystemTimedAction<>(() -> setVelocity(-3), 250),
-            new SubsystemTimedAction<>(() -> setVelocity(3), 250)
+    public List<SubsystemTimedAction> ununun = Arrays.asList(
+            new SubsystemTimedAction(() -> setVelocity(-3), 250),
+            new SubsystemTimedAction(() -> setVelocity(3), 250)
     );
 
-    public DriveTrain() {
+    public DriveTrain(Controller controller) {
         super("driveTrain");
+        this.controller = controller;
     }
 
     private double leftTargetVel = 0;
@@ -53,9 +55,7 @@ public class DriveTrain extends Subsystem<Robot2020> {
     }
 
     @Override
-    public void control(Robot2020 robot) {
-        Controller controller = robot.driveController;
-
+    public void control() {
         double MAX_SPEED = 1;
 
         double fb = -adjustInput(controller.getAxis(Axis.LEFT_Y));
@@ -79,7 +79,7 @@ public class DriveTrain extends Subsystem<Robot2020> {
     }
 
     @Override
-    public void stop(Robot2020 robot) {
+    public void stop() {
         setVelocity(0);
     }
 

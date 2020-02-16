@@ -10,9 +10,9 @@ import frc.robot.base.subsystem.Subsystem;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Robot<This extends Robot<This>> extends TimedRobot {
+public abstract class Robot extends TimedRobot {
 
-    private ArrayList<Subsystem<This>> subsystems = new ArrayList<>();
+    private ArrayList<Subsystem> subsystems = new ArrayList<>();
     private ArrayList<Controller> controllers = new ArrayList<>();
     private AutoActionHandler autoActionHandler = new AutoActionHandler();
 
@@ -27,8 +27,7 @@ public abstract class Robot<This extends Robot<This>> extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        //noinspection unchecked
-        subsystems.forEach(subsystem -> subsystem.periodic((This)this));
+        subsystems.forEach(Subsystem::periodic);
         controllers.forEach(Controller::postPeriodic);
         NTHandler.update();
     }
@@ -67,7 +66,7 @@ public abstract class Robot<This extends Robot<This>> extends TimedRobot {
         subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.DISABLED));
     }
 
-    public <S extends Subsystem<This>> S register(S subsystem) {
+    public <S extends Subsystem> S register(S subsystem) {
         this.subsystems.add(subsystem);
         return subsystem;
     }

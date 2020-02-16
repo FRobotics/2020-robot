@@ -1,17 +1,16 @@
 package frc.robot.base.subsystem;
 
-import frc.robot.base.Robot;
 import frc.robot.base.RobotMode;
+import frc.robot.base.action.Action;
 import frc.robot.base.action.ActionHandler;
 
 import java.util.HashMap;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class Subsystem<R extends Robot<R>> extends ActionHandler<SubsystemAction<R>, Consumer<R>> {
+public abstract class Subsystem extends ActionHandler<SubsystemAction, Action> {
 
-    private final SubsystemAction<R> STOP = new SubsystemAction<>(this::stop);
-    private final SubsystemAction<R> CONTROL = new SubsystemAction<>(this::control);
+    private final SubsystemAction STOP = new SubsystemAction(this::stop);
+    private final SubsystemAction CONTROL = new SubsystemAction(this::control);
 
     public final String name;
 
@@ -24,8 +23,8 @@ public abstract class Subsystem<R extends Robot<R>> extends ActionHandler<Subsys
         this.startActionAndSetDefault(STOP);
     }
 
-    public abstract void stop(R robot);
-    public abstract void control(R robot);
+    public abstract void stop();
+    public abstract void control();
 
     /**
      * Use this method to specify what values you want to put on the dashboard;
@@ -57,10 +56,9 @@ public abstract class Subsystem<R extends Robot<R>> extends ActionHandler<Subsys
     /**
      * Handles the states and calls handleState for the current one;
      * call this method in the robot's periodic methods
-     * @param robot the robot
      */
-    public void periodic(R robot) {
-        getAction().func.accept(robot);
+    public void periodic() {
+        getAction().func.run();
         this.updateAction();
     }
 }

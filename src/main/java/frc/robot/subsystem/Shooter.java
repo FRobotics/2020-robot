@@ -2,12 +2,11 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Relay;
-import frc.robot.Robot2020;
 import frc.robot.Variables;
-import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
+import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.subsystem.motor.CANMotor;
 import frc.robot.base.subsystem.motor.EncoderMotor;
 import frc.robot.base.subsystem.motor.Motor;
@@ -15,7 +14,10 @@ import frc.robot.base.subsystem.motor.Motor;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class Shooter extends Subsystem<Robot2020> {
+public class Shooter extends Subsystem {
+
+    Controller mainController;
+    Controller carouselController;
 
     private Motor leftMotor = new CANMotor(new TalonSRX(Variables.Shooter.LEFT_MOTOR_ID)).invert();
     private Motor rightMotor = new CANMotor(new TalonSRX(Variables.Shooter.RIGHT_MOTOR_ID));
@@ -25,12 +27,14 @@ public class Shooter extends Subsystem<Robot2020> {
 
     private Relay spike = new Relay(0);
 
-    public Shooter() {
+    public Shooter(Controller mainController, Controller carouselController) {
         super("shooter");
+        this.mainController = mainController;
+        this.carouselController = carouselController;
     }
 
     @Override
-    public void stop(Robot2020 robot) {
+    public void stop() {
         leftMotor.setPercentOutput(0);
         rightMotor.setPercentOutput(0);
     }
@@ -38,11 +42,9 @@ public class Shooter extends Subsystem<Robot2020> {
     private long shooterStartTime = 0;
 
     @Override
-    public void control(Robot2020 robot) {
-        Controller controller = robot.driveController;
-        Controller carouselController = robot.auxiliaryController;
+    public void control() {
 
-        if (controller.getAxis(Axis.RIGHT_TRIGGER) > .5) {
+        if (mainController.getAxis(Axis.RIGHT_TRIGGER) > .5) {
             if(System.currentTimeMillis() - shooterStartTime > 500) {
                 carousel.setPercentOutput(Variables.Shooter.CAROUSEL_WHILE_SHOOTING);
             }
@@ -66,24 +68,24 @@ public class Shooter extends Subsystem<Robot2020> {
 
         double speed = .25;
 
-        if (controller.buttonDown(Button.A)) {
+        if (mainController.buttonDown(Button.A)) {
             pitchMotor.setPercentOutput(speed);
-        } else if (controller.buttonDown(Button.Y)) {
+        } else if (mainController.buttonDown(Button.Y)) {
             pitchMotor.setPercentOutput(-speed);
         } else {
             pitchMotor.setPercentOutput(0);
         }
 
-        if (controller.buttonDown(Button.B)) {
+        if (mainController.buttonDown(Button.B)) {
             yawMotor.setPercentOutput(speed);
-        } else if (controller.buttonDown(Button.X)) {
+        } else if (mainController.buttonDown(Button.X)) {
             yawMotor.setPercentOutput(-speed);
         } else {
             yawMotor.setPercentOutput(0);
         }
 
         // TODO: move this wherever
-        if(controller.buttonPressed(Button.LEFT_BUMPER)) {
+        if(mainController.buttonPressed(Button.LEFT_BUMPER)) {
             spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
         }
     }
