@@ -1,7 +1,7 @@
 package frc.robot.subsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Variables;
+import frc.robot.IDs;
 import frc.robot.base.Util;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -14,9 +14,9 @@ public class Climber extends Subsystem {
 
     private Controller controller;
 
-    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(Variables.Climber.BOTTOM_SOLENOID_FORWARD_ID, Variables.Climber.BOTTOM_SOLENOID__REVERSE_ID);
-    private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(Variables.Climber.TOP_LEFT_SOLENOID_FORWARD_ID, Variables.Climber.TOP_LEFT_SOLENOID_REVERSE_ID);
-    private DoubleSolenoid rightTopSolenoid = new DoubleSolenoid(Variables.Climber.TOP_RIGHT_SOLENOID_FORWARD_ID, Variables.Climber.TOP_RIGHT_SOLENOID_REVERSE_ID);
+    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(IDs.Climber.BOTTOM_SOLENOID_FORWARD, IDs.Climber.BOTTOM_SOLENOID_REVERSE);
+    private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(IDs.Climber.TOP_LEFT_SOLENOID_FORWARD, IDs.Climber.TOP_LEFT_SOLENOID_REVERSE);
+    private DoubleSolenoid rightTopSolenoid = new DoubleSolenoid(IDs.Climber.TOP_RIGHT_SOLENOID_FORWARD, IDs.Climber.TOP_RIGHT_SOLENOID_REVERSE);
 
     public Climber(
             Controller controller

@@ -23,7 +23,7 @@ public class Robot2020 extends Robot {
     // public final Climber climber = register(new Climber(auxiliaryController));
     // public final Spinner spinner = register(new Spinner(auxiliaryController));
 
-    //ServoTest test = register(new ServoTest());
+    // public final ServoTest test = register(new ServoTest());
 
     @Override
     public List<? extends AutoAction> getAutoActions() {

@@ -2,7 +2,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Variables;
+import frc.robot.IDs;
 import frc.robot.base.Util;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -17,8 +17,8 @@ public class Intake extends Subsystem {
 
     private Controller controller;
 
-    private DoubleSolenoid solenoid = new DoubleSolenoid(Variables.Intake.ARM_FORWARD_ID, Variables.Intake.ARM_REVERSE_ID);
-    private Motor spinner = new CANMotor(new VictorSPX(Variables.Intake.MOTOR_ID));
+    private DoubleSolenoid solenoid = new DoubleSolenoid(IDs.Intake.ARM_FORWARD, IDs.Intake.ARM_REVERSE);
+    private Motor spinner = new CANMotor(new VictorSPX(IDs.Intake.MOTOR));
 
     public Intake(Controller controller) {
         super("intake");

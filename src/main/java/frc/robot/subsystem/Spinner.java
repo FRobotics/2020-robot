@@ -1,7 +1,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.Variables;
+import frc.robot.IDs;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
@@ -15,7 +15,7 @@ public class Spinner extends Subsystem {
 
     private Controller controller;
 
-    private Motor motor = new CANMotor(new TalonSRX(Variables.Spinner.MOTOR_ID));
+    private Motor motor = new CANMotor(new TalonSRX(IDs.Spinner.MOTOR));
 
     public Spinner(Controller controller) {
         super("spinner");

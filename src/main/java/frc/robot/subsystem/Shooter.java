@@ -2,7 +2,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Relay;
-import frc.robot.Variables;
+import frc.robot.IDs;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -19,11 +19,11 @@ public class Shooter extends Subsystem {
     Controller mainController;
     Controller carouselController;
 
-    private Motor leftMotor = new CANMotor(new TalonSRX(Variables.Shooter.LEFT_MOTOR_ID)).invert();
-    private Motor rightMotor = new CANMotor(new TalonSRX(Variables.Shooter.RIGHT_MOTOR_ID));
-    private Motor yawMotor = new CANMotor(new TalonSRX(Variables.Shooter.YAW_MOTOR_ID));
-    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(Variables.Shooter.PITCH_MOTOR_ID));
-    private EncoderMotor carousel = new CANMotor(new TalonSRX(Variables.Shooter.CAROUSEL_MOTOR_ID)).invert();
+    private Motor leftMotor = new CANMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR)).invert();
+    private Motor rightMotor = new CANMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR));
+    private Motor yawMotor = new CANMotor(new TalonSRX(IDs.Shooter.YAW_MOTOR));
+    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(IDs.Shooter.PITCH_MOTOR));
+    private EncoderMotor carousel = new CANMotor(new TalonSRX(IDs.Shooter.CAROUSEL_MOTOR)).invert();
 
     private Relay spike = new Relay(0);
 
@@ -46,11 +46,11 @@ public class Shooter extends Subsystem {
 
         if (mainController.getAxis(Axis.RIGHT_TRIGGER) > .5) {
             if(System.currentTimeMillis() - shooterStartTime > 500) {
-                carousel.setPercentOutput(Variables.Shooter.CAROUSEL_WHILE_SHOOTING);
+                carousel.setPercentOutput(.5);
             }
 
-            leftMotor.setPercentOutput(Variables.Shooter.LEFT_MOTOR_SPEED);
-            rightMotor.setPercentOutput(Variables.Shooter.RIGHT_MOTOR_SPEED);
+            leftMotor.setPercentOutput(.86 * .9);
+            rightMotor.setPercentOutput(.76 * .9);
         } else {
             shooterStartTime = System.currentTimeMillis();
 
@@ -58,9 +58,9 @@ public class Shooter extends Subsystem {
             rightMotor.setPercentOutput(0);
 
             if (carouselController.getAxis(Axis.LEFT_X) > 0.5) {
-                carousel.setPercentOutput(Variables.Shooter.CAROUSEL_ALONE); // TODO: pos control -> spin 1/5
+                carousel.setPercentOutput(.7); // TODO: pos control -> spin 1/5
             } else if(carouselController.getAxis(Axis.LEFT_X) < -0.5) {
-                carousel.setPercentOutput(-Variables.Shooter.CAROUSEL_ALONE);
+                carousel.setPercentOutput(.7);
             } else {
                 carousel.setPercentOutput(0);
             }

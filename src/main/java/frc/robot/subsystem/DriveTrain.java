@@ -3,7 +3,7 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Variables;
+import frc.robot.IDs;
 import frc.robot.base.Util;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
@@ -12,6 +12,7 @@ import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.subsystem.SubsystemTimedAction;
 import frc.robot.base.subsystem.motor.CANDriveMotorPair;
 import frc.robot.base.subsystem.motor.EncoderMotor;
+import frc.robot.base.subsystem.motor.EncoderMotorConfig;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,25 +21,34 @@ import java.util.function.Supplier;
 
 public class DriveTrain extends Subsystem {
 
+    public static final EncoderMotorConfig CONFIG = new EncoderMotorConfig(
+            3,
+            0.92,
+            0.8,
+            0.0012,
+            0.01,
+            150
+    );
+
     private Controller controller;
 
     private EncoderMotor leftMotor = new CANDriveMotorPair(
-            new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID),
-            new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID),
-            Variables.DriveTrain.CONFIG
+            new TalonSRX(IDs.DriveTrain.LEFT_MOTOR_MASTER),
+            new VictorSPX(IDs.DriveTrain.LEFT_MOTOR_FOLLOWER),
+            CONFIG
     );
     private EncoderMotor rightMotor = new CANDriveMotorPair(
-            new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID),
-            new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID),
-            Variables.DriveTrain.CONFIG
+            new TalonSRX(IDs.DriveTrain.RIGHT_MOTOR_MASTER),
+            new VictorSPX(IDs.DriveTrain.RIGHT_MOTOR_FOLLOWER),
+            CONFIG
     ).invert();
     private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(
-            Variables.DriveTrain.LEFT_EVO_SHIFTER_FORWARD_ID,
-            Variables.DriveTrain.LEFT_EVO_SHIFTER_REVERSE_ID
+            IDs.DriveTrain.LEFT_EVO_SHIFTER_FORWARD,
+            IDs.DriveTrain.LEFT_EVO_SHIFTER_REVERSE
     );
     private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(
-            Variables.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD_ID,
-            Variables.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE_ID
+            IDs.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD,
+            IDs.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE
     );
 
     @SuppressWarnings({"unused", "SpellCheckingInspection"})
