@@ -2,6 +2,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot2020;
+import frc.robot.Variables;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -13,7 +14,7 @@ import java.util.function.Supplier;
 
 public class Spinner extends Subsystem<Robot2020> {
 
-    private Motor motor = new CANMotor(new TalonSRX(0)); // TODO: device number
+    private Motor motor = new CANMotor(new TalonSRX(Variables.Spinner.MOTOR_ID));
 
     public Spinner() {
         super("spinner");

@@ -19,12 +19,11 @@ public class Robot2020 extends Robot<Robot2020> {
     public final Controller driveController = registerController(0);
     public final Controller auxiliaryController = registerController(1);
 
-    // TODO: uncomment for real robot
     public final DriveTrain driveTrain = register(new DriveTrain());
-    // public final Climber climber = register(new Climber());
     public final Shooter shooter = register(new Shooter());
-    // public final Spinner spinner = register(new Spinner());
     public final Intake intake = register(new Intake());
+    // public final Climber climber = register(new Climber());
+    // public final Spinner spinner = register(new Spinner());
 
     //ServoTest test = register(new ServoTest());
 

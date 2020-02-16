@@ -20,13 +20,13 @@ import java.util.function.Supplier;
 
 public class DriveTrain extends Subsystem<Robot2020> {
 
-    // TODO: real motor ids
     private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG);
     private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG).invert();
     private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(Variables.DriveTrain.LEFT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.LEFT_EVO_SHIFTER_REVERSE_ID);
     private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(Variables.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE_ID);
 
-    public List<SubsystemTimedAction<Robot2020>> TEST = Arrays.asList(
+    @SuppressWarnings({"unused", "SpellCheckingInspection"})
+    public List<SubsystemTimedAction<Robot2020>> ununun = Arrays.asList(
             new SubsystemTimedAction<>(() -> setVelocity(-3), 250),
             new SubsystemTimedAction<>(() -> setVelocity(3), 250)
     );
@@ -67,10 +67,6 @@ public class DriveTrain extends Subsystem<Robot2020> {
         leftMotor.setPercentOutput(left * MAX_SPEED);
         rightMotor.setPercentOutput(right * MAX_SPEED);
 
-        /*if(controller.buttonPressed(Button.A)) {
-            startActionQueue(TEST);
-        }*/
-
         /*if(controller.buttonPressed(Button.LEFT_BUMPER)){
             leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
             rightEvoShifter.set(DoubleSolenoid.Value.kReverse);
@@ -89,9 +85,9 @@ public class DriveTrain extends Subsystem<Robot2020> {
 
     private double adjustInput(double input) {
         double absInput = Math.abs(input);
-        double DEADBAND = 0.2;
-        double deadbanded = absInput < DEADBAND ? 0 : (absInput - DEADBAND) * (1 / (1 - DEADBAND));
-        double smoothed = Math.pow(deadbanded, 2);
+        double DEAD_BAND = Variables.DriveTrain.JOYSTICK_DEAD_BAND;
+        double deadBanded = absInput < DEAD_BAND ? 0 : (absInput - DEAD_BAND) * (1 / (1 - DEAD_BAND));
+        double smoothed = Math.pow(deadBanded, 2);
         return input > 0 ? smoothed : -smoothed;
     }
 

@@ -3,7 +3,7 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Robot2020;
-import frc.robot.Util;
+import frc.robot.base.Util;
 import frc.robot.Variables;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -50,7 +50,7 @@ public class Intake extends Subsystem<Robot2020> {
     @Override
     public HashMap<String, Supplier<Object>> createNTMap() {
         return new HashMap<>() {{
-            put("solenoid", Util.solenoidValueSupplier(solenoid));
+            put("solenoid", Util.solenoidNTV(solenoid));
             put("motor", spinner::getOutputPercent);
         }};
     }

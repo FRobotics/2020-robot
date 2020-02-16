@@ -23,6 +23,8 @@ public class Variables {
         public static final int RIGHT_EVO_SHIFTER_REVERSE_ID = 3;
         public static final int LEFT_EVO_SHIFTER_FORWARD_ID = 4;
         public static final int LEFT_EVO_SHIFTER_REVERSE_ID = 5;
+
+        public static final double JOYSTICK_DEAD_BAND = 0.2;
 }
 
     public static class Shooter {
@@ -43,5 +45,18 @@ public class Variables {
         public static final int MOTOR_ID = 12;
         public static final int ARM_FORWARD_ID = 7;
         public static final int ARM_REVERSE_ID = 6;
+    }
+
+    public static class Spinner { // TODO
+        public static final int MOTOR_ID = 0;
+    }
+
+    public static class Climber { // TODO
+        public static final int BOTTOM_SOLENOID_FORWARD_ID = 0;
+        public static final int BOTTOM_SOLENOID__REVERSE_ID = 0;
+        public static final int TOP_LEFT_SOLENOID_FORWARD_ID = 0;
+        public static final int TOP_LEFT_SOLENOID_REVERSE_ID = 0;
+        public static final int TOP_RIGHT_SOLENOID_FORWARD_ID = 0;
+        public static final int TOP_RIGHT_SOLENOID_REVERSE_ID = 0;
     }
 }

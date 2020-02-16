@@ -17,11 +17,11 @@ import java.util.function.Supplier;
 
 public class Shooter extends Subsystem<Robot2020> {
 
-    private Motor leftMotor = new CANMotor(new TalonSRX(Variables.Shooter.LEFT_MOTOR_ID)).invert(); // TODO: device number u
-    private Motor rightMotor = new CANMotor(new TalonSRX(Variables.Shooter.RIGHT_MOTOR_ID)); // TODO: device number n
-    private Motor yawMotor = new CANMotor(new TalonSRX(Variables.Shooter.YAW_MOTOR_ID)); // TODO: device number u
-    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(Variables.Shooter.PITCH_MOTOR_ID)); // TODO: device number n
-    private EncoderMotor carousel = new CANMotor(new TalonSRX(Variables.Shooter.CAROUSEL_MOTOR_ID)).invert(); // TODO: device number u
+    private Motor leftMotor = new CANMotor(new TalonSRX(Variables.Shooter.LEFT_MOTOR_ID)).invert();
+    private Motor rightMotor = new CANMotor(new TalonSRX(Variables.Shooter.RIGHT_MOTOR_ID));
+    private Motor yawMotor = new CANMotor(new TalonSRX(Variables.Shooter.YAW_MOTOR_ID));
+    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(Variables.Shooter.PITCH_MOTOR_ID));
+    private EncoderMotor carousel = new CANMotor(new TalonSRX(Variables.Shooter.CAROUSEL_MOTOR_ID)).invert();
 
     private Relay spike = new Relay(0);
 
@@ -82,9 +82,10 @@ public class Shooter extends Subsystem<Robot2020> {
             yawMotor.setPercentOutput(0);
         }
 
-        //if(controller.buttonPressed(Button.LEFT_BUMPER)) {
-        //    spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
-        //}
+        // TODO: move this wherever
+        if(controller.buttonPressed(Button.LEFT_BUMPER)) {
+            spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
+        }
     }
 
     @Override

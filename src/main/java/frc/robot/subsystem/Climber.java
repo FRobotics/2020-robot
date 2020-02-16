@@ -2,7 +2,8 @@ package frc.robot.subsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Robot2020;
-import frc.robot.Util;
+import frc.robot.Variables;
+import frc.robot.base.Util;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -12,9 +13,9 @@ import java.util.function.Supplier;
 
 public class Climber extends Subsystem<Robot2020> {
 
-    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(0, 1); // TODO: device number
-    private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(2, 3); // TODO: device number
-    private DoubleSolenoid rightTopSolenoid = new DoubleSolenoid(6, 8); // TODO: device number
+    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(Variables.Climber.BOTTOM_SOLENOID_FORWARD_ID, Variables.Climber.BOTTOM_SOLENOID__REVERSE_ID);
+    private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(Variables.Climber.TOP_LEFT_SOLENOID_FORWARD_ID, Variables.Climber.TOP_LEFT_SOLENOID_REVERSE_ID);
+    private DoubleSolenoid rightTopSolenoid = new DoubleSolenoid(Variables.Climber.TOP_RIGHT_SOLENOID_FORWARD_ID, Variables.Climber.TOP_RIGHT_SOLENOID_REVERSE_ID);
 
     public Climber() {
         super("climber");
@@ -53,8 +54,8 @@ public class Climber extends Subsystem<Robot2020> {
     @Override
     public HashMap<String, Supplier<Object>> createNTMap() {
         return new HashMap<>() {{
-            put("topSolenoid", Util.solenoidValueSupplier(leftTopSolenoid));
-            put("bottomSolenoid", Util.solenoidValueSupplier(bottomSolenoid));
+            put("topSolenoid", Util.solenoidNTV(leftTopSolenoid));
+            put("bottomSolenoid", Util.solenoidNTV(bottomSolenoid));
         }};
     }
 }
