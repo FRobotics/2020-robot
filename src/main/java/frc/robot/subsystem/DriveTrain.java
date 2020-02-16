@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Variables;
+import frc.robot.base.Util;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -21,10 +22,24 @@ public class DriveTrain extends Subsystem {
 
     private Controller controller;
 
-    private EncoderMotor leftMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG);
-    private EncoderMotor rightMotor = new CANDriveMotorPair(new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID), new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID), Variables.DriveTrain.CONFIG).invert();
-    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(Variables.DriveTrain.LEFT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.LEFT_EVO_SHIFTER_REVERSE_ID);
-    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(Variables.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD_ID,Variables.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE_ID);
+    private EncoderMotor leftMotor = new CANDriveMotorPair(
+            new TalonSRX(Variables.DriveTrain.LEFT_MOTOR_MASTER_ID),
+            new VictorSPX(Variables.DriveTrain.LEFT_MOTOR_FOLLOWER_ID),
+            Variables.DriveTrain.CONFIG
+    );
+    private EncoderMotor rightMotor = new CANDriveMotorPair(
+            new TalonSRX(Variables.DriveTrain.RIGHT_MOTOR_MASTER_ID),
+            new VictorSPX(Variables.DriveTrain.RIGHT_MOTOR_FOLLOWER_ID),
+            Variables.DriveTrain.CONFIG
+    ).invert();
+    private DoubleSolenoid leftEvoShifter = new DoubleSolenoid(
+            Variables.DriveTrain.LEFT_EVO_SHIFTER_FORWARD_ID,
+            Variables.DriveTrain.LEFT_EVO_SHIFTER_REVERSE_ID
+    );
+    private DoubleSolenoid rightEvoShifter = new DoubleSolenoid(
+            Variables.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD_ID,
+            Variables.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE_ID
+    );
 
     @SuppressWarnings({"unused", "SpellCheckingInspection"})
     public List<SubsystemTimedAction> ununun = Arrays.asList(
@@ -58,8 +73,8 @@ public class DriveTrain extends Subsystem {
     public void control() {
         double MAX_SPEED = 1;
 
-        double fb = -adjustInput(controller.getAxis(Axis.LEFT_Y));
-        double lr = adjustInput(controller.getAxis(Axis.RIGHT_X));
+        double fb = -Util.adjustInput(controller.getAxis(Axis.LEFT_Y), 0.2, 2);
+        double lr = Util.adjustInput(controller.getAxis(Axis.RIGHT_X), 0.2, 2);
 
         double left = fb - lr;
         double right = fb + lr;
@@ -81,14 +96,6 @@ public class DriveTrain extends Subsystem {
     @Override
     public void stop() {
         setVelocity(0);
-    }
-
-    private double adjustInput(double input) {
-        double absInput = Math.abs(input);
-        double DEAD_BAND = Variables.DriveTrain.JOYSTICK_DEAD_BAND;
-        double deadBanded = absInput < DEAD_BAND ? 0 : (absInput - DEAD_BAND) * (1 / (1 - DEAD_BAND));
-        double smoothed = Math.pow(deadBanded, 2);
-        return input > 0 ? smoothed : -smoothed;
     }
 
     @Override

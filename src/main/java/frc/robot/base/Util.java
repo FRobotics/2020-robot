@@ -25,6 +25,13 @@ public class Util {
         };
     }
 
+    public static double adjustInput(double input, double deadBand, int power) {
+        double absInput = Math.abs(input);
+        double deadBanded = absInput < deadBand ? 0 : (absInput - deadBand) * (1 / (1 - deadBand));
+        double smoothed = Math.pow(deadBanded, power);
+        return input > 0 ? smoothed : -smoothed;
+    }
+
     /**
      * prevents a value from changing too much
      */

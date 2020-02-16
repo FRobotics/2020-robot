@@ -23,8 +23,6 @@ public class Variables {
         public static final int RIGHT_EVO_SHIFTER_REVERSE_ID = 3;
         public static final int LEFT_EVO_SHIFTER_FORWARD_ID = 4;
         public static final int LEFT_EVO_SHIFTER_REVERSE_ID = 5;
-
-        public static final double JOYSTICK_DEAD_BAND = 0.2;
 }
 
     public static class Shooter {
