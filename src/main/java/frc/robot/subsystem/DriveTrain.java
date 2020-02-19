@@ -9,14 +9,11 @@ import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
-import frc.robot.base.subsystem.SubsystemTimedAction;
 import frc.robot.base.subsystem.motor.CANDriveMotorPair;
 import frc.robot.base.subsystem.motor.EncoderMotor;
 import frc.robot.base.subsystem.motor.EncoderMotorConfig;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class DriveTrain extends Subsystem {
@@ -50,12 +47,15 @@ public class DriveTrain extends Subsystem {
             IDs.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD,
             IDs.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE
     );
+    private Util.RateLimiter leftRateLimiter = new Util.RateLimiter(4);
+    private Util.RateLimiter rightRateLimiter = new Util.RateLimiter(4);
 
-    @SuppressWarnings({"unused", "SpellCheckingInspection"})
-    public List<SubsystemTimedAction> ununun = Arrays.asList(
+    /*
+    public List<SubsystemTimedAction> ün_ün_ün = Arrays.asList(
             new SubsystemTimedAction(() -> setVelocity(-3), 250),
             new SubsystemTimedAction(() -> setVelocity(3), 250)
     );
+     */
 
     public DriveTrain(Controller controller) {
         super("driveTrain");
@@ -64,12 +64,14 @@ public class DriveTrain extends Subsystem {
 
     private double leftTargetVel = 0;
     public void setLeftVelocity(double velocity) {
+        velocity = leftRateLimiter.get(velocity);
         this.leftTargetVel = velocity;
         this.leftMotor.setVelocity(velocity);
     }
 
     private double rightTargetVel = 0;
     public void setRightVelocity(double velocity) {
+        velocity = rightRateLimiter.get(velocity);
         this.rightTargetVel = velocity;
         this.rightMotor.setVelocity(velocity);
     }
@@ -89,8 +91,8 @@ public class DriveTrain extends Subsystem {
         double left = fb - lr;
         double right = fb + lr;
 
-        leftMotor.setPercentOutput(left * MAX_SPEED);
-        rightMotor.setPercentOutput(right * MAX_SPEED);
+        setLeftVelocity(left * MAX_SPEED);
+        setRightVelocity(right * MAX_SPEED);
 
         /*if(controller.buttonPressed(Button.LEFT_BUMPER)){
             leftEvoShifter.set(DoubleSolenoid.Value.kReverse);

@@ -3,7 +3,6 @@ package frc.robot;
 public class IDs {
 
     public static class DriveTrain {
-
         public static final int LEFT_MOTOR_MASTER = 10;
         public static final int LEFT_MOTOR_FOLLOWER = 11;
         public static final int RIGHT_MOTOR_MASTER = 16;
