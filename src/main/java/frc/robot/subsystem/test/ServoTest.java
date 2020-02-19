@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.test;
 
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.base.input.Button;
