@@ -3,7 +3,7 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.IDs;
-import frc.robot.base.Util;
+import frc.robot.base.util.Util;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;

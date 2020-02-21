@@ -1,18 +1,17 @@
-package frc.robot.subsystem.test;
+package frc.robot.test.subsystem;
 
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
-import frc.robot.base.subsystem.Subsystem;
+import frc.robot.base.subsystem.TestSubsystem;
 
-public class ServoTest extends Subsystem {
+public class ServoTest extends TestSubsystem {
 
     private Controller controller;
 
     Servo servo = new Servo(0);
 
     public ServoTest(Controller controller) {
-        super("servoTest");
         this.controller = controller;
     }
 

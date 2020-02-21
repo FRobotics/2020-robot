@@ -1,32 +1,33 @@
-package frc.robot.base.action;
+package frc.robot.base.util.action;
 
 import java.util.List;
 
-public abstract class ActionHandler <A extends GenericAction<F>, F> {
+public abstract class ActionHandler {
 
-    private A action;
-    private A defaultAction;
+    private Action action;
+    private Action defaultAction;
 
     private int queuePos;
-    private List<? extends A> actionQueue;
+    private List<? extends Action> actionQueue;
 
     private boolean finished = true;
 
-    public void startAction(A action) {
+    public void startAction(Action action) {
         finished = false;
         this.action = action;
-        if(this.action instanceof Timed) {
-            ((Timed)this.action).start();
+        if(this.action instanceof ActionFunc.Timed) {
+            ((ActionFunc.Timed)this.action).start();
         }
     }
 
-    public void startActionAndSetDefault(A action) {
+    public void startActionAndSetDefault(Action action) {
         this.startAction(action);
         this.defaultAction = action;
         finished = true;
     }
 
-    public void updateAction() {
+    public void periodic() {
+        this.action.func.run();
         if (
                 action.isFinished()
         ) {
@@ -53,11 +54,11 @@ public abstract class ActionHandler <A extends GenericAction<F>, F> {
         this.actionQueue = null;
     }
 
-    public A getAction() {
+    public Action getAction() {
         return action;
     }
 
-    public void startActionQueue(List<? extends A> actionQueue) {
+    public void startActionQueue(List<? extends Action> actionQueue) {
         this.queuePos = 1;
         this.startAction(actionQueue.get(0));
         this.actionQueue = actionQueue;

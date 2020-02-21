@@ -2,8 +2,7 @@ package frc.robot.base;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.base.auto.AutoAction;
-import frc.robot.base.auto.AutoActionHandler;
+import frc.robot.base.util.action.Action;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 
@@ -16,8 +15,8 @@ public abstract class Robot extends TimedRobot {
     private ArrayList<Controller> controllers = new ArrayList<>();
     private AutoActionHandler autoActionHandler = new AutoActionHandler();
 
-    private List<? extends AutoAction> autoActions;
-    public abstract List<? extends AutoAction> getAutoActions();
+    private List<? extends Action> autoActions;
+    public abstract List<? extends Action> getAutoActions();
 
     @Override
     public void robotInit() {

@@ -1,19 +1,16 @@
-package frc.robot.base.auto;
+package frc.robot.base.util.action;
 
-import frc.robot.base.action.Action;
-import frc.robot.base.action.Timed;
-
-public class AutoTimedAction extends AutoAction implements Timed {
+public class TimedAction extends Action implements ActionFunc.Timed {
 
     private long startTime;
     private int length;
 
-    public AutoTimedAction(int length) {
+    public TimedAction(int length) {
         super(() -> {});
         this.length = length;
     }
 
-    public AutoTimedAction(Action action, int length) {
+    public TimedAction(ActionFunc action, int length) {
         super(action);
         this.length = length;
     }
