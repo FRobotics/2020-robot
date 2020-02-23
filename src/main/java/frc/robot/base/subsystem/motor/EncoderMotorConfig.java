@@ -11,8 +11,9 @@ public class EncoderMotorConfig {
      * @param d ???
      * @param integralZone ???
      */
-    public EncoderMotorConfig(double wheelRadius, double f, double p, double i, double d, int integralZone) {
+    public EncoderMotorConfig(double wheelRadius, int countsPerRevolution, double f, double p, double i, double d, int integralZone) {
         WHEEL_RADIUS = wheelRadius;
+        COUNTS_PER_REVOLUTION = countsPerRevolution;
         PID_LOOP_INDEX = 0;
         TIMEOUT_MS = 30;
         F = f;
@@ -31,7 +32,7 @@ public class EncoderMotorConfig {
      * in inches
      */
     public final double WHEEL_RADIUS;
-    public final double COUNTS_PER_REVOLUTION = 360 * 4;
+    public final int COUNTS_PER_REVOLUTION;
 
     /**
      * in feet

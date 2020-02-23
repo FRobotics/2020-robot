@@ -87,8 +87,13 @@ public class CANMotor implements Motor, EncoderMotor {
         return motor.getSelectedSensorPosition() * distanceMultiplier;
     }
 
-    public void follow(BaseMotorController motor) {
-        motor.follow(motor);
+    @Override
+    public void resetDistance() {
+        motor.setSelectedSensorPosition(0);
+    }
+
+    public void follow(CANMotor motor) {
+        this.motor.follow(motor.motor);
     }
 
 }

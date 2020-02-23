@@ -1,5 +1,6 @@
 package frc.robot.base.subsystem;
 
+import frc.robot.base.input.Button;
 import frc.robot.base.util.RateLimiter;
 import frc.robot.base.util.Util;
 import frc.robot.base.input.Axis;
@@ -13,8 +14,8 @@ public class StandardDriveTrain extends Subsystem {
 
     private Controller controller;
 
-    private EncoderMotor leftMotor;
-    private EncoderMotor rightMotor;
+    private EncoderMotor leftMotor; // 1.565
+    private EncoderMotor rightMotor; // 1.565
     private RateLimiter leftRateLimiter;
     private RateLimiter rightRateLimiter;
 
@@ -22,30 +23,42 @@ public class StandardDriveTrain extends Subsystem {
     private double controllerDeadBand = 0.2;
     private int controllerPower = 2;
 
+    private boolean useClosedLoop = true;
+
     public StandardDriveTrain(
             EncoderMotor leftMotor, EncoderMotor rightMotor,
             double maxAcceleration, double maxSpeed, Controller controller) {
         super("driveTrain");
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
-        this.rightRateLimiter = new RateLimiter(maxAcceleration);
-        this.leftRateLimiter = new RateLimiter(maxAcceleration);
+        this.rightRateLimiter = new RateLimiter(maxAcceleration / 50);
+        this.leftRateLimiter = new RateLimiter(maxAcceleration / 50);
         this.maxSpeed = maxSpeed;
         this.controller = controller;
     }
 
-    private double leftTargetVel = 0;
+    private double leftTargetOutput = 0;
     public void setLeftVelocity(double velocity) {
         velocity = leftRateLimiter.get(safeVelocity(velocity));
-        this.leftTargetVel = velocity;
+        this.leftTargetOutput = velocity;
         this.leftMotor.setVelocity(velocity);
     }
+    public void setLeftPercentOutput(double percent) {
+        percent = safePercent(percent);
+        this.leftTargetOutput = percent;
+        this.leftMotor.setPercentOutput(percent);
+    }
 
-    private double rightTargetVel = 0;
+    private double rightTargetOutput = 0;
     public void setRightVelocity(double velocity) {
         velocity = rightRateLimiter.get(safeVelocity(velocity));
-        this.rightTargetVel = velocity;
+        this.rightTargetOutput = velocity;
         this.rightMotor.setVelocity(velocity);
+    }
+    public void setRightPercentOutput(double percent) {
+        percent = safePercent(percent);
+        this.rightTargetOutput = percent;
+        this.rightMotor.setPercentOutput(percent);
     }
 
     public void setVelocity(double velocity) {
@@ -61,17 +74,37 @@ public class StandardDriveTrain extends Subsystem {
         double left = fb - lr;
         double right = fb + lr;
 
-        setLeftVelocity(left * maxSpeed);
-        setRightVelocity(right * maxSpeed);
+        if(useClosedLoop) {
+            setLeftVelocity(left * maxSpeed);
+            setRightVelocity(right * maxSpeed);
+        } else {
+            setLeftPercentOutput(left);
+            setRightPercentOutput(right);
+        }
+
+        if(controller.buttonPressed(Button.BACK)) {
+            this.leftMotor.resetDistance();
+            this.rightMotor.resetDistance();
+        }
+
+        if (controller.buttonPressed(Button.START)) {
+            this.useClosedLoop = !useClosedLoop;
+        }
     }
 
     public double safeVelocity(double velocity) {
-        return Math.min(Math.max(velocity, maxSpeed), -maxSpeed);
+        return Math.max(Math.min(velocity, maxSpeed), -maxSpeed);
+    }
+
+    public double safePercent(double percent) {
+        return Math.max(Math.min(percent, 1), -1);
     }
 
     @Override
     public void stop() {
         setVelocity(0);
+        //this.leftMotor.resetDistance();
+        //this.rightMotor.resetDistance();
     }
 
     @Override
@@ -81,8 +114,8 @@ public class StandardDriveTrain extends Subsystem {
             put("rightVelocity", rightMotor::getVelocity);
             put("leftDistance", leftMotor::getDistance);
             put("rightDistance", rightMotor::getDistance);
-            put("leftTarget", () -> leftTargetVel);
-            put("rightTarget", () -> rightTargetVel);
+            put("leftTargetOutput", () -> leftTargetOutput);
+            put("rightTargetOutput", () -> rightTargetOutput);
         }};
     }
 
@@ -96,5 +129,9 @@ public class StandardDriveTrain extends Subsystem {
 
     public Controller getController() {
         return controller;
+    }
+
+    public double getAverageDistance() {
+        return (leftMotor.getDistance() + rightMotor.getDistance()) / 2;
     }
 }

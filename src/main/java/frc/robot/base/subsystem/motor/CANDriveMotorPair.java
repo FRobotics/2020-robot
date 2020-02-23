@@ -10,19 +10,17 @@ public class CANDriveMotorPair implements EncoderMotor {
     public CANDriveMotorPair(BaseMotorController parent, BaseMotorController child, EncoderMotorConfig config) {
         this.parent = new CANMotor(parent, config);
         this.child = new CANMotor(child);
-        this.child.follow(parent);
+        this.child.follow(this.parent);
     }
 
     @Override
     public void setVelocity(double velocity) {
         parent.setVelocity(velocity);
-        child.setVelocity(velocity);
     }
 
     @Override
     public void setPercentOutput(double percent) {
         parent.setPercentOutput(percent);
-        child.setPercentOutput(percent);
     }
 
     @Override
@@ -54,4 +52,9 @@ public class CANDriveMotorPair implements EncoderMotor {
         return parent.getDistance();
     }
 
+    @Override
+    public void resetDistance() {
+        parent.resetDistance();
+        child.resetDistance();
+    }
 }

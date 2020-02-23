@@ -18,15 +18,17 @@ public class RateLimiter {
     }
 
     public double get(double val) {
-        double absVal = Math.abs(val);
         double output;
-        if (absVal - lastVal > maxChange) {
-            output = lastVal + maxChange;
+
+        double diff = val - lastVal;
+        if(Math.abs(diff) > maxChange) {
+            output = lastVal + (diff > 0 ? maxChange : -maxChange);
         } else {
             output = val;
         }
-        lastVal = absVal;
-        return val > 0 ? output : -output;
+
+        lastVal = output;
+        return output;
     }
 
     public void setMaxChange(double maxChange) {

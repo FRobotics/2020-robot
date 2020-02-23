@@ -14,6 +14,7 @@ public class DriveTrain extends StandardDriveTrain {
 
     public static final EncoderMotorConfig CONFIG = new EncoderMotorConfig(
             3,
+            4 * 360,
             0.92,
             0.8,
             0.0012,

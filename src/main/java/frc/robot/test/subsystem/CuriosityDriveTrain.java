@@ -11,6 +11,7 @@ public class CuriosityDriveTrain extends StandardDriveTrain {
 
     public static final EncoderMotorConfig CONFIG = new EncoderMotorConfig(
             3,
+            360 * 4,
             0.92,
             0.8,
             0.0012,
@@ -22,15 +23,15 @@ public class CuriosityDriveTrain extends StandardDriveTrain {
         super(
                 new CANDriveMotorPair(
                         new TalonSRX(14),
-                        new VictorSPX(13),
+                        new TalonSRX(13),
                         CONFIG
                 ),
                 new CANDriveMotorPair(
                         new TalonSRX(10),
-                        new VictorSPX(12),
+                        new TalonSRX(12),
                         CONFIG
-                ),
-                1, 5, controller
+                ).invert(),
+                5, 10, controller
         );
     }
 }
