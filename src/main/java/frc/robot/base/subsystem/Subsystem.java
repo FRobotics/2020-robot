@@ -4,7 +4,8 @@ import frc.robot.base.RobotMode;
 import frc.robot.base.util.action.Action;
 import frc.robot.base.util.action.ActionHandler;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class Subsystem extends ActionHandler {
@@ -30,8 +31,16 @@ public abstract class Subsystem extends ActionHandler {
      * Use this method to specify what values you want to put on the dashboard;
      * The keys are the names of the entries and the suppliers are functions that return the values to set the entries to
      */
-    public HashMap<String, Supplier<Object>> createNTMap() {
-        return new HashMap<>();
+    public Map<String, Supplier<Object>> NTSets() {
+        return Map.of();
+    }
+
+    /**
+     * Use this method to specify what values you want to get from the dashboard;
+     * The keys are the names of the entries and the consumers are functions that use the values
+     */
+    public Map<String, Consumer<Object>> NTGets() {
+        return Map.of();
     }
 
     /**

@@ -8,7 +8,7 @@ import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.subsystem.motor.CANMotor;
 import frc.robot.base.subsystem.motor.Motor;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class Spinner extends Subsystem {
@@ -37,9 +37,9 @@ public class Spinner extends Subsystem {
     }
 
     @Override
-    public HashMap<String, Supplier<Object>> createNTMap() {
-        return new HashMap<>(){{
-            put("motorPercent", motor::getOutputPercent);
-        }};
+    public Map<String, Supplier<Object>> NTSets() {
+        return Map.of(
+            "motorPercent", motor::getOutputPercent
+        );
     }
 }

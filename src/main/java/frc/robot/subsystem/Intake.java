@@ -10,7 +10,7 @@ import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.subsystem.motor.CANMotor;
 import frc.robot.base.subsystem.motor.Motor;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class Intake extends Subsystem {
@@ -48,11 +48,11 @@ public class Intake extends Subsystem {
     }
 
     @Override
-    public HashMap<String, Supplier<Object>> createNTMap() {
-        return new HashMap<>() {{
-            put("solenoid", Util.solenoidNTV(solenoid));
-            put("motor", spinner::getOutputPercent);
-        }};
+    public Map<String, Supplier<Object>> NTSets() {
+        return Map.of(
+            "solenoid", Util.solenoidNTV(solenoid),
+            "motor", spinner::getOutputPercent
+        );
     }
 
 }

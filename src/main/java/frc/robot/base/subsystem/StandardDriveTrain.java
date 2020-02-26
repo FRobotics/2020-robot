@@ -7,7 +7,7 @@ import frc.robot.base.input.Axis;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.motor.EncoderMotor;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class StandardDriveTrain extends Subsystem {
@@ -108,15 +108,15 @@ public class StandardDriveTrain extends Subsystem {
     }
 
     @Override
-    public HashMap<String, Supplier<Object>> createNTMap() {
-        return new HashMap<>(){{
-            put("leftVelocity", leftMotor::getVelocity);
-            put("rightVelocity", rightMotor::getVelocity);
-            put("leftDistance", leftMotor::getDistance);
-            put("rightDistance", rightMotor::getDistance);
-            put("leftTargetOutput", () -> leftTargetOutput);
-            put("rightTargetOutput", () -> rightTargetOutput);
-        }};
+    public Map<String, Supplier<Object>> NTSets() {
+        return Map.of(
+            "leftVelocity", leftMotor::getVelocity,
+            "rightVelocity", rightMotor::getVelocity,
+            "leftDistance", leftMotor::getDistance,
+            "rightDistance", rightMotor::getDistance,
+            "leftTargetOutput", () -> leftTargetOutput,
+            "rightTargetOutput", () -> rightTargetOutput
+        );
     }
 
     public void setControllerDeadBand(double controllerDeadBand) {

@@ -9,9 +9,9 @@ import frc.robot.test.subsystem.CuriosityDriveTrain;
 import frc.robot.test.subsystem.LimitSwitchTest;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class TestRobot extends Robot {
 
     Controller driveController = registerController(0);

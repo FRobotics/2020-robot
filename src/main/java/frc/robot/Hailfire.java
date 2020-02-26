@@ -12,6 +12,7 @@ import frc.robot.subsystem.Shooter;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Hailfire extends Robot {
 
     private final Controller driveController = registerController(0);

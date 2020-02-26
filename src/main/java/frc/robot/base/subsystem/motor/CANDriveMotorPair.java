@@ -57,4 +57,9 @@ public class CANDriveMotorPair implements EncoderMotor {
         parent.resetDistance();
         child.resetDistance();
     }
+
+    @Override
+    public void setConfig(EncoderMotorConfig config) {
+        parent.setConfig(config);
+    }
 }

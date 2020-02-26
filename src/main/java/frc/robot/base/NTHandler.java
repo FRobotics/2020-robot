@@ -7,28 +7,33 @@ import frc.robot.base.subsystem.Subsystem;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class NTHandler {
 
-    private static NetworkTable robotTable;
+    public static final NetworkTable robotTable = NetworkTableInstance.getDefault().getTable("robot");
 
-    private static HashMap<NetworkTableEntry, Supplier<Object>> updateMap;
+    private static HashMap<NetworkTableEntry, Supplier<Object>> setMap;
+    private static HashMap<NetworkTableEntry, Consumer<Object>> getMap;
 
     public static void init (List<Subsystem> subsystems) {
-        robotTable = NetworkTableInstance.getDefault().getTable("robot");
-        updateMap = new HashMap<>();
+        setMap = new HashMap<>();
         subsystems.forEach(NTHandler::addSubsystem);
     }
 
     private static void addSubsystem(Subsystem subsystem) {
-        subsystem.createNTMap().forEach(
-                (name, valueSupplier) -> updateMap.put(robotTable.getEntry(subsystem.name + "/" + name), valueSupplier)
+        subsystem.NTSets().forEach(
+            (name, valueSupplier) -> setMap.put(robotTable.getEntry(subsystem.name + "/" + name), valueSupplier)
+        );
+        subsystem.NTGets().forEach(
+            (name, valueConsumer) -> getMap.put(robotTable.getEntry(subsystem.name + "/" + name), valueConsumer)
         );
     }
 
     public static void update() {
-        updateMap.forEach((entry, valueSupplier) -> entry.setValue(valueSupplier.get()));
+        setMap.forEach((entry, valueSupplier) -> entry.setValue(valueSupplier.get()));
+        getMap.forEach((entry, valueConsumer) -> valueConsumer.accept(entry.getValue().getValue()));
     }
 
 }

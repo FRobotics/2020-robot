@@ -8,4 +8,6 @@ public interface EncoderMotor extends Motor {
     EncoderMotor setInverted(boolean inverted);
     @Override
     EncoderMotor invert();
+
+    void setConfig(EncoderMotorConfig config);
 }

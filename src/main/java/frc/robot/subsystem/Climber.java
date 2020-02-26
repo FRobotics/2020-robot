@@ -7,7 +7,7 @@ import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class Climber extends Subsystem {
@@ -50,10 +50,10 @@ public class Climber extends Subsystem {
     }
 
     @Override
-    public HashMap<String, Supplier<Object>> createNTMap() {
-        return new HashMap<>() {{
-            put("topSolenoid", Util.solenoidNTV(leftTopSolenoid));
-            put("bottomSolenoid", Util.solenoidNTV(bottomSolenoid));
-        }};
+    public Map<String, Supplier<Object>> NTSets() {
+        return Map.of(
+            "topSolenoid", Util.solenoidNTV(leftTopSolenoid),
+            "bottomSolenoid", Util.solenoidNTV(bottomSolenoid)
+        );
     }
 }
