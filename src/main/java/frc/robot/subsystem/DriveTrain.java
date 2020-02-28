@@ -50,7 +50,7 @@ public class DriveTrain extends StandardDriveTrain {
                         new VictorSPX(IDs.DriveTrain.RIGHT_MOTOR_FOLLOWER),
                         CONFIG
                 ).invert(),
-                4, 1, controller);
+                5, 10, controller);
     }
 
     @Override

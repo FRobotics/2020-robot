@@ -19,6 +19,7 @@ public class NTHandler {
 
     public static void init (List<Subsystem> subsystems) {
         setMap = new HashMap<>();
+        getMap = new HashMap<>();
         subsystems.forEach(NTHandler::addSubsystem);
     }
 

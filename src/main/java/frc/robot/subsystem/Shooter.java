@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 
 public class Shooter extends Subsystem {
 
-    Controller mainController;
-    Controller carouselController;
+    Controller auxController;
+    Controller driveController;
 
     private EncoderMotor leftMotor = new CANMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR)).invert();
     private EncoderMotor rightMotor = new CANMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR));
@@ -30,8 +30,8 @@ public class Shooter extends Subsystem {
 
     public Shooter(Controller mainController, Controller carouselController) {
         super("shooter");
-        this.mainController = mainController;
-        this.carouselController = carouselController;
+        this.auxController = mainController;
+        this.driveController = carouselController;
     }
 
     public double leftK;
@@ -57,50 +57,48 @@ public class Shooter extends Subsystem {
 
     @Override
     public void control() {
-        if (mainController.getAxis(Axis.RIGHT_TRIGGER) > .5) {
-            /*if(System.currentTimeMillis() - shooterStartTime > 1000) {
+        if (driveController.getAxis(Axis.RIGHT_TRIGGER) > .5) {
+            if(System.currentTimeMillis() - shooterStartTime > 1000) {
                 carousel.setPercentOutput(.5);
             }
 
-            leftMotor.setPercentOutput(.86 * .9);
-            rightMotor.setPercentOutput(.76 * .9);*/
-            leftMotor.setVelocity(leftSpeedDemand);
-            rightMotor.setVelocity(rightSpeedDemand);
+            leftMotor.setPercentOutput(.86);
+            rightMotor.setPercentOutput(.76);
+            //leftMotor.setVelocity(leftSpeedDemand);
+            //rightMotor.setVelocity(rightSpeedDemand);
         } else {
             shooterStartTime = System.currentTimeMillis();
 
             leftMotor.setPercentOutput(0);
             rightMotor.setPercentOutput(0);
 
-            if (carouselController.getAxis(Axis.LEFT_X) > 0.5) {
+            if (auxController.getAxis(Axis.LEFT_X) > 0.5) {
                 carousel.setPercentOutput(.7); // TODO: pos control -> spin 1/5
-            } else if(carouselController.getAxis(Axis.LEFT_X) < -0.5) {
-                carousel.setPercentOutput(.7);
+            } else if(auxController.getAxis(Axis.LEFT_X) < -0.5) {
+                carousel.setPercentOutput(-.7);
             } else {
                 carousel.setPercentOutput(0);
             }
         }
 
-        double speed = .125;
-
-        if (mainController.buttonDown(Button.A)) {
-            pitchMotor.setPercentOutput(speed);
-        } else if (mainController.buttonDown(Button.Y)) {
-            pitchMotor.setPercentOutput(-speed);
+        if (driveController.buttonDown(Button.A)) {
+            pitchMotor.setPercentOutput(.125);
+        } else if (driveController.buttonDown(Button.Y)) {
+            pitchMotor.setPercentOutput(-0.5);
         } else {
             pitchMotor.setPercentOutput(0);
         }
 
-        if (mainController.buttonDown(Button.B)) {
-            yawMotor.setPercentOutput(speed);
-        } else if (mainController.buttonDown(Button.X)) {
-            yawMotor.setPercentOutput(-speed);
+        if (driveController.buttonDown(Button.B)) {
+            yawMotor.setPercentOutput(0.5);
+        } else if (driveController.buttonDown(Button.X)) {
+            yawMotor.setPercentOutput(-0.5);
         } else {
             yawMotor.setPercentOutput(0);
         }
 
         // TODO: move this wherever
-        if(mainController.buttonPressed(Button.LEFT_BUMPER)) {
+        if(auxController.buttonPressed(Button.LEFT_BUMPER)) {
             spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
         }
     }
