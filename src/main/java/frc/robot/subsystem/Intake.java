@@ -32,15 +32,22 @@ public class Intake extends Subsystem {
 
     @Override
     public void control() {
+
+        // flip up
+
         if (controller.buttonPressed(Button.A)) {
             solenoid.set(DoubleSolenoid.Value.kReverse);
         }
+
+        // flip out
 
         if (controller.buttonPressed(Button.Y)) {
             solenoid.set(DoubleSolenoid.Value.kForward);
         }
 
-        if (controller.buttonDown(Button.B) /*&& solenoid.get() == DoubleSolenoid.Value.kForward*/) {
+        // spin if solenoid is out
+
+        if (controller.buttonDown(Button.B) && solenoid.get() == DoubleSolenoid.Value.kForward) {
             spinner.setPercentOutput(1);
         } else {
             spinner.setPercentOutput(0);

@@ -29,6 +29,9 @@ public class Spinner extends Subsystem {
 
     @Override
     public void control() {
+
+        // spin
+
         if (controller.buttonDown(Button.Y)) {
             motor.setPercentOutput(.5);
         } else {

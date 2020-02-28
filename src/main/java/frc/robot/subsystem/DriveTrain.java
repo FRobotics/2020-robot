@@ -57,6 +57,8 @@ public class DriveTrain extends StandardDriveTrain {
     public void control() {
         super.control();
 
+        // shift gears
+
         if(getController().buttonPressed(Button.LEFT_BUMPER)){
             leftEvoShifter.set(DoubleSolenoid.Value.kReverse);
             rightEvoShifter.set(DoubleSolenoid.Value.kReverse);

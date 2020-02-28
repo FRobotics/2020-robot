@@ -27,6 +27,8 @@ public class Climber extends Subsystem {
 
     @Override
     public void control() {
+
+        // raise and lower bottom solenoid if tops are down
         if (leftTopSolenoid.get() == DoubleSolenoid.Value.kReverse) {
             if (controller.buttonPressed(Button.BACK)) {
                 bottomSolenoid.set(DoubleSolenoid.Value.kReverse);
@@ -37,6 +39,7 @@ public class Climber extends Subsystem {
             }
         }
 
+        // raise and lower top solenoids if bottoms are out
         if (bottomSolenoid.get() == DoubleSolenoid.Value.kForward) {
             if (controller.buttonPressed(Button.LEFT_BUMPER)) {
                 leftTopSolenoid.set(DoubleSolenoid.Value.kForward);

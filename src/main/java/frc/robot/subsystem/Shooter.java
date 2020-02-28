@@ -64,6 +64,9 @@ public class Shooter extends Subsystem {
     @Override
     public void control() {
         if (driveController.getAxis(Axis.RIGHT_TRIGGER) > .5) {
+
+            // spin up motors and then carousel to shoot
+
             if(System.currentTimeMillis() - shooterStartTime > 1000) {
                 carousel.setPercentOutput(.5);
             }
@@ -74,6 +77,8 @@ public class Shooter extends Subsystem {
             //rightMotor.setVelocity(rightSpeedDemand);
         } else {
             shooterStartTime = System.currentTimeMillis();
+
+            // (if not shooting) control the carousel
 
             leftMotor.setPercentOutput(0);
             rightMotor.setPercentOutput(0);
@@ -87,6 +92,8 @@ public class Shooter extends Subsystem {
             }
         }
 
+        // move carousel up/down
+
         if (driveController.buttonDown(Button.A)) {
             pitchMotor.setPercentOutput(.125);
         } else if (driveController.buttonDown(Button.Y)) {
@@ -95,6 +102,8 @@ public class Shooter extends Subsystem {
             pitchMotor.setPercentOutput(0);
         }
 
+        // move carousel left/right
+
         if (driveController.buttonDown(Button.B)) {
             yawMotor.setPercentOutput(0.5);
         } else if (driveController.buttonDown(Button.X)) {
@@ -102,6 +111,8 @@ public class Shooter extends Subsystem {
         } else {
             yawMotor.setPercentOutput(0);
         }
+
+        // turn on lights
 
         if(auxController.buttonPressed(Button.LEFT_BUMPER)) {
             spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
