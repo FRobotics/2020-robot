@@ -48,10 +48,11 @@ public class EncoderMotorConfig {
         D = d;
         INTEGRAL_ZONE = integralZone;
 
-        DISTANCE_MULTIPLIER = 1 / countsPerRevolution;
+        DISTANCE_MULTIPLIER = 1d / countsPerRevolution;
         // 10 * turns 100ms -> 1s
-        INPUT_MULTIPLIER = 10 * DISTANCE_MULTIPLIER;
-        OUTPUT_MULTIPLIER = 1 / INPUT_MULTIPLIER;
+        //INPUT_MULTIPLIER = 10d * DISTANCE_MULTIPLIER;
+        INPUT_MULTIPLIER = 1;
+        OUTPUT_MULTIPLIER = 1d / INPUT_MULTIPLIER;
     }
 
     public final int PID_LOOP_INDEX;

@@ -7,7 +7,7 @@ import frc.robot.IDs;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.StandardDriveTrain;
-import frc.robot.base.subsystem.motor.PhoenixDriveMotorPair;
+import frc.robot.base.subsystem.motor.PhoenixMotorPair;
 import frc.robot.base.subsystem.motor.EncoderMotorConfig;
 
 public class DriveTrain extends StandardDriveTrain {
@@ -40,12 +40,12 @@ public class DriveTrain extends StandardDriveTrain {
 
     public DriveTrain(Controller controller) {
         super(
-                new PhoenixDriveMotorPair(
+                new PhoenixMotorPair(
                         new TalonSRX(IDs.DriveTrain.LEFT_MOTOR_MASTER),
                         new VictorSPX(IDs.DriveTrain.LEFT_MOTOR_FOLLOWER),
                         CONFIG
                 ),
-                new PhoenixDriveMotorPair(
+                new PhoenixMotorPair(
                         new TalonSRX(IDs.DriveTrain.RIGHT_MOTOR_MASTER),
                         new VictorSPX(IDs.DriveTrain.RIGHT_MOTOR_FOLLOWER),
                         CONFIG

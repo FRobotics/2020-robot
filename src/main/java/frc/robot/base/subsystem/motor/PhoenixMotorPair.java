@@ -5,12 +5,12 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 /**
  * A pair of phoenix motors where a child follows a parent
  */
-public class PhoenixDriveMotorPair implements EncoderMotor {
+public class PhoenixMotorPair implements EncoderMotor {
 
     private PhoenixMotor parent;
     private PhoenixMotor child;
 
-    public PhoenixDriveMotorPair(BaseMotorController parent, BaseMotorController child, EncoderMotorConfig config) {
+    public PhoenixMotorPair(BaseMotorController parent, BaseMotorController child, EncoderMotorConfig config) {
         this.parent = new PhoenixMotor(parent, config);
         this.child = new PhoenixMotor(child);
         this.child.follow(this.parent);

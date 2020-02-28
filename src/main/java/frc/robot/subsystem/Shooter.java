@@ -75,8 +75,8 @@ public class Shooter extends Subsystem {
             leftMotor.setPercentOutput(.86);
             rightMotor.setPercentOutput(.76);
             */
-            leftMotor.setVelocity(leftSpeedDemand);
-            rightMotor.setVelocity(rightSpeedDemand);
+            leftMotor.setPercentOutput(leftSpeedDemand/5500f);
+            rightMotor.setPercentOutput(rightSpeedDemand/5500f);
         } else {
             shooterStartTime = System.currentTimeMillis();
 
