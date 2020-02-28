@@ -67,14 +67,16 @@ public class Shooter extends Subsystem {
 
             // spin up motors and then carousel to shoot
 
+            /*
             if(System.currentTimeMillis() - shooterStartTime > 1000) {
                 carousel.setPercentOutput(.5);
             }
 
             leftMotor.setPercentOutput(.86);
             rightMotor.setPercentOutput(.76);
-            //leftMotor.setVelocity(leftSpeedDemand);
-            //rightMotor.setVelocity(rightSpeedDemand);
+            */
+            leftMotor.setVelocity(leftSpeedDemand);
+            rightMotor.setVelocity(rightSpeedDemand);
         } else {
             shooterStartTime = System.currentTimeMillis();
 
@@ -115,7 +117,7 @@ public class Shooter extends Subsystem {
         // turn on lights
 
         if(auxController.buttonPressed(Button.LEFT_BUMPER)) {
-            spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
+            spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kOff : Relay.Value.kForward);
         }
     }
 
