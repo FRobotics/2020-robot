@@ -1,14 +1,16 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Relay;
 import frc.robot.IDs;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
-import frc.robot.base.subsystem.motor.CANMotor;
+import frc.robot.base.subsystem.motor.PhoenixMotor;
 import frc.robot.base.subsystem.motor.EncoderMotor;
+import frc.robot.base.subsystem.motor.EncoderMotorConfig;
 import frc.robot.base.subsystem.motor.Motor;
 
 import java.util.Map;
@@ -17,14 +19,18 @@ import java.util.function.Supplier;
 
 public class Shooter extends Subsystem {
 
-    Controller auxController;
-    Controller driveController;
+    private Controller auxController;
+    private Controller driveController;
 
-    private EncoderMotor leftMotor = new CANMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR)).invert();
-    private EncoderMotor rightMotor = new CANMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR));
-    private Motor yawMotor = new CANMotor(new TalonSRX(IDs.Shooter.YAW_MOTOR));
-    private EncoderMotor pitchMotor = new CANMotor(new TalonSRX(IDs.Shooter.PITCH_MOTOR));
-    private EncoderMotor carousel = new CANMotor(new TalonSRX(IDs.Shooter.CAROUSEL_MOTOR)).invert();
+    private EncoderMotorConfig config = new EncoderMotorConfig(2048 * 4, 0.92, 0.8, 0.0012, .01, 150);
+
+    private EncoderMotor leftMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR), config).invert();
+    private EncoderMotor rightMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR), config);
+
+    private Motor yawMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.YAW_MOTOR));
+    private Motor pitchMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.PITCH_MOTOR));
+    private Motor carousel = new PhoenixMotor(new TalonSRX(IDs.Shooter.CAROUSEL_MOTOR)).invert();
+    //private DigitalInput carouselSwitch = new DigitalInput(0);
 
     private Relay spike = new Relay(0);
 
@@ -73,7 +79,7 @@ public class Shooter extends Subsystem {
             rightMotor.setPercentOutput(0);
 
             if (auxController.getAxis(Axis.LEFT_X) > 0.5) {
-                carousel.setPercentOutput(.7); // TODO: pos control -> spin 1/5
+                carousel.setPercentOutput(.7);
             } else if(auxController.getAxis(Axis.LEFT_X) < -0.5) {
                 carousel.setPercentOutput(-.7);
             } else {
@@ -97,7 +103,6 @@ public class Shooter extends Subsystem {
             yawMotor.setPercentOutput(0);
         }
 
-        // TODO: move this wherever
         if(auxController.buttonPressed(Button.LEFT_BUMPER)) {
             spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kReverse : Relay.Value.kForward);
         }
@@ -109,11 +114,11 @@ public class Shooter extends Subsystem {
             "leftPercent", leftMotor::getOutputPercent,
             "rightPercent", rightMotor::getOutputPercent,
             "leftVelocity", leftMotor::getVelocity,
-            "pitchVelocity", pitchMotor::getVelocity,
-            "pitchDistance", pitchMotor::getDistance,
-            "yawVelocity", yawMotor::getOutputPercent,
-            "carouselVelocity", carousel::getVelocity,
-            "carouselDistance", carousel::getDistance
+            "rightVelocity", rightMotor::getVelocity,
+            
+            "pitchOutput", pitchMotor::getOutputPercent,
+            "yawOutput", yawMotor::getOutputPercent,
+            "carouselOutput", carousel::getOutputPercent
         );
     }
 

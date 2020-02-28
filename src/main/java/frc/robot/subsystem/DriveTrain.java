@@ -7,13 +7,13 @@ import frc.robot.IDs;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.StandardDriveTrain;
-import frc.robot.base.subsystem.motor.CANDriveMotorPair;
+import frc.robot.base.subsystem.motor.PhoenixDriveMotorPair;
 import frc.robot.base.subsystem.motor.EncoderMotorConfig;
 
 public class DriveTrain extends StandardDriveTrain {
 
     public static final EncoderMotorConfig CONFIG = new EncoderMotorConfig(
-            3,
+            3f/12f,
             4 * 360,
             0.92,
             0.8,
@@ -40,12 +40,12 @@ public class DriveTrain extends StandardDriveTrain {
 
     public DriveTrain(Controller controller) {
         super(
-                new CANDriveMotorPair(
+                new PhoenixDriveMotorPair(
                         new TalonSRX(IDs.DriveTrain.LEFT_MOTOR_MASTER),
                         new VictorSPX(IDs.DriveTrain.LEFT_MOTOR_FOLLOWER),
                         CONFIG
                 ),
-                new CANDriveMotorPair(
+                new PhoenixDriveMotorPair(
                         new TalonSRX(IDs.DriveTrain.RIGHT_MOTOR_MASTER),
                         new VictorSPX(IDs.DriveTrain.RIGHT_MOTOR_FOLLOWER),
                         CONFIG

@@ -3,8 +3,11 @@ package frc.robot.base;
 import frc.robot.base.util.action.Action;
 import frc.robot.base.util.action.ActionHandler;
 
+/**
+ * The action handler for auto
+ */
 public class AutoActionHandler extends ActionHandler {
-    public AutoActionHandler() {
+    protected AutoActionHandler() {
         this.startActionAndSetDefault(new Action(() -> {}));
     }
 }

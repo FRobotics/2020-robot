@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * A handler class for network table variables; the Robot class uses this to automatically get and set things
+ */
 public class NTHandler {
 
     public static final NetworkTable robotTable = NetworkTableInstance.getDefault().getTable("robot");
@@ -17,7 +20,7 @@ public class NTHandler {
     private static HashMap<NetworkTableEntry, Supplier<Object>> setMap;
     private static HashMap<NetworkTableEntry, Consumer<Object>> getMap;
 
-    public static void init (List<Subsystem> subsystems) {
+    protected static void init (List<Subsystem> subsystems) {
         setMap = new HashMap<>();
         getMap = new HashMap<>();
         subsystems.forEach(NTHandler::addSubsystem);
@@ -32,7 +35,7 @@ public class NTHandler {
         );
     }
 
-    public static void update() {
+    protected static void update() {
         setMap.forEach((entry, valueSupplier) -> entry.setValue(valueSupplier.get()));
         getMap.forEach((entry, valueConsumer) -> valueConsumer.accept(entry.getValue().getValue()));
     }

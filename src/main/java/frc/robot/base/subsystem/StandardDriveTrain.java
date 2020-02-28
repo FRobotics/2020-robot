@@ -10,6 +10,10 @@ import frc.robot.base.subsystem.motor.EncoderMotor;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * A drive train with two encoder motors and a rate limiter for each motor that is controlled with a controller
+ * It features two driving modes, closed loop and open loop in case something goes wrong
+ */
 public class StandardDriveTrain extends Subsystem {
 
     private Controller controller;

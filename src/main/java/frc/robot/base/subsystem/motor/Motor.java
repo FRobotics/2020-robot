@@ -1,5 +1,8 @@
 package frc.robot.base.subsystem.motor;
 
+/**
+ * A generic motor interface that lets you use generic motors in classes to make switching motors very easy
+ */
 public interface Motor {
 
     /**

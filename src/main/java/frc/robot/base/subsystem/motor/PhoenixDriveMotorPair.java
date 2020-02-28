@@ -2,14 +2,17 @@ package frc.robot.base.subsystem.motor;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
-public class CANDriveMotorPair implements EncoderMotor {
+/**
+ * A pair of phoenix motors where a child follows a parent
+ */
+public class PhoenixDriveMotorPair implements EncoderMotor {
 
-    private CANMotor parent;
-    private CANMotor child;
+    private PhoenixMotor parent;
+    private PhoenixMotor child;
 
-    public CANDriveMotorPair(BaseMotorController parent, BaseMotorController child, EncoderMotorConfig config) {
-        this.parent = new CANMotor(parent, config);
-        this.child = new CANMotor(child);
+    public PhoenixDriveMotorPair(BaseMotorController parent, BaseMotorController child, EncoderMotorConfig config) {
+        this.parent = new PhoenixMotor(parent, config);
+        this.child = new PhoenixMotor(child);
         this.child.follow(this.parent);
     }
 

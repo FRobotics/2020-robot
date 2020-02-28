@@ -3,8 +3,9 @@ package frc.robot.base.subsystem.motor;
 public class EncoderMotorConfig {
 
     /**
-     *
+     * Constructs a new motor config where distance is in length
      * @param wheelRadius the radius of the wheels in inches
+     * @param countsPerRevolution how many counts the encoder gives per revolution
      * @param f ???
      * @param p ???
      * @param i ???
@@ -12,32 +13,46 @@ public class EncoderMotorConfig {
      * @param integralZone ???
      */
     public EncoderMotorConfig(double wheelRadius, int countsPerRevolution, double f, double p, double i, double d, int integralZone) {
-        WHEEL_RADIUS = wheelRadius;
-        COUNTS_PER_REVOLUTION = countsPerRevolution;
         PID_LOOP_INDEX = 0;
         TIMEOUT_MS = 30;
+
         F = f;
         P = p;
         I = i;
         D = d;
         INTEGRAL_ZONE = integralZone;
 
-        WHEEL_CIRCUMFERENCE = (WHEEL_RADIUS / 12) * 2 * Math.PI;
-        DISTANCE_MULTIPLIER = WHEEL_CIRCUMFERENCE / COUNTS_PER_REVOLUTION;
+        double wheel_circumference = wheelRadius * 2 * Math.PI;
+        DISTANCE_MULTIPLIER = wheel_circumference / countsPerRevolution;
+        // 10 * turns 100ms -> 1s
         INPUT_MULTIPLIER = 10 * DISTANCE_MULTIPLIER;
         OUTPUT_MULTIPLIER = 1 / INPUT_MULTIPLIER;
     }
 
     /**
-     * in inches
+     * Constructs a new config where distance is in revolutions
+     * @param countsPerRevolution how many counts the encoder gives per revolution
+     * @param f ???
+     * @param p ???
+     * @param i ???
+     * @param d ???
+     * @param integralZone ???
      */
-    public final double WHEEL_RADIUS;
-    public final int COUNTS_PER_REVOLUTION;
+    public EncoderMotorConfig(int countsPerRevolution, double f, double p, double i, double d, int integralZone) {
+        PID_LOOP_INDEX = 0;
+        TIMEOUT_MS = 30;
 
-    /**
-     * in feet
-     */
-    public final double WHEEL_CIRCUMFERENCE;
+        F = f;
+        P = p;
+        I = i;
+        D = d;
+        INTEGRAL_ZONE = integralZone;
+
+        DISTANCE_MULTIPLIER = 1 / countsPerRevolution;
+        // 10 * turns 100ms -> 1s
+        INPUT_MULTIPLIER = 10 * DISTANCE_MULTIPLIER;
+        OUTPUT_MULTIPLIER = 1 / INPUT_MULTIPLIER;
+    }
 
     public final int PID_LOOP_INDEX;
     public final int TIMEOUT_MS;

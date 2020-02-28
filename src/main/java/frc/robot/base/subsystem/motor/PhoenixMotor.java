@@ -5,18 +5,21 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
-public class CANMotor implements Motor, EncoderMotor {
+/**
+ * A phoenix motor that implements the EncoderMotor interface to allow you to make drive systems generic
+ */
+public class PhoenixMotor implements EncoderMotor {
 
     private double inputMultiplier;
     private double outputMultiplier;
     private double distanceMultiplier;
     private BaseMotorController motor;
 
-    public CANMotor(BaseMotorController motor) {
+    public PhoenixMotor(BaseMotorController motor) {
         this(motor, null);
     }
 
-    public CANMotor(BaseMotorController motor, EncoderMotorConfig config) {
+    public PhoenixMotor(BaseMotorController motor, EncoderMotorConfig config) {
         this.motor = motor;
         this.motor.setNeutralMode(NeutralMode.Brake);
         this.motor.setSensorPhase(false);
@@ -63,13 +66,13 @@ public class CANMotor implements Motor, EncoderMotor {
     }
 
     @Override
-    public CANMotor setInverted(boolean inverted) {
+    public PhoenixMotor setInverted(boolean inverted) {
         motor.setInverted(inverted);
         return this;
     }
 
     @Override
-    public CANMotor invert() {
+    public PhoenixMotor invert() {
         motor.setInverted(!motor.getInverted());
         return this;
     }
@@ -97,7 +100,7 @@ public class CANMotor implements Motor, EncoderMotor {
         motor.setSelectedSensorPosition(0);
     }
 
-    public void follow(CANMotor motor) {
+    public void follow(PhoenixMotor motor) {
         this.motor.follow(motor.motor);
     }
 

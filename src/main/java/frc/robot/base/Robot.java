@@ -9,6 +9,9 @@ import frc.robot.base.subsystem.Subsystem;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A generic robot class to extend each year that automatically handles subsystems and input
+ */
 public abstract class Robot extends TimedRobot {
 
     private ArrayList<Subsystem> subsystems = new ArrayList<>();
@@ -16,6 +19,9 @@ public abstract class Robot extends TimedRobot {
     private AutoActionHandler autoActionHandler = new AutoActionHandler();
 
     private List<? extends Action> autoActions;
+    /**
+     * Returns a list of actions you want to run during auto; this is only called once
+     */
     public abstract List<? extends Action> getAutoActions();
 
     @Override

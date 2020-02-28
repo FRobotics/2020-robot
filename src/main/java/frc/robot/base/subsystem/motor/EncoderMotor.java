@@ -1,5 +1,8 @@
 package frc.robot.base.subsystem.motor;
 
+/**
+ * A generic motor that has an encoder
+ */
 public interface EncoderMotor extends Motor {
     double getVelocity();
     double getDistance();
