@@ -1,4 +1,4 @@
-package frc.robot.base.subsystem.motor;
+package frc.robot.base.device.motor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -51,8 +51,10 @@ public class PhoenixMotor implements EncoderMotor {
     }
 
     @Override
-    public void setVelocity(double velocity) {
-        motor.set(ControlMode.Velocity, velocity * outputMultiplier);
+    public double setVelocity(double velocity) {
+        double rawOutput = velocity * outputMultiplier;
+        motor.set(ControlMode.Velocity, rawOutput);
+        return rawOutput;
     }
 
     @Override

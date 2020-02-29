@@ -15,8 +15,8 @@ public class IDs {
 }
 
     public static class Shooter {
-        public static final int LEFT_MOTOR = 13;
-        public static final int RIGHT_MOTOR = 14;
+        public static final int LEFT_MOTOR = 14;
+        public static final int RIGHT_MOTOR = 13;
         public static final int YAW_MOTOR = 15;
         public static final int PITCH_MOTOR = 18;
         public static final int CAROUSEL_MOTOR = 19;

@@ -3,9 +3,11 @@ package frc.robot.base.subsystem;
 import frc.robot.base.input.Button;
 import frc.robot.base.util.RateLimiter;
 import frc.robot.base.util.Util;
+import frc.robot.base.NTHandler;
+import frc.robot.base.device.motor.EncoderMotor;
+import frc.robot.base.device.motor.EncoderMotorConfig;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Controller;
-import frc.robot.base.subsystem.motor.EncoderMotor;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -23,6 +25,7 @@ public class StandardDriveTrain extends Subsystem {
     private RateLimiter leftRateLimiter;
     private RateLimiter rightRateLimiter;
 
+    private double controllerScale;
     private double maxSpeed;
     private double controllerDeadBand = 0.2;
     private int controllerPower = 2;
@@ -31,37 +34,38 @@ public class StandardDriveTrain extends Subsystem {
 
     public StandardDriveTrain(
             EncoderMotor leftMotor, EncoderMotor rightMotor,
-            double maxAcceleration, double maxSpeed, Controller controller) {
+            double maxAcceleration, double controllerScale, Controller controller) {
         super("driveTrain");
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.rightRateLimiter = new RateLimiter(maxAcceleration / 50);
         this.leftRateLimiter = new RateLimiter(maxAcceleration / 50);
-        this.maxSpeed = maxSpeed;
+        this.maxSpeed = controllerScale;
+        this.controllerScale = controllerScale;
         this.controller = controller;
     }
 
-    private double leftTargetOutput = 0;
+    private double leftDemand = 0;
     public void setLeftVelocity(double velocity) {
-        velocity = leftRateLimiter.get(safeVelocity(velocity));
-        this.leftTargetOutput = velocity;
-        this.leftMotor.setVelocity(velocity);
+        velocity = safeVelocity(velocity);
+        this.leftDemand = velocity;
+        NTHandler.robotTable.getEntry("driveTrain/velOutputRaw").setDouble(this.leftMotor.setVelocity(velocity));
     }
     public void setLeftPercentOutput(double percent) {
         percent = safePercent(percent);
-        this.leftTargetOutput = percent;
+        this.leftDemand = percent;
         this.leftMotor.setPercentOutput(percent);
     }
 
-    private double rightTargetOutput = 0;
+    private double rightDemand = 0;
     public void setRightVelocity(double velocity) {
-        velocity = rightRateLimiter.get(safeVelocity(velocity));
-        this.rightTargetOutput = velocity;
+        velocity = safeVelocity(velocity);
+        this.rightDemand = velocity;
         this.rightMotor.setVelocity(velocity);
     }
     public void setRightPercentOutput(double percent) {
         percent = safePercent(percent);
-        this.rightTargetOutput = percent;
+        this.rightDemand = percent;
         this.rightMotor.setPercentOutput(percent);
     }
 
@@ -79,20 +83,19 @@ public class StandardDriveTrain extends Subsystem {
         double right = fb + lr;
 
         if(useClosedLoop) {
-            setLeftVelocity(left * maxSpeed);
-            setRightVelocity(right * maxSpeed);
+            setLeftVelocity(left * controllerScale);
+            setRightVelocity(right * controllerScale);
         } else {
             setLeftPercentOutput(left);
             setRightPercentOutput(right);
         }
 
-        if(controller.buttonPressed(Button.BACK)) {
-            this.leftMotor.resetDistance();
-            this.rightMotor.resetDistance();
+        if (controller.buttonPressed(Button.START)) {
+            this.useClosedLoop = true;
         }
 
-        if (controller.buttonPressed(Button.START)) {
-            this.useClosedLoop = !useClosedLoop;
+        if(controller.buttonPressed(Button.BACK)) {
+            this.useClosedLoop = false;
         }
     }
 
@@ -118,9 +121,18 @@ public class StandardDriveTrain extends Subsystem {
             "rightVelocity", rightMotor::getVelocity,
             "leftDistance", leftMotor::getDistance,
             "rightDistance", rightMotor::getDistance,
-            "leftTargetOutput", () -> leftTargetOutput,
-            "rightTargetOutput", () -> rightTargetOutput
+            "leftDemand", () -> leftDemand,
+            "rightDemand", () -> rightDemand,
+            "useClosedLoop", () -> useClosedLoop
         );
+    }
+
+    public void setMaxSpeed(double maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public void setClosedLoop(boolean useClosedLoop) {
+        this.useClosedLoop = useClosedLoop;
     }
 
     public void setControllerDeadBand(double controllerDeadBand) {
@@ -131,11 +143,49 @@ public class StandardDriveTrain extends Subsystem {
         this.controllerPower = controllerPower;
     }
 
+    public double getLeftDemand() {
+        return this.leftDemand;
+    }
+
+    public double getRightDemand() {
+        return this.rightDemand;
+    }
+
+    public double getAverageDemand() {
+        return (this.leftDemand + this.rightDemand) / 2;
+    }
+
+    public double getLeftVelocity() {
+        return this.leftMotor.getVelocity();
+    }
+
+    public double getRightVelocity() {
+        return this.leftMotor.getVelocity();
+    }
+
+    public double getAverageVelocity() {
+        return (this.leftMotor.getVelocity() + this.rightMotor.getVelocity()) / 2;
+    }
+
+
     public Controller getController() {
         return controller;
     }
 
     public double getAverageDistance() {
         return (leftMotor.getDistance() + rightMotor.getDistance()) / 2;
+    }
+
+    public void setLeftMotorConfig(EncoderMotorConfig config) {
+        this.leftMotor.setConfig(config);
+    }
+
+    public void setRightMotorConfig(EncoderMotorConfig config) {
+        this.rightMotor.setConfig(config);
+    }
+
+    public void setMotorConfigs(EncoderMotorConfig config) {
+        setLeftMotorConfig(config);
+        setRightMotorConfig(config);
     }
 }

@@ -1,4 +1,4 @@
-package frc.robot.base.subsystem.motor;
+package frc.robot.base.device.motor;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
@@ -17,8 +17,8 @@ public class PhoenixMotorPair implements EncoderMotor {
     }
 
     @Override
-    public void setVelocity(double velocity) {
-        parent.setVelocity(velocity);
+    public double setVelocity(double velocity) {
+        return parent.setVelocity(velocity); 
     }
 
     @Override

@@ -41,10 +41,20 @@ public class Controller {
      * Returns the value of an axis on the controller
      * 
      * @param axis the axis you want to measure
-     * @return the values of the axis
+     * @return the value of the axis
      */
     public double getAxis(Axis axis) {
         return joystick.getRawAxis(axis.getId());
+    }
+
+    /**
+     * Returns the value of a pov on the controller
+     * 
+     * @param axis the pov you want to measure
+     * @return the angle of the POV in degrees, or -1 if the POV is not pressed.
+     */
+    public int getPov(Pov pov) {
+        return joystick.getPOV(pov.getId());
     }
 
     /**

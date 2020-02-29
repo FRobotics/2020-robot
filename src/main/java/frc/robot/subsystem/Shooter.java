@@ -8,10 +8,10 @@ import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
-import frc.robot.base.subsystem.motor.PhoenixMotor;
-import frc.robot.base.subsystem.motor.EncoderMotor;
-import frc.robot.base.subsystem.motor.EncoderMotorConfig;
-import frc.robot.base.subsystem.motor.Motor;
+import frc.robot.base.device.motor.PhoenixMotor;
+import frc.robot.base.device.motor.EncoderMotor;
+import frc.robot.base.device.motor.EncoderMotorConfig;
+import frc.robot.base.device.motor.Motor;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -22,10 +22,11 @@ public class Shooter extends Subsystem {
     private Controller auxController;
     private Controller driveController;
 
-    private EncoderMotorConfig config = new EncoderMotorConfig(2048 * 4, 0.92, 0.8, 0.0012, .01, 150);
+    //f 0.5 p 0.4 i .0012 d .01
+    private EncoderMotorConfig config = new EncoderMotorConfig(2048 * 4, 0.01611, 0.01611, 0.0012, .01, 800);
 
-    private EncoderMotor leftMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR), config).invert();
-    private EncoderMotor rightMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR), config);
+    private EncoderMotor leftMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR), config);
+    private EncoderMotor rightMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR), config).invert();
 
     private Motor yawMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.YAW_MOTOR));
     private Motor pitchMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.PITCH_MOTOR));
@@ -67,16 +68,12 @@ public class Shooter extends Subsystem {
 
             // spin up motors and then carousel to shoot
 
-            /*
-            if(System.currentTimeMillis() - shooterStartTime > 1000) {
+            if(System.currentTimeMillis() - shooterStartTime > 2000) {
                 carousel.setPercentOutput(.5);
             }
 
-            leftMotor.setPercentOutput(.86);
-            rightMotor.setPercentOutput(.76);
-            */
-            leftMotor.setPercentOutput(leftSpeedDemand/5500f);
-            rightMotor.setPercentOutput(rightSpeedDemand/5500f);
+            leftMotor.setVelocity(leftSpeedDemand);
+            rightMotor.setVelocity(rightSpeedDemand);
         } else {
             shooterStartTime = System.currentTimeMillis();
 
@@ -92,6 +89,13 @@ public class Shooter extends Subsystem {
             } else {
                 carousel.setPercentOutput(0);
             }
+        }
+
+        if(driveController.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
+            EncoderMotorConfig leftConfig = new EncoderMotorConfig(2048 * 4, 0.01611, leftP, leftI, leftD, 800);
+            leftMotor.setConfig(leftConfig);
+            EncoderMotorConfig rightConfig = new EncoderMotorConfig(2048 * 4, 0.01611, rightP, rightI, rightD, 800);
+            rightMotor.setConfig(rightConfig);
         }
 
         // move carousel up/down

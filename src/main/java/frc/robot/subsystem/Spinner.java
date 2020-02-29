@@ -5,8 +5,8 @@ import frc.robot.IDs;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
-import frc.robot.base.subsystem.motor.PhoenixMotor;
-import frc.robot.base.subsystem.motor.Motor;
+import frc.robot.base.device.motor.PhoenixMotor;
+import frc.robot.base.device.motor.Motor;
 
 import java.util.Map;
 import java.util.function.Supplier;

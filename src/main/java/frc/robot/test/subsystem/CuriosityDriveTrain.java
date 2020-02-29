@@ -3,8 +3,8 @@ package frc.robot.test.subsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.StandardDriveTrain;
-import frc.robot.base.subsystem.motor.PhoenixMotorPair;
-import frc.robot.base.subsystem.motor.EncoderMotorConfig;
+import frc.robot.base.device.motor.PhoenixMotorPair;
+import frc.robot.base.device.motor.EncoderMotorConfig;
 
 public class CuriosityDriveTrain extends StandardDriveTrain {
 

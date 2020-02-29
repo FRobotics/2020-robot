@@ -1,4 +1,4 @@
-package frc.robot.base.subsystem.motor;
+package frc.robot.base.device.motor;
 
 public class EncoderMotorConfig {
 
@@ -50,18 +50,17 @@ public class EncoderMotorConfig {
 
         DISTANCE_MULTIPLIER = 1d / countsPerRevolution;
         // 10 * turns 100ms -> 1s
-        //INPUT_MULTIPLIER = 10d * DISTANCE_MULTIPLIER;
-        INPUT_MULTIPLIER = 1;
+        INPUT_MULTIPLIER = 10d * DISTANCE_MULTIPLIER * 60d;
         OUTPUT_MULTIPLIER = 1d / INPUT_MULTIPLIER;
     }
 
     public final int PID_LOOP_INDEX;
     public final int TIMEOUT_MS;
-    public final double F;
-    public final double P;
-    public final double I;
-    public final double D;
-    public final int INTEGRAL_ZONE;
+    public double F;
+    public double P;
+    public double I;
+    public double D;
+    public int INTEGRAL_ZONE;
 
     public final double DISTANCE_MULTIPLIER;
     public final double INPUT_MULTIPLIER;

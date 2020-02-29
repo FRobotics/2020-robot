@@ -1,15 +1,9 @@
-package frc.robot.base.subsystem.motor;
+package frc.robot.base.device.motor;
 
 /**
  * A generic motor interface that lets you use generic motors in classes to make switching motors very easy
  */
 public interface Motor {
-
-    /**
-     * Sets the velocity of the motor
-     * @param speed the speed in feet per second
-     */
-    void setVelocity(double speed);
 
     /**
      * Sets the percent output of the motor

@@ -1,6 +1,6 @@
 package frc.robot.base.util;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import frc.robot.base.device.DoubleSolenoid4150;
 
 import java.util.function.Supplier;
 
@@ -10,9 +10,9 @@ public class Util {
      * @param solenoid the solenoid
      * @return a supplier of the solenoid state as a string for NTVs
      */
-    public static Supplier<Object> solenoidNTV(DoubleSolenoid solenoid) {
+    public static Supplier<Object> solenoidNTV(DoubleSolenoid4150 solenoid) {
         return () -> {
-            switch (solenoid.get()) {
+            switch (solenoid.getRaw()) {
                 case kForward:
                     return "forward";
                 case kReverse:

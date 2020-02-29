@@ -1,8 +1,8 @@
 package frc.robot.subsystem;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.IDs;
 import frc.robot.base.util.Util;
+import frc.robot.base.device.DoubleSolenoid4150;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
@@ -14,9 +14,9 @@ public class Climber extends Subsystem {
 
     private Controller controller;
 
-    private DoubleSolenoid bottomSolenoid = new DoubleSolenoid(IDs.Climber.BOTTOM_SOLENOID_FORWARD, IDs.Climber.BOTTOM_SOLENOID_REVERSE);
-    private DoubleSolenoid leftTopSolenoid = new DoubleSolenoid(IDs.Climber.TOP_LEFT_SOLENOID_FORWARD, IDs.Climber.TOP_LEFT_SOLENOID_REVERSE);
-    private DoubleSolenoid rightTopSolenoid = new DoubleSolenoid(IDs.Climber.TOP_RIGHT_SOLENOID_FORWARD, IDs.Climber.TOP_RIGHT_SOLENOID_REVERSE);
+    private DoubleSolenoid4150 bottomSolenoid = new DoubleSolenoid4150(IDs.Climber.BOTTOM_SOLENOID_FORWARD, IDs.Climber.BOTTOM_SOLENOID_REVERSE);
+    private DoubleSolenoid4150 leftTopSolenoid = new DoubleSolenoid4150(IDs.Climber.TOP_LEFT_SOLENOID_FORWARD, IDs.Climber.TOP_LEFT_SOLENOID_REVERSE);
+    private DoubleSolenoid4150 rightTopSolenoid = new DoubleSolenoid4150(IDs.Climber.TOP_RIGHT_SOLENOID_FORWARD, IDs.Climber.TOP_RIGHT_SOLENOID_REVERSE);
 
     public Climber(
             Controller controller
@@ -29,24 +29,24 @@ public class Climber extends Subsystem {
     public void control() {
 
         // raise and lower bottom solenoid if tops are down
-        if (leftTopSolenoid.get() == DoubleSolenoid.Value.kReverse) {
+        if (!leftTopSolenoid.isExtended() && !rightTopSolenoid.isExtended()) {
             if (controller.buttonPressed(Button.BACK)) {
-                bottomSolenoid.set(DoubleSolenoid.Value.kReverse);
+                bottomSolenoid.retract();
             }
 
             if (controller.buttonPressed(Button.START)) {
-                bottomSolenoid.set(DoubleSolenoid.Value.kForward);
+                bottomSolenoid.extend();
             }
         }
 
         // raise and lower top solenoids if bottoms are out
-        if (bottomSolenoid.get() == DoubleSolenoid.Value.kForward) {
+        if (bottomSolenoid.isExtended()) {
             if (controller.buttonPressed(Button.LEFT_BUMPER)) {
-                leftTopSolenoid.set(DoubleSolenoid.Value.kForward);
+                leftTopSolenoid.flip();
             }
 
             if (controller.buttonPressed(Button.RIGHT_BUMPER)) {
-                rightTopSolenoid.set(DoubleSolenoid.Value.kForward);
+                rightTopSolenoid.flip();
             }
         }
 
