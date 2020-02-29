@@ -1,7 +1,6 @@
 package frc.robot.base.subsystem;
 
 import frc.robot.base.input.Button;
-import frc.robot.base.util.RateLimiter;
 import frc.robot.base.util.Util;
 import frc.robot.base.NTHandler;
 import frc.robot.base.device.motor.EncoderMotor;
@@ -15,6 +14,7 @@ import java.util.function.Supplier;
 /**
  * A drive train with two encoder motors and a rate limiter for each motor that is controlled with a controller
  * It features two driving modes, closed loop and open loop in case something goes wrong
+ * NOTE: rate limiters are currently disabled
  */
 public class StandardDriveTrain extends Subsystem {
 
@@ -22,8 +22,8 @@ public class StandardDriveTrain extends Subsystem {
 
     private EncoderMotor leftMotor; // 1.565
     private EncoderMotor rightMotor; // 1.565
-    private RateLimiter leftRateLimiter;
-    private RateLimiter rightRateLimiter;
+    //private RateLimiter leftRateLimiter;
+    //private RateLimiter rightRateLimiter;
 
     private double controllerScale;
     private double maxSpeed;
@@ -38,8 +38,8 @@ public class StandardDriveTrain extends Subsystem {
         super("driveTrain");
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
-        this.rightRateLimiter = new RateLimiter(maxAcceleration / 50);
-        this.leftRateLimiter = new RateLimiter(maxAcceleration / 50);
+        //this.rightRateLimiter = new RateLimiter(maxAcceleration / 50);
+        //this.leftRateLimiter = new RateLimiter(maxAcceleration / 50);
         this.maxSpeed = controllerScale;
         this.controllerScale = controllerScale;
         this.controller = controller;
