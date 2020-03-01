@@ -1,5 +1,6 @@
 package frc.robot.test.subsystem;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
@@ -8,6 +9,8 @@ import frc.robot.base.device.motor.PhoenixMotorPair;
 import frc.robot.base.device.motor.EncoderMotorConfig;
 
 public class CuriosityDriveTrain extends StandardDriveTrain {
+
+    private ADIS16448_IMU gyro = new ADIS16448_IMU();
 
     public static final EncoderMotorConfig CONFIG = new EncoderMotorConfig(
             3f/12f,
