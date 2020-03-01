@@ -1,10 +1,11 @@
-package frc.robot.subsystem;
+package frc.robot.hailfire.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.IDs;
+
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
+import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotor;
 import frc.robot.base.device.motor.Motor;
 

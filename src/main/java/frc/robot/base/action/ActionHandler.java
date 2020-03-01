@@ -1,4 +1,4 @@
-package frc.robot.base.util.action;
+package frc.robot.base.action;
 
 import java.util.List;
 
@@ -15,8 +15,8 @@ public abstract class ActionHandler {
     public void startAction(Action action) {
         finished = false;
         this.action = action;
-        if(this.action instanceof ActionFunc.Timed) {
-            ((ActionFunc.Timed)this.action).start();
+        if(this.action instanceof SetupAction) {
+            ((SetupAction)this.action).setupAction.run();
         }
     }
 
@@ -27,7 +27,6 @@ public abstract class ActionHandler {
     }
 
     public void periodic() {
-        this.action.func.run();
         if (
                 action.isFinished()
         ) {
@@ -47,6 +46,7 @@ public abstract class ActionHandler {
                 this.finished = true;
             }
         }
+        this.action.func.run();
     }
 
     public void clearActionQueue() {

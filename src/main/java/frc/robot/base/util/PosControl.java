@@ -91,4 +91,8 @@ public class PosControl {
         return hitCount >= HIT_COUNT_NEEDED;
     }
 
+    public void reset() {
+        this.hitCount = 0;
+    }
+
 }

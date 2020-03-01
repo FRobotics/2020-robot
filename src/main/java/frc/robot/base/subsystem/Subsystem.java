@@ -1,13 +1,16 @@
 package frc.robot.base.subsystem;
 
 import frc.robot.base.RobotMode;
-import frc.robot.base.util.action.Action;
-import frc.robot.base.util.action.ActionHandler;
+import frc.robot.base.action.Action;
+import frc.robot.base.action.ActionHandler;
 
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * An action handler meant to deal with a group of devices that work together
+ */
 public abstract class Subsystem extends ActionHandler {
 
     private final Action STOP = new Action(this::stop);

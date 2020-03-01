@@ -59,6 +59,7 @@ public class PhoenixMotor implements EncoderMotor {
 
     @Override
     public void setPercentOutput(double percent) {
+        System.out.println("percent: " + percent);
         motor.set(ControlMode.PercentOutput, percent);
     }
 
@@ -85,7 +86,16 @@ public class PhoenixMotor implements EncoderMotor {
      */
     @Override
     public double getVelocity() {
-        return motor.getSelectedSensorVelocity() * inputMultiplier;
+        return getVelocityRaw() * inputMultiplier;
+    }
+
+    /**
+     * NOTE: this only works if it was created using config and has an encoder
+     * @return the raw value of the velocity of the motor
+     */
+    @Override
+    public double getVelocityRaw() {
+        return motor.getSelectedSensorVelocity();
     }
 
     /**

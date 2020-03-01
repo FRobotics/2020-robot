@@ -1,10 +1,13 @@
-package frc.robot.base.util.action;
+package frc.robot.base.action;
 
 import java.util.function.Supplier;
 
+/**
+ * A function meant to be periodically called that ends based on a condition
+ */
 public class Action {
-    public final ActionFunc func;
-    public Supplier<Boolean> finishCondition;
+    protected ActionFunc func;
+    protected Supplier<Boolean> finishCondition;
 
     public Action(ActionFunc func, Supplier<Boolean> finishCondition) {
         this.func = func;

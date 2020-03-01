@@ -1,13 +1,13 @@
-package frc.robot;
+package frc.robot.hailfire;
 
 import frc.robot.base.Robot;
-import frc.robot.base.util.action.Action;
-import frc.robot.base.util.action.SetupAction;
-import frc.robot.base.util.action.TimedAction;
+import frc.robot.base.action.Action;
+import frc.robot.base.action.SetupAction;
+import frc.robot.base.action.TimedAction;
+import frc.robot.hailfire.subsystem.DriveTrain;
+import frc.robot.hailfire.subsystem.Intake;
+import frc.robot.hailfire.subsystem.Shooter;
 import frc.robot.base.input.Controller;
-import frc.robot.subsystem.DriveTrain;
-import frc.robot.subsystem.Intake;
-import frc.robot.subsystem.Shooter;
 
 import java.util.Arrays;
 import java.util.List;

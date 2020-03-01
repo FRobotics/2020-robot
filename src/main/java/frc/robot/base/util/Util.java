@@ -25,6 +25,10 @@ public class Util {
         };
     }
 
+    /**
+     * Scales a value so the range (deadband, 1) becomes (0, 1)
+     * as well as applies a power to smooth joystick control
+     */
     public static double adjustInput(double input, double deadBand, int power) {
         double absInput = Math.abs(input);
         double deadBanded = absInput < deadBand ? 0 : (absInput - deadBand) * (1 / (1 - deadBand));

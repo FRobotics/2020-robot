@@ -5,6 +5,7 @@ package frc.robot.base.device.motor;
  */
 public interface EncoderMotor extends Motor {
     double getVelocity();
+    double getVelocityRaw();
     double setVelocity(double speed);
     double getDistance();
     void resetDistance();

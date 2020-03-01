@@ -1,7 +1,7 @@
-package frc.robot.subsystem;
+package frc.robot.hailfire.subsystem;
 
-import frc.robot.IDs;
 import frc.robot.base.util.Util;
+import frc.robot.hailfire.IDs;
 import frc.robot.base.device.DoubleSolenoid4150;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;

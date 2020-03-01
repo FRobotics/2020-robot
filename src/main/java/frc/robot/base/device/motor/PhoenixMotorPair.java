@@ -32,6 +32,11 @@ public class PhoenixMotorPair implements EncoderMotor {
     }
 
     @Override
+    public double getVelocityRaw() {
+        return parent.getVelocityRaw();
+    }
+
+    @Override
     public double getOutputPercent() {
         return parent.getOutputPercent();
     }

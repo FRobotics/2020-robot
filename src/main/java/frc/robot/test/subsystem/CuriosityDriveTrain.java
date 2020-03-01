@@ -1,6 +1,7 @@
 package frc.robot.test.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.StandardDriveTrain;
 import frc.robot.base.device.motor.PhoenixMotorPair;
@@ -17,6 +18,15 @@ public class CuriosityDriveTrain extends StandardDriveTrain {
             0.01,
             150
     );
+
+    @Override
+    public void control() {
+        super.control();
+
+        if(getController().buttonPressed(Button.B)) {
+            this.resetDistance();
+        }
+    }
 
     public CuriosityDriveTrain(Controller controller) {
         super(

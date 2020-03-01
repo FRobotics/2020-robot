@@ -1,12 +1,13 @@
-package frc.robot.subsystem;
+package frc.robot.hailfire.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import frc.robot.IDs;
+
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.input.Pov;
 import frc.robot.base.subsystem.StandardDriveTrain;
+import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotorPair;
 import frc.robot.base.device.DoubleSolenoid4150;
 import frc.robot.base.device.motor.EncoderMotorConfig;
@@ -34,14 +35,14 @@ public class DriveTrain extends StandardDriveTrain {
     );
 
     /*
-    LOW MULT: 2.2053804347826086956521739130435
-    HIGH MULT: 0.63836956521739130434782608695652
-    OLD CONFIG
-    0.92,
-    0.8,
-    0.0012,
-    0.01,
-    150
+     * LOW MULT: 2.2053804347826086956521739130435
+     * HIGH MULT: 0.63836956521739130434782608695652
+     * OLD CONFIG
+     * 0.92,
+     * 0.8,
+     * 0.0012,
+     * 0.01,
+     * 150
     */
 
     private DoubleSolenoid4150 leftEvoShifter = new DoubleSolenoid4150(
@@ -83,22 +84,25 @@ public class DriveTrain extends StandardDriveTrain {
 
         // shift gears
 
-        if(getController().buttonPressed(Button.LEFT_BUMPER)){
+        if(controller.buttonPressed(Button.LEFT_BUMPER)){
             shiftToLowGear();
             autoShift = false;
         }
 
-        if (getController().buttonPressed(Button.RIGHT_BUMPER)) {
+        if (controller.buttonPressed(Button.RIGHT_BUMPER)) {
             shiftToHighGear();
             autoShift = false;
         }
 
-        if(getController().getPov(Pov.D_PAD) >= 0) {
+        if(controller.getPov(Pov.D_PAD) >= 0) {
             autoShift = true;
         }
 
         if(autoShift) {
-            if (Math.abs(getAverageDemand()) > 4.5 && Math.abs(getAverageVelocity()) > 4.5) {
+            if (
+                Math.abs(getAverageDemand()) > 4.5
+                && Math.abs(getAverageVelocity()) > 4.5
+            ) {
                 shiftToHighGear();
             }
 

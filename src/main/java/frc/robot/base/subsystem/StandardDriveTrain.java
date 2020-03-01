@@ -2,7 +2,6 @@ package frc.robot.base.subsystem;
 
 import frc.robot.base.input.Button;
 import frc.robot.base.util.Util;
-import frc.robot.base.NTHandler;
 import frc.robot.base.device.motor.EncoderMotor;
 import frc.robot.base.device.motor.EncoderMotorConfig;
 import frc.robot.base.input.Axis;
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
  */
 public class StandardDriveTrain extends Subsystem {
 
-    private Controller controller;
+    protected Controller controller;
 
     private EncoderMotor leftMotor; // 1.565
     private EncoderMotor rightMotor; // 1.565
@@ -46,32 +45,45 @@ public class StandardDriveTrain extends Subsystem {
     }
 
     private double leftDemand = 0;
+    private double leftOutputRaw = 0;
+
+    private double rightDemand = 0;
+    private double rightOutputRaw = 0;
+
     public void setLeftVelocity(double velocity) {
         velocity = safeVelocity(velocity);
         this.leftDemand = velocity;
-        NTHandler.robotTable.getEntry("driveTrain/velOutputRaw").setDouble(this.leftMotor.setVelocity(velocity));
-    }
-    public void setLeftPercentOutput(double percent) {
-        percent = safePercent(percent);
-        this.leftDemand = percent;
-        this.leftMotor.setPercentOutput(percent);
+        this.leftOutputRaw = this.leftMotor.setVelocity(velocity);
     }
 
-    private double rightDemand = 0;
     public void setRightVelocity(double velocity) {
         velocity = safeVelocity(velocity);
         this.rightDemand = velocity;
-        this.rightMotor.setVelocity(velocity);
-    }
-    public void setRightPercentOutput(double percent) {
-        percent = safePercent(percent);
-        this.rightDemand = percent;
-        this.rightMotor.setPercentOutput(percent);
+        this.rightOutputRaw = this.rightMotor.setVelocity(velocity);
     }
 
     public void setVelocity(double velocity) {
         setLeftVelocity(velocity);
         setRightVelocity(velocity);
+    }
+
+    public void setLeftPercentOutput(double percent) {
+        percent = safePercent(percent);
+        this.leftDemand = percent;
+        this.leftOutputRaw = percent;
+        this.leftMotor.setPercentOutput(percent);
+    }
+
+    public void setRightPercentOutput(double percent) {
+        percent = safePercent(percent);
+        this.rightDemand = percent;
+        this.rightOutputRaw = percent;
+        this.rightMotor.setPercentOutput(percent);
+    }
+
+    public void setPercentOutput(double percent) {
+        this.setLeftPercentOutput(percent);
+        this.setRightPercentOutput(percent);
     }
 
     @Override
@@ -82,7 +94,7 @@ public class StandardDriveTrain extends Subsystem {
         double left = fb - lr;
         double right = fb + lr;
 
-        if(useClosedLoop) {
+        if (useClosedLoop) {
             setLeftVelocity(left * controllerScale);
             setRightVelocity(right * controllerScale);
         } else {
@@ -94,7 +106,7 @@ public class StandardDriveTrain extends Subsystem {
             this.useClosedLoop = true;
         }
 
-        if(controller.buttonPressed(Button.BACK)) {
+        if (controller.buttonPressed(Button.BACK)) {
             this.useClosedLoop = false;
         }
     }
@@ -109,21 +121,30 @@ public class StandardDriveTrain extends Subsystem {
 
     @Override
     public void stop() {
-        setVelocity(0);
+        setPercentOutput(0);
         //this.leftMotor.resetDistance();
         //this.rightMotor.resetDistance();
     }
 
     @Override
     public Map<String, Supplier<Object>> NTSets() {
-        return Map.of(
-            "leftVelocity", leftMotor::getVelocity,
-            "rightVelocity", rightMotor::getVelocity,
-            "leftDistance", leftMotor::getDistance,
-            "rightDistance", rightMotor::getDistance,
-            "leftDemand", () -> leftDemand,
-            "rightDemand", () -> rightDemand,
-            "useClosedLoop", () -> useClosedLoop
+        // there are more than 10 so you can't use Map.of() :(
+        return Map.ofEntries(
+                Map.entry("left/velocity", leftMotor::getVelocity),
+                Map.entry("left/distance", leftMotor::getDistance),
+                Map.entry("left/demand", () -> leftDemand),
+                Map.entry("left/demandRaw", () -> leftOutputRaw),
+                Map.entry("left/received/velocity", leftMotor::getVelocityRaw),
+                Map.entry("left/received/outputPercent", leftMotor::getOutputPercent),
+
+                Map.entry("right/velocity", rightMotor::getVelocity),
+                Map.entry("right/distance", rightMotor::getDistance),
+                Map.entry("right/demand", () -> rightDemand),
+                Map.entry("right/demandRaw", () -> rightOutputRaw),
+                Map.entry("right/received/velocity", rightMotor::getVelocityRaw),
+                Map.entry("right/received/outputPercent", rightMotor::getOutputPercent),
+
+                Map.entry("closedLoopControl", () -> useClosedLoop)
         );
     }
 
@@ -187,5 +208,10 @@ public class StandardDriveTrain extends Subsystem {
     public void setMotorConfigs(EncoderMotorConfig config) {
         setLeftMotorConfig(config);
         setRightMotorConfig(config);
+    }
+
+    public void resetDistance() {
+        this.leftMotor.resetDistance();
+        this.rightMotor.resetDistance();
     }
 }

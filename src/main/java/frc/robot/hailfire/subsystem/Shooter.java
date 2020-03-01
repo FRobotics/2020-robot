@@ -1,13 +1,13 @@
-package frc.robot.subsystem;
+package frc.robot.hailfire.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Relay;
-import frc.robot.IDs;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
+import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotor;
 import frc.robot.base.device.motor.EncoderMotor;
 import frc.robot.base.device.motor.EncoderMotorConfig;
@@ -31,7 +31,7 @@ public class Shooter extends Subsystem {
     private Motor yawMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.YAW_MOTOR));
     private Motor pitchMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.PITCH_MOTOR));
     private Motor carousel = new PhoenixMotor(new TalonSRX(IDs.Shooter.CAROUSEL_MOTOR)).invert();
-    //private DigitalInput carouselSwitch = new DigitalInput(0);
+    // private DigitalInput carouselSwitch = new DigitalInput(0);
 
     private Relay spike = new Relay(0);
 
@@ -129,8 +129,8 @@ public class Shooter extends Subsystem {
     public Map<String, Supplier<Object>> NTSets() {
         return Map.of(
             "leftPercent", leftMotor::getOutputPercent,
-            "rightPercent", rightMotor::getOutputPercent,
             "leftVelocity", leftMotor::getVelocity,
+            "rightPercent", rightMotor::getOutputPercent,
             "rightVelocity", rightMotor::getVelocity,
             
             "pitchOutput", pitchMotor::getOutputPercent,
@@ -146,10 +146,12 @@ public class Shooter extends Subsystem {
             "leftP", doubleSetter(d -> leftP = d),
             "leftI", doubleSetter(d -> leftI = d),
             "leftD", doubleSetter(d -> leftD = d),
+
             "rightK", doubleSetter(d -> rightK = d),
             "rightP", doubleSetter(d -> rightP = d),
             "rightI", doubleSetter(d -> rightI = d),
             "rightD", doubleSetter(d -> rightD = d),
+            
             "leftSpeedDemand", doubleSetter(d -> leftSpeedDemand = d),
             "rightSpeedDemand", doubleSetter(d -> rightSpeedDemand = d)
         );
