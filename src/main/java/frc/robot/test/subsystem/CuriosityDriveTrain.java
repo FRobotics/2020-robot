@@ -8,6 +8,11 @@ import frc.robot.base.subsystem.StandardDriveTrain;
 import frc.robot.base.device.motor.PhoenixMotorPair;
 import frc.robot.base.device.motor.EncoderMotorConfig;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 public class CuriosityDriveTrain extends StandardDriveTrain {
 
     private ADIS16448_IMU gyro = new ADIS16448_IMU();
@@ -45,5 +50,12 @@ public class CuriosityDriveTrain extends StandardDriveTrain {
                 ).invert(),
                 5, 10, controller
         );
+    }
+
+    @Override
+    public Map<String, Supplier<Object>> NTSets() {
+        var newMap = new HashMap<>(super.NTSets());
+        newMap.put("gyro", gyro::getAngle);
+        return newMap;
     }
 }
