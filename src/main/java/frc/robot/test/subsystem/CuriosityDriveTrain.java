@@ -47,7 +47,7 @@ public class CuriosityDriveTrain extends StandardDriveTrain {
                         new TalonSRX(12),
                         CONFIG
                 ).invert(),
-                5, 10, controller
+                5, 10, 10, controller
         );
     }
 

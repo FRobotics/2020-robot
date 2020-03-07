@@ -14,6 +14,8 @@ import frc.robot.base.device.motor.EncoderMotorConfig;
 
 public class DriveTrain extends StandardDriveTrain {
 
+    private static final double LOW_MAX_SPEED = 5;
+
     public static final EncoderMotorConfig LOW_CONFIG = new EncoderMotorConfig(
             3f/12f,
             4 * 360,
@@ -75,17 +77,21 @@ public class DriveTrain extends StandardDriveTrain {
                         new VictorSPX(IDs.DriveTrain.RIGHT_MOTOR_FOLLOWER),
                         LOW_CONFIG
                 ).invert(),
-                10, 19, controller);
+                10, 19, LOW_MAX_SPEED, controller);
+        setMaxScaleShift(0.85);
     }
 
     @Override
     public void control() {
-        if(controller.buttonDown(Button.B)) {
-            setLeftPercentOutput(-.05);
-            setRightPercentOutput(.05);
-        } else if(controller.buttonDown(Button.X)) {
-            setLeftPercentOutput(.05);
-            setRightPercentOutput(-.05);
+
+        double turnSpeed = 0.2;
+
+        if(controller.buttonDown(Button.B)){
+            setLeftVelOrPercent(-turnSpeed);
+            setRightVelOrPercent(turnSpeed);
+        } else if(controller.buttonDown(Button.X)){
+            setLeftVelOrPercent(turnSpeed);
+            setRightVelOrPercent(-turnSpeed);
         } else {
             super.control();
         }
@@ -108,15 +114,15 @@ public class DriveTrain extends StandardDriveTrain {
 
         if(autoShift) {
             if (
-                Math.abs(getAverageDemand()) > 4.5
-                && Math.abs(getAverageVelocity()) > 4.5
+                Math.abs(getAverageDemand()) > 5
+                && Math.abs(getAverageVelocity()) > 5
             ) {
                 shiftToHighGear();
             }
 
             if (
-                Math.abs(getAverageDemand()) < 4.25
-                && Math.abs(getAverageVelocity()) < 4.25
+                Math.abs(getAverageDemand()) < 4.5
+                && Math.abs(getAverageVelocity()) < 4.5
             ) {
                 shiftToLowGear();
             }
@@ -126,12 +132,14 @@ public class DriveTrain extends StandardDriveTrain {
     public void shiftToHighGear() {
         if(evoShifter.extend()) {
             setMotorConfigs(HIGH_CONFIG);
+            setCurrentMaxSpeed(getAbsoluteMaxSpeed());
         }
     }
 
     public void shiftToLowGear() {
         if(evoShifter.retract()) {
             setMotorConfigs(LOW_CONFIG);
+            setCurrentMaxSpeed(LOW_MAX_SPEED);
         }
     }
 }

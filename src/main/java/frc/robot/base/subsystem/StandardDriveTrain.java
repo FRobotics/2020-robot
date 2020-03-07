@@ -24,8 +24,8 @@ public class StandardDriveTrain extends Subsystem {
     //private RateLimiter leftRateLimiter;
     //private RateLimiter rightRateLimiter;
 
-    private double controllerScale;
-    private double maxSpeed;
+    private double absoluteMaxSpeed;
+    private double currentMaxSpeed;
     private double controllerDeadBand = 0.2;
     private int controllerPower = 2;
 
@@ -33,14 +33,14 @@ public class StandardDriveTrain extends Subsystem {
 
     public StandardDriveTrain(
             EncoderMotor leftMotor, EncoderMotor rightMotor,
-            double maxAcceleration, double controllerScale, Controller controller) {
+            double maxAcceleration, double maxSpeed, double startMaxSpeed, Controller controller) {
         super("driveTrain");
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         //this.rightRateLimiter = new RateLimiter(maxAcceleration / 50);
         //this.leftRateLimiter = new RateLimiter(maxAcceleration / 50);
-        this.maxSpeed = controllerScale;
-        this.controllerScale = controllerScale;
+        this.currentMaxSpeed = startMaxSpeed;
+        this.absoluteMaxSpeed = maxSpeed;
         this.controller = controller;
     }
 
@@ -86,6 +86,36 @@ public class StandardDriveTrain extends Subsystem {
         this.setRightPercentOutput(percent);
     }
 
+    private double maxScalingShift = 0;
+
+    public void setMaxScaleShift(double shift) {
+        this.maxScalingShift = shift;
+    }
+
+    public void setLeftVelOrPercent(double percent) {
+        if(useClosedLoop) {
+            this.setLeftVelocity(percent * (getCurrentMaxSpeed() - maxScalingShift));
+        } else {
+            this.setLeftPercentOutput(percent);
+        }
+    }
+
+    public void setRightVelOrPercent(double percent) {
+        if(useClosedLoop) {
+            this.setRightVelocity(percent * (getCurrentMaxSpeed() - maxScalingShift));
+        } else {
+            this.setRightPercentOutput(percent);
+        }
+    }
+
+    public void setVelOrPercent(double percent) {
+        if(useClosedLoop) {
+            this.setVelocity(percent * (getCurrentMaxSpeed() - maxScalingShift));
+        } else {
+            this.setPercentOutput(percent);
+        }
+    }
+
     @Override
     public void control() {
         double fb = -Util.adjustInput(controller.getAxis(Axis.LEFT_Y), controllerDeadBand, controllerPower);
@@ -95,8 +125,8 @@ public class StandardDriveTrain extends Subsystem {
         double right = fb + lr;
 
         if (useClosedLoop) {
-            setLeftVelocity(left * controllerScale);
-            setRightVelocity(right * controllerScale);
+            setLeftVelocity(left * absoluteMaxSpeed);
+            setRightVelocity(right * absoluteMaxSpeed);
         } else {
             setLeftPercentOutput(left);
             setRightPercentOutput(right);
@@ -116,7 +146,7 @@ public class StandardDriveTrain extends Subsystem {
     }
 
     public double safeVelocity(double velocity) {
-        return Math.max(Math.min(velocity, maxSpeed), -maxSpeed);
+        return Math.max(Math.min(velocity, currentMaxSpeed), -currentMaxSpeed);
     }
 
     public double safePercent(double percent) {
@@ -152,12 +182,20 @@ public class StandardDriveTrain extends Subsystem {
         );
     }
 
-    public void setMaxSpeed(double maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setCurrentMaxSpeed(double maxSpeed) {
+        this.currentMaxSpeed = maxSpeed;
+    }
+
+    public double getCurrentMaxSpeed() {
+        return this.currentMaxSpeed;
     }
 
     public void setClosedLoop(boolean useClosedLoop) {
         this.useClosedLoop = useClosedLoop;
+    }
+
+    public boolean getClosedLoop() { // added 3/7 KW
+        return this.useClosedLoop;
     }
 
     public void setControllerDeadBand(double controllerDeadBand) {
@@ -201,6 +239,9 @@ public class StandardDriveTrain extends Subsystem {
         return (leftMotor.getDistance() + rightMotor.getDistance()) / 2;
     }
 
+    public double getAbsoluteMaxSpeed() {
+        return this.absoluteMaxSpeed;
+    }
     public void setLeftMotorConfig(EncoderMotorConfig config) {
         this.leftMotor.setConfig(config);
     }
