@@ -40,7 +40,7 @@ public abstract class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.AUTONOMOUS));
-        this.autoActionHandler.startActionQueue(autoActions);
+        this.autoActionHandler.startActionQueue(autoActions); // TODO the actions need to reset!
     }
 
     @Override

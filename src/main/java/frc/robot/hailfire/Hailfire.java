@@ -4,6 +4,8 @@ import frc.robot.base.Robot;
 import frc.robot.base.action.Action;
 import frc.robot.base.action.SetupAction;
 import frc.robot.base.action.TimedAction;
+import frc.robot.base.util.PosControl;
+import frc.robot.hailfire.subsystem.Climber;
 import frc.robot.hailfire.subsystem.DriveTrain;
 import frc.robot.hailfire.subsystem.Intake;
 import frc.robot.hailfire.subsystem.Shooter;
@@ -21,16 +23,28 @@ public class Hailfire extends Robot {
     private final DriveTrain driveTrain = register(new DriveTrain(driveController));
     private final Shooter shooter = register(new Shooter(auxiliaryController, driveController));
     private final Intake intake = register(new Intake(auxiliaryController));
-    // private final Climber climber = register(new Climber(auxiliaryController));
+    private final Climber climber = register(new Climber(auxiliaryController));
     // private final Spinner spinner = register(new Spinner(auxiliaryController));
+
+    private PosControl drivePosControl = new PosControl(10, 2, 0.1, 0.5, 5);
 
     @Override
     public List<? extends Action> getAutoActions() {
-        //noinspection ArraysAsListWithZeroOrOneArgument
+        // uncomment if only one thing lol // noinspection ArraysAsListWithZeroOrOneArgument
         return Arrays.asList(
                 new SetupAction(() -> driveTrain.startAction(
-                        new TimedAction(() -> driveTrain.setVelocity(-40), 2000)
-                ))
+                        new Action(
+                                () -> driveTrain.setVelocity(drivePosControl.getSpeed(-driveTrain.getAverageDistance())),
+                                drivePosControl::isFinished
+                        )
+                ), driveTrain::isFinished),
+                new TimedAction(2000),
+                new SetupAction(() -> shooter.startAction(
+                        new TimedAction(
+                                () -> shooter.shoot(false),
+                                7000
+                        )
+                ), shooter::isFinished)
         );
     }
 }

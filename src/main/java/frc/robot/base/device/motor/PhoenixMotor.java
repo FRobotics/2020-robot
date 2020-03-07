@@ -59,7 +59,7 @@ public class PhoenixMotor implements EncoderMotor {
 
     @Override
     public void setPercentOutput(double percent) {
-        System.out.println("percent: " + percent);
+        //System.out.println("percent: " + percent); 3/5 KW
         motor.set(ControlMode.PercentOutput, percent);
     }
 

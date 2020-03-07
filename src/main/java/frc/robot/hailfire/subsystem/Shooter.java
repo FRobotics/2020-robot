@@ -2,6 +2,7 @@ package frc.robot.hailfire.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Button;
@@ -28,10 +29,10 @@ public class Shooter extends Subsystem {
     private EncoderMotor leftMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.LEFT_MOTOR), config);
     private EncoderMotor rightMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.RIGHT_MOTOR), config).invert();
 
-    private Motor yawMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.YAW_MOTOR));
     private Motor pitchMotor = new PhoenixMotor(new TalonSRX(IDs.Shooter.PITCH_MOTOR));
     private Motor carousel = new PhoenixMotor(new TalonSRX(IDs.Shooter.CAROUSEL_MOTOR)).invert();
-    // private DigitalInput carouselSwitch = new DigitalInput(0);
+    private DigitalInput carouselSwitch = new DigitalInput(1);
+    private boolean carouselHit = false;
 
     private Relay spike = new Relay(0);
 
@@ -54,42 +55,69 @@ public class Shooter extends Subsystem {
     public double leftSpeedDemand;
     public double rightSpeedDemand;
 
+    private double carouselOutput = 0;
+    private boolean autoCarousel = false;
+    private boolean spinForShooter = true;
+
     @Override
     public void stop() {
         leftMotor.setPercentOutput(0);
         rightMotor.setPercentOutput(0);
+        carousel.setPercentOutput(0);
+        shooterStartTime = System.currentTimeMillis();
+        carouselOutput = 0;
+        autoCarousel = false;
     }
-
-    private long shooterStartTime = 0;
 
     @Override
     public void control() {
+
         if (driveController.getAxis(Axis.RIGHT_TRIGGER) > .5) {
-
-            // spin up motors and then carousel to shoot
-
-            if(System.currentTimeMillis() - shooterStartTime > 2000) {
-                carousel.setPercentOutput(.5);
-            }
-
-            leftMotor.setVelocity(leftSpeedDemand);
-            rightMotor.setVelocity(rightSpeedDemand);
+            shoot(true);
         } else {
-            shooterStartTime = System.currentTimeMillis();
+            spinForShooter = false;
 
-            // (if not shooting) control the carousel
+            shooterStartTime = System.currentTimeMillis();
 
             leftMotor.setPercentOutput(0);
             rightMotor.setPercentOutput(0);
+        }
 
-            if (auxController.getAxis(Axis.LEFT_X) > 0.5) {
-                carousel.setPercentOutput(.7);
-            } else if(auxController.getAxis(Axis.LEFT_X) < -0.5) {
-                carousel.setPercentOutput(-.7);
+        // I am fully aware that carousel control is a boolean mess
+        // I should probably implement a simpler priority system
+        // BUT it works
+
+        // manual control
+        if (auxController.getAxis(Axis.LEFT_X) > 0.5) {
+            carouselOutput = 0.7;
+            autoCarousel = false;
+        } else if(auxController.getAxis(Axis.LEFT_X) < -0.5) {
+            carouselOutput = -0.7;
+            autoCarousel = false;
+        } else if(auxController.getAxis(Axis.LEFT_TRIGGER) > 0.5) { // semi manual (go to limit switch)
+            carouselOutput = -0.7;
+            autoCarousel = true;
+        } else if(auxController.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
+            carouselOutput = 0.7;
+            autoCarousel = true;
+        } else if(autoCarousel) {
+            // edge on detection
+            if(!carouselSwitch.get()) {
+                if(!carouselHit) {
+                    carouselHit = true;
+                    carouselOutput = 0;
+                    autoCarousel = false;
+                }
             } else {
-                carousel.setPercentOutput(0);
+                carouselHit = false;
+            }
+        } else { // if nothing else
+            if(!spinForShooter) {
+                carouselOutput = 0;
             }
         }
+
+        carousel.setPercentOutput(carouselOutput);
 
         if(driveController.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
             EncoderMotorConfig leftConfig = new EncoderMotorConfig(2048 * 4, 0.01611, leftP, leftI, leftD, 800);
@@ -108,16 +136,6 @@ public class Shooter extends Subsystem {
             pitchMotor.setPercentOutput(0);
         }
 
-        // move carousel left/right
-
-        if (driveController.buttonDown(Button.B)) {
-            yawMotor.setPercentOutput(0.5);
-        } else if (driveController.buttonDown(Button.X)) {
-            yawMotor.setPercentOutput(-0.5);
-        } else {
-            yawMotor.setPercentOutput(0);
-        }
-
         // turn on lights
 
         if(auxController.buttonPressed(Button.LEFT_BUMPER)) {
@@ -134,8 +152,8 @@ public class Shooter extends Subsystem {
             "rightVelocity", rightMotor::getVelocity,
             
             "pitchOutput", pitchMotor::getOutputPercent,
-            "yawOutput", yawMotor::getOutputPercent,
-            "carouselOutput", carousel::getOutputPercent
+            "carouselOutput", carousel::getOutputPercent,
+            "carouselSwitch", carouselSwitch::get
         );
     }
 
@@ -163,5 +181,23 @@ public class Shooter extends Subsystem {
                 setter.accept((double)obj);
             }
         };
+    }
+
+    private long shooterStartTime = 0;
+
+    public void shoot(boolean controlled) {
+        // spin up motors and then carousel to shoot
+
+        if(System.currentTimeMillis() - shooterStartTime > 2000 && !autoCarousel) {
+            if(controlled) {
+                carouselOutput = .5;
+                spinForShooter = true;
+            } else {
+                carousel.setPercentOutput(.5);
+            }
+        }
+
+        leftMotor.setVelocity(leftSpeedDemand);
+        rightMotor.setVelocity(rightSpeedDemand);
     }
 }

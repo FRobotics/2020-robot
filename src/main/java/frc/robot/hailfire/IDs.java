@@ -8,8 +8,8 @@ public class IDs {
         public static final int RIGHT_MOTOR_MASTER = 16;
         public static final int RIGHT_MOTOR_FOLLOWER = 17;
 
-        public static final int RIGHT_EVO_SHIFTER_FORWARD = 2;
-        public static final int RIGHT_EVO_SHIFTER_REVERSE = 3;
+        // public static final int RIGHT_EVO_SHIFTER_FORWARD = 2;
+        // public static final int RIGHT_EVO_SHIFTER_REVERSE = 3;
         public static final int LEFT_EVO_SHIFTER_FORWARD = 4;
         public static final int LEFT_EVO_SHIFTER_REVERSE = 5;
 }
@@ -17,7 +17,6 @@ public class IDs {
     public static class Shooter {
         public static final int LEFT_MOTOR = 14;
         public static final int RIGHT_MOTOR = 13;
-        public static final int YAW_MOTOR = 15;
         public static final int PITCH_MOTOR = 18;
         public static final int CAROUSEL_MOTOR = 19;
     }
@@ -34,10 +33,7 @@ public class IDs {
 
     public static class Climber { // TODO
         public static final int BOTTOM_SOLENOID_FORWARD = 0;
-        public static final int BOTTOM_SOLENOID_REVERSE = 0;
-        public static final int TOP_LEFT_SOLENOID_FORWARD = 0;
-        public static final int TOP_LEFT_SOLENOID_REVERSE = 0;
-        public static final int TOP_RIGHT_SOLENOID_FORWARD = 0;
-        public static final int TOP_RIGHT_SOLENOID_REVERSE = 0;
+        public static final int BOTTOM_SOLENOID_REVERSE = 1;
+        public static final int WINCH_MOTOR = 15;
     }
 }

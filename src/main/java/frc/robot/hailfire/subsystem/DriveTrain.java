@@ -29,7 +29,7 @@ public class DriveTrain extends StandardDriveTrain {
             4 * 360,
             0.5873,
             0.51069,
-            0.00076,
+            0.0012,
             0.00638,
             150
     );
@@ -45,14 +45,14 @@ public class DriveTrain extends StandardDriveTrain {
      * 150
     */
 
-    private DoubleSolenoid4150 leftEvoShifter = new DoubleSolenoid4150(
+    private DoubleSolenoid4150 evoShifter = new DoubleSolenoid4150(
             IDs.DriveTrain.LEFT_EVO_SHIFTER_FORWARD,
             IDs.DriveTrain.LEFT_EVO_SHIFTER_REVERSE
     );
-    private DoubleSolenoid4150 rightEvoShifter = new DoubleSolenoid4150(
-            IDs.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD,
-            IDs.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE
-    );
+    // private DoubleSolenoid4150 rightEvoShifter = new DoubleSolenoid4150(
+    //         IDs.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD,
+    //         IDs.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE
+    // );
 
     private boolean autoShift = false;
 
@@ -80,7 +80,15 @@ public class DriveTrain extends StandardDriveTrain {
 
     @Override
     public void control() {
-        super.control();
+        if(controller.buttonDown(Button.B)) {
+            setLeftPercentOutput(-.05);
+            setRightPercentOutput(.05);
+        } else if(controller.buttonDown(Button.X)) {
+            setLeftPercentOutput(.05);
+            setRightPercentOutput(-.05);
+        } else {
+            super.control();
+        }
 
         // shift gears
 
@@ -106,22 +114,23 @@ public class DriveTrain extends StandardDriveTrain {
                 shiftToHighGear();
             }
 
-            if (Math.abs(getAverageDemand()) < 4.25) {
+            if (
+                Math.abs(getAverageDemand()) < 4.25
+                && Math.abs(getAverageVelocity()) < 4.25
+            ) {
                 shiftToLowGear();
             }
         }
     }
 
     public void shiftToHighGear() {
-        if(leftEvoShifter.extend() || rightEvoShifter.extend()) {
-            setMaxSpeed(19);
+        if(evoShifter.extend()) {
             setMotorConfigs(HIGH_CONFIG);
         }
     }
 
     public void shiftToLowGear() {
-        if(leftEvoShifter.retract() || rightEvoShifter.retract()) {
-            setMaxSpeed(5.5);
+        if(evoShifter.retract()) {
             setMotorConfigs(LOW_CONFIG);
         }
     }

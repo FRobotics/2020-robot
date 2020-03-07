@@ -34,15 +34,11 @@ public class Intake extends Subsystem {
     @Override
     public void control() {
 
-        // flip up
-
-        if (controller.buttonPressed(Button.A)) {
+        if (controller.buttonPressed(Button.Y)) {
             solenoid.retract();
         }
 
-        // flip out
-
-        if (controller.buttonPressed(Button.Y)) {
+        if (controller.buttonPressed(Button.A)) {
             solenoid.extend();
         }
 
@@ -50,6 +46,8 @@ public class Intake extends Subsystem {
 
         if (controller.buttonDown(Button.B) && solenoid.isExtended()) {
             spinner.setPercentOutput(1);
+        } else if(controller.buttonDown(Button.X) && solenoid.isExtended()) {
+            spinner.setPercentOutput(-1);
         } else {
             spinner.setPercentOutput(0);
         }

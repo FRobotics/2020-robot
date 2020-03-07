@@ -109,6 +109,10 @@ public class StandardDriveTrain extends Subsystem {
         if (controller.buttonPressed(Button.BACK)) {
             this.useClosedLoop = false;
         }
+
+        if(controller.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
+            this.resetDistance();
+        }
     }
 
     public double safeVelocity(double velocity) {

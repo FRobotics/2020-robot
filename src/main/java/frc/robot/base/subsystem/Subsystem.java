@@ -18,6 +18,8 @@ public abstract class Subsystem extends ActionHandler {
 
     public final String name;
 
+    private RobotMode mode;
+
     /**
      * Creates a new subsystem
      * @param name the name of the subsystem
@@ -53,6 +55,7 @@ public abstract class Subsystem extends ActionHandler {
      */
     public void onInit(RobotMode mode) {
         this.clearActionQueue();
+        this.mode = mode;
         switch (mode) {
             case AUTONOMOUS:
             case DISABLED:
@@ -63,5 +66,9 @@ public abstract class Subsystem extends ActionHandler {
                 startActionAndSetDefault(CONTROL);
                 break;
         }
+    }
+
+    public RobotMode getMode() {
+        return this.mode;
     }
 }

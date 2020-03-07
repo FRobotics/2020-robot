@@ -10,7 +10,6 @@ import frc.robot.base.device.motor.EncoderMotorConfig;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class CuriosityDriveTrain extends StandardDriveTrain {
