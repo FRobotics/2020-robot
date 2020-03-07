@@ -14,7 +14,7 @@ import frc.robot.base.device.motor.EncoderMotorConfig;
 
 public class DriveTrain extends StandardDriveTrain {
 
-    private static final double LOW_MAX_SPEED = 5;
+    private static final double LOW_MAX_SPEED = 5.5;
 
     public static final EncoderMotorConfig LOW_CONFIG = new EncoderMotorConfig(
             3f/12f,
@@ -78,7 +78,7 @@ public class DriveTrain extends StandardDriveTrain {
                         LOW_CONFIG
                 ).invert(),
                 10, 19, LOW_MAX_SPEED, controller);
-        setMaxScaleShift(0.85);
+        setMaxScaleShift(-1.35); // this makes setVelOrPercent scale better for velocity control
     }
 
     @Override
