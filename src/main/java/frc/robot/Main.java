@@ -9,7 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.hailfire.Hailfire;
-import frc.robot.test.Curiosity;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.

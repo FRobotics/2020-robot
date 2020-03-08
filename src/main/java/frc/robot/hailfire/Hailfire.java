@@ -1,9 +1,11 @@
 package frc.robot.hailfire;
 
+import frc.robot.base.NTHandler;
 import frc.robot.base.Robot;
 import frc.robot.base.action.Action;
 import frc.robot.base.action.SetupAction;
 import frc.robot.base.action.TimedAction;
+import frc.robot.base.input.Pov;
 import frc.robot.base.util.PosControl;
 import frc.robot.hailfire.subsystem.Climber;
 import frc.robot.hailfire.subsystem.DriveTrain;
@@ -24,9 +26,20 @@ public class Hailfire extends Robot {
     private final Shooter shooter = register(new Shooter(auxiliaryController, driveController));
     private final Intake intake = register(new Intake(auxiliaryController));
     private final Climber climber = register(new Climber(auxiliaryController));
-    // private final Spinner spinner = register(new Spinner(auxiliaryController));
 
     private PosControl drivePosControl = new PosControl(10, 2, 0.1, 0.5, 5);
+
+    @Override
+    public void robotPeriodic() {
+        super.robotPeriodic();
+
+        if(auxiliaryController.getPov(Pov.D_PAD) >= 0) {
+            var cameraNum = NTHandler.getVisionEntry("cameraNumber");
+            cameraNum.setValue(cameraNum.getDouble(-1) + 1);
+        }
+
+        Vision.update();
+    }
 
     @Override
     public List<? extends Action> getAutoActions() {

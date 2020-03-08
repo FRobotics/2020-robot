@@ -9,6 +9,7 @@ public class Controller {
 
     private Joystick joystick;
     private HashMap<Integer, Boolean> buttonsPressed;
+    private HashMap<Integer, Boolean> axisPressed;
 
     public Controller(Joystick joystick) {
         this.joystick = joystick;
@@ -28,13 +29,13 @@ public class Controller {
     }
 
     /**
-     * Returns true during the first loop the specified button is pressed
+     * Returns true if the button was "just pressed"
      * 
      * @param button the button you want to specify
-     * @return whether the specified button was just pressed
+     * @return whether the button was pressed but not during the loop before
      */
     public boolean buttonPressed(Button button) {
-        return (!buttonsPressed.get(button.getId()) && joystick.getRawButton(button.getId()));
+        return !buttonsPressed.get(button.getId()) && buttonDown(button);
     }
 
     /**
@@ -48,9 +49,27 @@ public class Controller {
     }
 
     /**
+     * Returns whether an axis is currently "pressed" or not
+     * @param axis the axis you want to test
+     * @return whether the value is > 0.5 or < -0.5
+     */
+    public boolean axisDown(Axis axis) {
+        return Math.abs(joystick.getRawAxis(axis.getId())) > 0.5;
+    }
+
+    /**
+     * Returns true if an axis was "just pressed"
+     * @param axis the axis you want to test
+     * @return whether the value is > 0.5 or < -0.5 but not during the loop before
+     */
+    public boolean axisPressed(Axis axis) {
+        return !axisPressed.get(axis.getId()) && axisDown(axis);
+    }
+
+    /**
      * Returns the value of a pov on the controller
      * 
-     * @param axis the pov you want to measure
+     * @param pov the pov you want to measure
      * @return the angle of the POV in degrees, or -1 if the POV is not pressed.
      */
     public int getPov(Pov pov) {
@@ -63,10 +82,10 @@ public class Controller {
      */
     public void postPeriodic() {
         for (Button button : Button.values()) {
-            int id = button.getId();
-            boolean pressed = joystick.getRawButton(id);
-            buttonsPressed.put(id, pressed);
-            SmartDashboard.putBoolean("vars2/controllers/port_" + joystick.getPort() + "/buttons/" + button, pressed);
+            buttonsPressed.put(button.getId(), buttonDown(button));
+        }
+        for(Axis axis : Axis.values()) {
+            axisPressed.put(axis.getId(), axisDown(axis));
         }
     }
 

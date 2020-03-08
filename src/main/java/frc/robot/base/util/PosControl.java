@@ -5,7 +5,7 @@ public class PosControl {
     /**
      * the distance the thing is trying to reach
      */
-    private double target;
+    public double target;
 
 
     /**

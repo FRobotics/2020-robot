@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.base.subsystem.Subsystem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -15,7 +16,8 @@ import java.util.function.Supplier;
  */
 public class NTHandler {
 
-    public static final NetworkTable robotTable = NetworkTableInstance.getDefault().getTable("robot");
+    private static final NetworkTable robotTable = NetworkTableInstance.getDefault().getTable("robot");
+    private static final NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("vision");
 
     private static HashMap<NetworkTableEntry, Supplier<Object>> setMap;
     private static HashMap<NetworkTableEntry, Consumer<Object>> getMap;
@@ -38,6 +40,14 @@ public class NTHandler {
     protected static void update() {
         setMap.forEach((entry, valueSupplier) -> entry.setValue(valueSupplier.get()));
         getMap.forEach((entry, valueConsumer) -> valueConsumer.accept(entry.getValue().getValue()));
+    }
+
+    public static NetworkTableEntry getRobotEntry(String key) {
+        return robotTable.getEntry(key);
+    }
+
+    public static NetworkTableEntry getVisionEntry(String key) {
+        return visionTable.getEntry(key);
     }
 
 }

@@ -27,11 +27,7 @@ public class IDs {
         public static final int ARM_REVERSE = 6;
     }
 
-    public static class Spinner { // TODO
-        public static final int MOTOR = 0;
-    }
-
-    public static class Climber { // TODO
+    public static class Climber {
         public static final int BOTTOM_SOLENOID_FORWARD = 0;
         public static final int BOTTOM_SOLENOID_REVERSE = 1;
         public static final int WINCH_MOTOR = 15;

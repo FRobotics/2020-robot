@@ -35,11 +35,19 @@ public class Climber extends Subsystem {
             bottomSolenoid.extend();
         }
 
-        if(bottomSolenoid.isExtended()) {
-            if(controller.buttonDown(Button.RIGHT_BUMPER)) {
-                winch.setPercentOutput(0.5);
-            }
+        if(controller.buttonDown(Button.RIGHT_BUMPER)) {
+            winch.setPercentOutput(-0.9);
         }
+        else {
+            winch.setPercentOutput(0);
+        }
+
+        /*if(bottomSolenoid.isExtended()) {
+            if(controller.buttonDown(Button.RIGHT_BUMPER)) {
+                winch.setPercentOutput(0.9);
+                System.out.println("test");
+            }
+        }*/
     }
 
     @Override

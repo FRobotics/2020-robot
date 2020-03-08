@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/*
+ * TODO: for the devices in the subsystem it would probably make sense to make them registrable
+ * and have default states so you don't have to set everything in each mode
+ */
+
 /**
  * An action handler meant to deal with a group of devices that work together
  */
@@ -17,8 +22,6 @@ public abstract class Subsystem extends ActionHandler {
     private final Action CONTROL = new Action(this::control);
 
     public final String name;
-
-    private RobotMode mode;
 
     /**
      * Creates a new subsystem
@@ -55,7 +58,6 @@ public abstract class Subsystem extends ActionHandler {
      */
     public void onInit(RobotMode mode) {
         this.clearActionQueue();
-        this.mode = mode;
         switch (mode) {
             case AUTONOMOUS:
             case DISABLED:
@@ -66,9 +68,5 @@ public abstract class Subsystem extends ActionHandler {
                 startActionAndSetDefault(CONTROL);
                 break;
         }
-    }
-
-    public RobotMode getMode() {
-        return this.mode;
     }
 }

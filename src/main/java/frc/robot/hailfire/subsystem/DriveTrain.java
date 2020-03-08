@@ -1,5 +1,6 @@
 package frc.robot.hailfire.subsystem;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -7,75 +8,37 @@ import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.input.Pov;
 import frc.robot.base.subsystem.StandardDriveTrain;
+import frc.robot.base.util.PosControl;
 import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotorPair;
 import frc.robot.base.device.DoubleSolenoid4150;
-import frc.robot.base.device.motor.EncoderMotorConfig;
+import frc.robot.hailfire.MotorConfig;
+import frc.robot.hailfire.Vision;
 
 public class DriveTrain extends StandardDriveTrain {
 
+    public final ADIS16448_IMU gyro = new ADIS16448_IMU();
+
     private static final double LOW_MAX_SPEED = 5.5;
-
-    public static final EncoderMotorConfig LOW_CONFIG = new EncoderMotorConfig(
-            3f/12f,
-            4 * 360,
-            2.02895,
-            1.76430,
-            0.00264,
-            0.02205,
-            150
-    );
-
-    public static final EncoderMotorConfig HIGH_CONFIG = new EncoderMotorConfig(
-            3f/12f,
-            4 * 360,
-            0.5873,
-            0.51069,
-            0.0012,
-            0.00638,
-            150
-    );
-
-    /*
-     * LOW MULT: 2.2053804347826086956521739130435
-     * HIGH MULT: 0.63836956521739130434782608695652
-     * OLD CONFIG
-     * 0.92,
-     * 0.8,
-     * 0.0012,
-     * 0.01,
-     * 150
-    */
 
     private DoubleSolenoid4150 evoShifter = new DoubleSolenoid4150(
             IDs.DriveTrain.LEFT_EVO_SHIFTER_FORWARD,
             IDs.DriveTrain.LEFT_EVO_SHIFTER_REVERSE
     );
-    // private DoubleSolenoid4150 rightEvoShifter = new DoubleSolenoid4150(
-    //         IDs.DriveTrain.RIGHT_EVO_SHIFTER_FORWARD,
-    //         IDs.DriveTrain.RIGHT_EVO_SHIFTER_REVERSE
-    // );
 
     private boolean autoShift = false;
-
-    /*
-    public List<SubsystemTimedAction> ün_ün_ün = Arrays.asList(
-            new SubsystemTimedAction(() -> setVelocity(-3), 250),
-            new SubsystemTimedAction(() -> setVelocity(3), 250)
-    );
-     */
 
     public DriveTrain(Controller controller) {
         super(
                 new PhoenixMotorPair(
                         new TalonSRX(IDs.DriveTrain.LEFT_MOTOR_MASTER),
                         new VictorSPX(IDs.DriveTrain.LEFT_MOTOR_FOLLOWER),
-                        LOW_CONFIG
+                        MotorConfig.DriveTrain.LOW_CONFIG
                 ),
                 new PhoenixMotorPair(
                         new TalonSRX(IDs.DriveTrain.RIGHT_MOTOR_MASTER),
                         new VictorSPX(IDs.DriveTrain.RIGHT_MOTOR_FOLLOWER),
-                        LOW_CONFIG
+                        MotorConfig.DriveTrain.LOW_CONFIG
                 ).invert(),
                 10, 19, LOW_MAX_SPEED, controller);
         setMaxScaleShift(-1.35); // this makes setVelOrPercent scale better for velocity control
@@ -131,15 +94,25 @@ public class DriveTrain extends StandardDriveTrain {
 
     public void shiftToHighGear() {
         if(evoShifter.extend()) {
-            setMotorConfigs(HIGH_CONFIG);
+            setMotorConfigs(MotorConfig.DriveTrain.HIGH_CONFIG);
             setCurrentMaxSpeed(getAbsoluteMaxSpeed());
         }
     }
 
     public void shiftToLowGear() {
         if(evoShifter.retract()) {
-            setMotorConfigs(LOW_CONFIG);
+            setMotorConfigs(MotorConfig.DriveTrain.LOW_CONFIG);
             setCurrentMaxSpeed(LOW_MAX_SPEED);
+        }
+    }
+
+    PosControl aimPosControl = new PosControl(0, 1, 0.5, 0.2, 0.5);;
+
+    public void autoAim() {
+        if(!Vision.isStale()) {
+            double calculatedSpeed = aimPosControl.getSpeed(Vision.getYawOffset());
+            this.setLeftVelOrPercent(-calculatedSpeed);
+            this.setRightVelOrPercent(calculatedSpeed);
         }
     }
 }
