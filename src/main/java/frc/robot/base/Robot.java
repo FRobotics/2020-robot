@@ -18,15 +18,16 @@ public abstract class Robot extends TimedRobot {
     private ArrayList<Controller> controllers = new ArrayList<>();
     private AutoActionHandler autoActionHandler = new AutoActionHandler();
 
-    private List<? extends Action> autoActions;
+    private List<? extends Action> autoActions = List.of();
     /**
      * Returns a list of actions you want to run during auto; this is only called once
      */
-    public abstract List<? extends Action> getAutoActions();
+    public void setAutoActions(List<? extends Action> actions) {
+        this.autoActions = actions;
+    }
 
     @Override
     public void robotInit() {
-        autoActions = getAutoActions();
         NTHandler.init(this.subsystems);
     }
 

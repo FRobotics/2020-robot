@@ -13,7 +13,6 @@ import frc.robot.hailfire.subsystem.Intake;
 import frc.robot.hailfire.subsystem.Shooter;
 import frc.robot.base.input.Controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -29,11 +28,15 @@ public class Hailfire extends Robot {
 
     private PosControl drivePosControl = new PosControl(10, 2, 0.1, 0.5, 5);
 
+    public Hailfire() {
+        this.setAutoActions(auto1);
+    }
+
     @Override
     public void robotPeriodic() {
         super.robotPeriodic();
 
-        if(auxiliaryController.getPov(Pov.D_PAD) >= 0) {
+        if (auxiliaryController.getPov(Pov.D_PAD) >= 0) {
             var cameraNum = NTHandler.getVisionEntry("cameraNumber");
             cameraNum.setValue(cameraNum.getDouble(-1) + 1);
         }
@@ -42,22 +45,37 @@ public class Hailfire extends Robot {
     }
 
     @Override
-    public List<? extends Action> getAutoActions() {
-        // uncomment if only one thing lol // noinspection ArraysAsListWithZeroOrOneArgument
-        return Arrays.asList(
-                new SetupAction(() -> driveTrain.startAction(
-                        new Action(
-                                () -> driveTrain.setVelocity(drivePosControl.getSpeed(-driveTrain.getAverageDistance())),
-                                drivePosControl::isFinished
-                        )
-                ), driveTrain::isFinished),
-                new TimedAction(2000),
-                new SetupAction(() -> shooter.startAction(
-                        new TimedAction(
-                                () -> shooter.shoot(false),
-                                7000
-                        )
-                ), shooter::isFinished)
-        );
+    public void disabledPeriodic() {
+        super.disabledPeriodic();
+
+        switch((int)NTHandler.getRobotEntry("autoProgram").getDouble(0)) {
+            default:
+                setAutoActions(List.of());
+                break;
+            case 1:
+                setAutoActions(auto1);
+                break;
+            case 2:
+                setAutoActions(auto2);
+                break;
+        }
     }
+
+    private final List<? extends Action> auto1 = List.of(
+            new SetupAction(() -> driveTrain.startAction(
+                    new Action(
+                            () -> driveTrain.setVelocity(drivePosControl.getSpeed(-driveTrain.getAverageDistance())),
+                            drivePosControl::isFinished
+                    )
+            ), driveTrain::isFinished),
+            new TimedAction(2000),
+            new SetupAction(() -> shooter.startAction(
+                    new TimedAction(
+                            () -> shooter.shoot(false),
+                            7000
+                    )
+            ), shooter::isFinished)
+    );
+
+    private final List<? extends Action> auto2 = List.of();
 }

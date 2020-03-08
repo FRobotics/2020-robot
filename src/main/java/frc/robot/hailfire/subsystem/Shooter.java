@@ -197,6 +197,8 @@ public class Shooter extends Subsystem {
             } else {
                 carousel.setPercentOutput(carouselSpeed);
             }
+        } else if (!controlled) {
+            carousel.setPercentOutput(0);
         }
 
         leftMotor.setVelocity(leftSpeedDemand); // 2600
@@ -205,10 +207,12 @@ public class Shooter extends Subsystem {
 
     PosControl aimPosControl = new PosControl(0, 1, 0.5, 0.2, 0.5);
 
+    /*
     public void autoAim() {
         if(Vision.isStale()) {
             double calculatedSpeed = aimPosControl.getSpeed(Vision.getPitchOffset());
 
         }
     }
+     */
 }
