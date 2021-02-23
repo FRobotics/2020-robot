@@ -4,9 +4,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.base.device.motor.Motor;
 import frc.robot.base.device.motor.PhoenixMotor;
 import frc.robot.base.util.Util;
+import frc.robot.hailfire.Controls;
 import frc.robot.hailfire.IDs;
 import frc.robot.base.device.DoubleSolenoid4150;
-import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 
@@ -29,13 +29,13 @@ public class Climber extends Subsystem {
 
     @Override
     public void control() {
-        if(controller.buttonDown(Button.START)) {
+        if(controller.buttonDown(Controls.Climber.RETRACT)) {
             bottomSolenoid.retract();
-        } else if(controller.buttonDown(Button.BACK)) {
+        } else if(controller.buttonDown(Controls.Climber.EXTEND)) {
             bottomSolenoid.extend();
         }
 
-        if(controller.buttonDown(Button.RIGHT_BUMPER)) {
+        if(controller.buttonDown(Controls.Climber.SPIN_WINCH)) {
             winch.setPercentOutput(-0.9);
         }
         else {

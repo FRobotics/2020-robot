@@ -23,7 +23,7 @@ public class Curiosity extends Robot {
 
     private PosControl posControl = new PosControl(10, 2, 0.2, .5, 2);
 
-    @Override
+    /*@Override
     public List<? extends Action> getAutoActions() {
         return Arrays.asList(
                 new SetupAction(() -> {
@@ -41,5 +41,5 @@ public class Curiosity extends Robot {
                         )
                 ), driveTrain::isFinished)
         );
-    }
+    }*/
 }

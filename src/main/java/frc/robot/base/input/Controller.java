@@ -3,7 +3,6 @@ package frc.robot.base.input;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Controller {
 

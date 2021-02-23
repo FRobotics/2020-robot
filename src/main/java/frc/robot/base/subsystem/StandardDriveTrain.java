@@ -1,7 +1,7 @@
 package frc.robot.base.subsystem;
 
-import frc.robot.base.input.Button;
 import frc.robot.base.util.Util;
+import frc.robot.base.Controls;
 import frc.robot.base.device.motor.EncoderMotor;
 import frc.robot.base.device.motor.EncoderMotorConfig;
 import frc.robot.base.input.Axis;
@@ -30,6 +30,7 @@ public class StandardDriveTrain extends Subsystem {
     private int controllerPower = 2;
 
     private boolean useClosedLoop = true;
+    private boolean reverseControl = false;
 
     public StandardDriveTrain(
             EncoderMotor leftMotor, EncoderMotor rightMotor,
@@ -118,8 +119,9 @@ public class StandardDriveTrain extends Subsystem {
 
     @Override
     public void control() {
-        double fb = -Util.adjustInput(controller.getAxis(Axis.LEFT_Y), controllerDeadBand, controllerPower);
-        double lr = Util.adjustInput(controller.getAxis(Axis.RIGHT_X), controllerDeadBand, controllerPower);
+        int r = this.reverseControl ? -1 : 1;
+        double fb = - r * Util.adjustInput(controller.getAxis(Controls.DriveTrain.DRIVE_FORWARD_BACKWARD), controllerDeadBand, controllerPower);
+        double lr = r * Util.adjustInput(controller.getAxis(Controls.DriveTrain.TURN_LEFT_RIGHT), controllerDeadBand, controllerPower);
 
         double left = fb - lr;
         double right = fb + lr;
@@ -132,13 +134,19 @@ public class StandardDriveTrain extends Subsystem {
             setRightPercentOutput(right);
         }
 
-        if (controller.buttonPressed(Button.START)) {
+        if (controller.buttonPressed(Controls.DriveTrain.USE_CLOSED_LOOP)) {
             this.useClosedLoop = true;
         }
 
-        if (controller.buttonPressed(Button.BACK)) {
+        if (controller.buttonPressed(Controls.DriveTrain.DONT_USE_CLOSED_LOOP)) {
             this.useClosedLoop = false;
         }
+
+        if (controller.buttonPressed(Controls.DriveTrain.TOGGLE_REVERSE)) {
+            this.toggleReversed();
+        }
+        
+        
 
         if(controller.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
             this.resetDistance();
@@ -258,5 +266,13 @@ public class StandardDriveTrain extends Subsystem {
     public void resetDistance() {
         this.leftMotor.resetDistance();
         this.rightMotor.resetDistance();
+    }
+    
+    public void setReversed(boolean reverse) {
+        this.reverseControl = reverse;
+    }
+
+    public void toggleReversed() {
+        this.reverseControl = !this.reverseControl;
     }
 }

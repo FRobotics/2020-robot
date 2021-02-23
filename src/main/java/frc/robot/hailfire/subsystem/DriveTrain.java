@@ -4,11 +4,10 @@ import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
-import frc.robot.base.input.Pov;
 import frc.robot.base.subsystem.StandardDriveTrain;
 import frc.robot.base.util.PosControl;
+import frc.robot.hailfire.Controls;
 import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotorPair;
 import frc.robot.base.device.DoubleSolenoid4150;
@@ -49,10 +48,10 @@ public class DriveTrain extends StandardDriveTrain {
 
         double turnSpeed = 0.2;
 
-        if(controller.buttonDown(Button.B)){
+        if(controller.buttonDown(Controls.DriveTrain.TURN_RIGHT)){
             setLeftVelOrPercent(-turnSpeed);
             setRightVelOrPercent(turnSpeed);
-        } else if(controller.buttonDown(Button.X)){
+        } else if(controller.buttonDown(Controls.DriveTrain.TURN_LEFT)){
             setLeftVelOrPercent(turnSpeed);
             setRightVelOrPercent(-turnSpeed);
         } else {
@@ -61,17 +60,17 @@ public class DriveTrain extends StandardDriveTrain {
 
         // shift gears
 
-        if(controller.buttonPressed(Button.LEFT_BUMPER)){
+        if(controller.buttonPressed(Controls.DriveTrain.LOW_GEAR)){
             shiftToLowGear();
             autoShift = false;
         }
 
-        if (controller.buttonPressed(Button.RIGHT_BUMPER)) {
+        if (controller.buttonPressed(Controls.DriveTrain.HIGH_GEAR)) {
             shiftToHighGear();
             autoShift = false;
         }
 
-        if(controller.getPov(Pov.D_PAD) >= 0) {
+        if(controller.getPov(Controls.DriveTrain.AUTO_SHIFT) >= 0) {
             autoShift = true;
         }
 

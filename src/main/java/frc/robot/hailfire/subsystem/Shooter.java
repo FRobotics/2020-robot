@@ -4,17 +4,15 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
-import frc.robot.base.input.Axis;
-import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.util.PosControl;
+import frc.robot.hailfire.Controls;
 import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotor;
 import frc.robot.base.device.motor.EncoderMotor;
 import frc.robot.base.device.motor.Motor;
 import frc.robot.hailfire.MotorConfig;
-import frc.robot.hailfire.Vision;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -73,7 +71,7 @@ public class Shooter extends Subsystem {
     @Override
     public void control() {
 
-        if (driveController.axisDown(Axis.RIGHT_TRIGGER)) {
+        if (driveController.axisDown(Controls.Shooter.SHOOT)) {
             shoot(true);
         } else {
             spinForShooter = false;
@@ -89,16 +87,16 @@ public class Shooter extends Subsystem {
         // Either way, it works :)
 
         // manual control
-        if (auxController.getAxis(Axis.LEFT_X) > 0.5) {
+        if (auxController.getAxis(Controls.Shooter.MANUAL_CAROUSEL) > 0.5) {
             carouselOutput = 0.7;
             autoCarousel = false;
-        } else if (auxController.getAxis(Axis.LEFT_X) < -0.5) {
+        } else if (auxController.getAxis(Controls.Shooter.MANUAL_CAROUSEL) < -0.5) {
             carouselOutput = -0.7;
             autoCarousel = false;
-        } else if (auxController.getAxis(Axis.LEFT_TRIGGER) > 0.5) { // semi manual (go to limit switch)
+        } else if (auxController.getAxis(Controls.Shooter.AUTO_CAROUSEL_LEFT) > 0.5) { // semi manual (go to limit switch)
             carouselOutput = -0.7;
             autoCarousel = true;
-        } else if (auxController.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
+        } else if (auxController.getAxis(Controls.Shooter.AUTO_CAROUSEL_RIGHT) > 0.5) {
             carouselOutput = 0.7;
             autoCarousel = true;
         } else if (autoCarousel) {
@@ -129,9 +127,9 @@ public class Shooter extends Subsystem {
 
         // move carousel up/down
 
-        if (driveController.buttonDown(Button.A)) {
+        if (driveController.buttonDown(Controls.Shooter.CAROUSEL_DOWN)) {
             pitchMotor.setPercentOutput(.125);
-        } else if (driveController.buttonDown(Button.Y)) {
+        } else if (driveController.buttonDown(Controls.Shooter.CAROUSEL_UP)) {
             pitchMotor.setPercentOutput(-0.5);
         } else {
             pitchMotor.setPercentOutput(0);
@@ -139,7 +137,7 @@ public class Shooter extends Subsystem {
 
         // turn on lights
 
-        if (auxController.buttonPressed(Button.LEFT_BUMPER)) {
+        if (auxController.buttonPressed(Controls.Shooter.TURN_ON_LIGHTS)) {
             spike.set(spike.get() == Relay.Value.kForward ? Relay.Value.kOff : Relay.Value.kForward);
         }
     }

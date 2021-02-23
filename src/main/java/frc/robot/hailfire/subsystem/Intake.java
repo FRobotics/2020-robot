@@ -3,8 +3,8 @@ package frc.robot.hailfire.subsystem;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import frc.robot.base.util.Util;
+import frc.robot.hailfire.Controls;
 import frc.robot.hailfire.IDs;
-import frc.robot.base.input.Button;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.device.motor.PhoenixMotor;
@@ -30,23 +30,23 @@ public class Intake extends Subsystem {
     public void stop() {
         spinner.setPercentOutput(0);
     }
-
+    
     @Override
     public void control() {
 
-        if (controller.buttonPressed(Button.Y)) {
+        if (controller.buttonPressed(Controls.Intake.ARM_UP)) {
             solenoid.retract();
         }
 
-        if (controller.buttonPressed(Button.A)) {
+        if (controller.buttonPressed(Controls.Intake.ARM_DOWN)) {
             solenoid.extend();
         }
-
+        
         // spin if solenoid is out
 
-        if (controller.buttonDown(Button.B) && solenoid.isExtended()) {
+        if (controller.buttonDown(Controls.Intake.SPIN_FORWARD) && solenoid.isExtended()) {
             spinner.setPercentOutput(1);
-        } else if(controller.buttonDown(Button.X) && solenoid.isExtended()) {
+        } else if(controller.buttonDown(Controls.Intake.SPIN_BACKWARD) && solenoid.isExtended()) {
             spinner.setPercentOutput(-1);
         } else {
             spinner.setPercentOutput(0);
