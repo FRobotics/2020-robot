@@ -41,7 +41,9 @@ public abstract class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         subsystems.forEach(subsystem -> subsystem.onInit(RobotMode.AUTONOMOUS));
-        this.autoActionHandler.startActionQueue(autoActions); // TODO the actions need to reset!
+        this.autoActionHandler.startActionQueue(autoActions); // NOTE: the actions need to reset!
+        // I have no idea what I meant by that but it works and doesn't seem to be important lol (used to be todo)
+        // I'll come back at some point and figure out what I meant and either delete the comment or fix it
     }
 
     @Override

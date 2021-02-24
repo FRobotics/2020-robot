@@ -9,8 +9,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /*
- * TODO: for the devices in the subsystem it would probably make sense to make them registrable
+ * NOTE: for the devices in the subsystem it would probably make sense to make them registrable
  * and have default states so you don't have to set everything in each mode
+ * (this used to be a todo but it's not important)
  */
 
 /**

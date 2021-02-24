@@ -7,8 +7,15 @@ import frc.robot.base.device.motor.EncoderMotorConfig;
 import frc.robot.base.input.Axis;
 import frc.robot.base.input.Controller;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 
 /**
  * A drive train with two encoder motors and a rate limiter for each motor that is controlled with a controller
@@ -274,5 +281,42 @@ public class StandardDriveTrain extends Subsystem {
 
     public void toggleReversed() {
         this.reverseControl = !this.reverseControl;
+    }
+    
+    private Trajectory trajectory = new Trajectory();
+    private long pathStartTime = 0;
+
+    public void initTrajectory(String trajectoryJSON) {
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            pathStartTime = System.currentTimeMillis();
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+        }
+    }
+    
+    double ftPerMeter = 3.28084;
+    
+    public void followPath() {
+        var state = trajectory.sample(System.currentTimeMillis() - pathStartTime);
+        // this math is taken from looking at how they do it in the RamseteCommand class
+        // around line 140 they do stuff with toWheelSpeeds which is where the math is
+        var accel = state.accelerationMetersPerSecondSq;
+        var curve = state.curvatureRadPerMeter * accel;
+        /* "The track width of the drivetrain. Theoretically, this is the distance
+   *     between the left wheels and right wheels. However, the empirical value may be larger than
+   *     the physical measured value due to scrubbing effects." taken from DifferentialDriveKinematics */
+        // TODO: set this value correctly (keeping units in mind)
+        var trackWidthMeters = 1;
+        var leftSpeed = accel - trackWidthMeters / 2 * curve;
+        var rightSpeed = accel + trackWidthMeters / 2 * curve;
+        
+        setLeftVelocity(leftSpeed * ftPerMeter);
+        setRightVelocity(rightSpeed * ftPerMeter);
+    }
+    
+    public boolean finishedPath() {
+        return System.currentTimeMillis() - pathStartTime >= trajectory.getTotalTimeSeconds() / 1000;
     }
 }

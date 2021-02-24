@@ -1,5 +1,8 @@
 package frc.robot.hailfire.subsystem;
 
+import java.util.Map;
+import java.util.function.Consumer;
+
 import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -7,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.StandardDriveTrain;
 import frc.robot.base.util.PosControl;
+import frc.robot.base.util.Util;
 import frc.robot.hailfire.Controls;
 import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotorPair;
@@ -26,6 +30,7 @@ public class DriveTrain extends StandardDriveTrain {
     );
 
     private boolean autoShift = false;
+    private boolean autoAim = false;
 
     public DriveTrain(Controller controller) {
         super(
@@ -42,20 +47,39 @@ public class DriveTrain extends StandardDriveTrain {
                 10, 19, LOW_MAX_SPEED, controller);
         setMaxScaleShift(-1.35); // this makes setVelOrPercent scale better for velocity control
     }
+    
+    private PosControl posControl;
+    private double startAngle = 0;
+    private double angleX = 0;
 
     @Override
     public void control() {
 
         double turnSpeed = 0.2;
 
-        if(controller.buttonDown(Controls.DriveTrain.TURN_RIGHT)){
+        if (controller.buttonDown(Controls.DriveTrain.TURN_RIGHT)){
             setLeftVelOrPercent(-turnSpeed);
             setRightVelOrPercent(turnSpeed);
-        } else if(controller.buttonDown(Controls.DriveTrain.TURN_LEFT)){
+            this.autoAim = false;
+        } else if (controller.buttonDown(Controls.DriveTrain.TURN_LEFT)){
             setLeftVelOrPercent(turnSpeed);
             setRightVelOrPercent(-turnSpeed);
+            this.autoAim = false;
         } else {
-            super.control();
+            if (controller.buttonPressed(Controls.DriveTrain.AUTO_AIM)) {
+                // TODO: these are complete guesses
+                posControl = new PosControl(angleX, 0.1, 0.2, 0.5, 5);
+                this.autoAim = true;
+                startAngle = gyro.getAngle();
+            }
+            if (this.autoAim) {
+                // TODO: I have no idea if these units are compatible or if the direction is correct lmao
+                double calculatedSpeed = posControl.getSpeed(this.gyro.getAngle() - startAngle);
+                this.setLeftVelOrPercent(-calculatedSpeed);
+                this.setRightVelOrPercent(calculatedSpeed);
+            } else {
+                super.control();
+            }
         }
 
         // shift gears
@@ -108,10 +132,20 @@ public class DriveTrain extends StandardDriveTrain {
     PosControl aimPosControl = new PosControl(0, 1, 0.5, 0.2, 0.5);;
 
     public void autoAim() {
+        /* 
+         * TODO: either use this code or discard it;
+         * this constantly updates the target and uses a watchdog for safety in the vision class
+         * I don't think we'll need this though + we'd have to change vision to work this way again
+         */
         if(!Vision.isStale()) {
             double calculatedSpeed = aimPosControl.getSpeed(Vision.getYawOffset());
             this.setLeftVelOrPercent(-calculatedSpeed);
             this.setRightVelOrPercent(calculatedSpeed);
         }
+    }
+
+    @Override
+    public Map<String, Consumer<Object>> NTGets() {
+        return Map.ofEntries(Util.<Double>setter("/vision/data/angleX", a -> angleX = a));
     }
 }

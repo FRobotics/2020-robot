@@ -61,6 +61,10 @@ public class Hailfire extends Robot {
         }
     }
 
+    // Note: I mention this elsewhere but the way I set this up is kinda awkward / repetitive
+    // it works well though and isn't too repetitive but I might wanna change it in the future
+
+    // old auto
     private final List<? extends Action> auto1 = List.of(
             new SetupAction(() -> driveTrain.startAction(
                     new Action(
@@ -77,5 +81,15 @@ public class Hailfire extends Robot {
             ), shooter::isFinished)
     );
 
-    private final List<? extends Action> auto2 = List.of();
+    // follow path
+    // note: if the trajectory isn't set / couldn't load it should theoretically just do nothing
+    private final List<? extends Action> auto2 = List.of(
+        // TODO: file path there
+        new SetupAction(() -> driveTrain.initTrajectory("FILE PATH HERE") , () -> driveTrain.startAction(
+            new Action(
+                driveTrain::followPath,
+                driveTrain::finishedPath
+            )
+        ), driveTrain::isFinished)
+    );
 }

@@ -5,6 +5,7 @@ import frc.robot.base.NTHandler;
 
 public class Vision {
 
+    // NOTE: old NTV names and variables, this will probably get deleted
     private static NetworkTableEntry watchdogEntry = NTHandler.getVisionEntry("watchdog");
     private static double lastWatchdogVal = 0;
     private static long staleStart = 0;
@@ -16,8 +17,6 @@ public class Vision {
 
     private static double yawOffset = 0;
     private static double pitchOffset = 0;
-
-    // TODO: make ntv names correct
 
     public static double getYawOffset() {
         return isStale()

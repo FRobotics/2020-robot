@@ -6,7 +6,7 @@ import frc.robot.base.input.Pov;
 
 public class Controls {
     public static class Climber {
-        // TODO: actually name these
+        // TODO: name RETRACT and EXTEND appropriately (to what they actually do)
         public static Button RETRACT = Button.START;
         public static Button EXTEND = Button.BACK;
         public static Button SPIN_WINCH = Button.RIGHT_BUMPER;
@@ -18,6 +18,8 @@ public class Controls {
         public static Button LOW_GEAR = Button.LEFT_BUMPER;
         public static Button HIGH_GEAR = Button.RIGHT_BUMPER;
         public static Pov AUTO_SHIFT = Pov.D_PAD;
+        // TODO: make sure there's no conflict / change if there is one
+        public static Button AUTO_AIM = Button.Y;
     }
 
     public static class Intake {

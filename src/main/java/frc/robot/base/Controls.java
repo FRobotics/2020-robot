@@ -9,7 +9,7 @@ public class Controls {
         public static Axis TURN_LEFT_RIGHT = Axis.RIGHT_X;
         public static Button USE_CLOSED_LOOP = Button.START;
         public static Button DONT_USE_CLOSED_LOOP = Button.BACK;
-        // TODO: set this to what the drive team wants
+        // TODO: change this so it doesn't conflict with anything
         public static Button TOGGLE_REVERSE = Button.A;
     }
 }

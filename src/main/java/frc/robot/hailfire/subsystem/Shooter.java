@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Relay;
 import frc.robot.base.input.Controller;
 import frc.robot.base.subsystem.Subsystem;
 import frc.robot.base.util.PosControl;
+import frc.robot.base.util.Util;
 import frc.robot.hailfire.Controls;
 import frc.robot.hailfire.IDs;
 import frc.robot.base.device.motor.PhoenixMotor;
@@ -35,12 +36,12 @@ public class Shooter extends Subsystem {
 
     // configurable variables for tuning from dash
 
-    public double leftK;
+    public double leftF;
     public double leftP;
     public double leftI;
     public double leftD;
 
-    public double rightK;
+    public double rightF;
     public double rightP;
     public double rightI;
     public double rightD;
@@ -51,11 +52,37 @@ public class Shooter extends Subsystem {
     private double carouselOutput = 0;
     private boolean autoCarousel = false;
     private boolean spinForShooter = true;
+    
+    private boolean oldUpdateFPID = false;
+    private boolean updateFPID = false;
 
     public Shooter(Controller mainController, Controller carouselController) {
         super("shooter");
         this.auxController = mainController;
         this.driveController = carouselController;
+    }
+    
+    @Override
+    public void periodic() {
+        super.periodic();
+        // update the config if the boolean updateFPID changed
+        if (oldUpdateFPID != updateFPID) {
+            oldUpdateFPID = updateFPID;
+            
+            var lc = MotorConfig.Shooter.CONFIG;
+            lc.F = leftF;
+            lc.P = leftP;
+            lc.I = leftI;
+            lc.D = leftD;
+            leftMotor.setConfig(lc);
+            
+            var rc = MotorConfig.Shooter.CONFIG;
+            rc.F = rightF;
+            rc.P = rightP;
+            rc.I = rightI;
+            rc.D = rightD;
+            rightMotor.setConfig(rc);
+        }
     }
 
     @Override
@@ -153,34 +180,30 @@ public class Shooter extends Subsystem {
                 "pitchOutput", pitchMotor::getOutputPercent,
                 "carouselOutput", carousel::getOutputPercent,
                 "carouselSwitch", carouselSwitch::get,
-                "lights", () -> spike.get() == Relay.Value.kForward
+                "lights", () -> spike.get() == Relay.Value.kForward,
+                
+                "leftDistance", leftMotor::getDistance,
+                "rightDistance", rightMotor::getDistance
         );
     }
 
     @Override
     public Map<String, Consumer<Object>> NTGets() {
-        return Map.of(
-                "leftK", doubleSetter(d -> leftK = d),
-                "leftP", doubleSetter(d -> leftP = d),
-                "leftI", doubleSetter(d -> leftI = d),
-                "leftD", doubleSetter(d -> leftD = d),
+        return Map.ofEntries(
+                Util.<Double>setter("leftF", d -> leftF = d),
+                Util.<Double>setter("leftP", d -> leftP = d),
+                Util.<Double>setter("leftI", d -> leftI = d),
+                Util.<Double>setter("leftD", d -> leftD = d),
 
-                "rightK", doubleSetter(d -> rightK = d),
-                "rightP", doubleSetter(d -> rightP = d),
-                "rightI", doubleSetter(d -> rightI = d),
-                "rightD", doubleSetter(d -> rightD = d),
+                Util.<Double>setter("rightF", d -> rightF = d),
+                Util.<Double>setter("rightP", d -> rightP = d),
+                Util.<Double>setter("rightI", d -> rightI = d),
+                Util.<Double>setter("rightD", d -> rightD = d),
 
-                "leftSpeedDemand", doubleSetter(d -> leftSpeedDemand = d),
-                "rightSpeedDemand", doubleSetter(d -> rightSpeedDemand = d)
+                Util.<Double>setter("leftSpeedDemand", d -> leftSpeedDemand = d),
+                Util.<Double>setter("rightSpeedDemand", d -> rightSpeedDemand = d),
+                Util.<Boolean>setter("updateFPID", b -> updateFPID = b)
         );
-    }
-
-    public Consumer<Object> doubleSetter(Consumer<Double> setter) {
-        return (Object obj) -> {
-            if (obj instanceof Double) {
-                setter.accept((double) obj);
-            }
-        };
     }
 
     private long shooterStartTime = 0;
